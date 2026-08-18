@@ -1,0 +1,36 @@
+import express from 'express';
+import passport from 'passport';
+import { isAdmin } from '../middlewares/isAdmin.js';
+import accessTokenAutoRefresh from '../middlewares/accessTokenAutoRefresh.js';
+import { upload } from '../middlewares/upload-middleware.js';
+import {
+    createSlots,
+    getAdminSlots,
+    deleteSlot,
+    getAdminBookings,
+    getAvailableSlots,
+    createConsultationOrder,
+    bookConsultation
+} from '../controllers/consultationController.js';
+
+const router = express.Router();
+
+// --- Admin Routes ---
+router.post('/slots', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), isAdmin, createSlots);
+router.get('/admin/slots', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), isAdmin, getAdminSlots);
+router.delete('/slots/:id', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), isAdmin, deleteSlot);
+router.get('/bookings', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), isAdmin, getAdminBookings);
+
+// --- Student/Frontend Routes ---
+router.get('/slots/available', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), getAvailableSlots);
+router.post('/create-order', accessTokenAutoRefresh, passport.authenticate('jwt', { session: false }), createConsultationOrder);
+
+// `upload.fields` handles multiple file uploads, here we expect 'fileUpload'
+router.post('/book', 
+    accessTokenAutoRefresh, 
+    passport.authenticate('jwt', { session: false }), 
+    upload.fields([{ name: 'fileUpload', maxCount: 1 }]), 
+    bookConsultation
+);
+
+export default router;
