@@ -83,11 +83,11 @@ const navItems: NavItem[] = [
     name: "News",
     path: "/news",
   },
-  {
-    icon: <FileText />,
-    name: "Resources",
-    path: "/resources",
-  },
+  // {
+  //   icon: <FileText />,
+  //   name: "Resources",
+  //   path: "/resources",
+  // },
   {
     icon: <PageIcon />,
     name: "Forums",
@@ -157,11 +157,11 @@ const navItems: NavItem[] = [
     name: "Leaderboard Settings",
     path: "/leaderboard-setting"
   },
-  {
-    icon: <TaskIcon />,
-    name: "Personality Test",
-    path: "/personality-test"
-  },
+  // {
+  //   icon: <TaskIcon />,
+  //   name: "Personality Test",
+  //   path: "/personality-test"
+  // },
   {
     icon: <PageIcon />,
     name: "Security",
@@ -576,7 +576,7 @@ const AppSidebar: React.FC = () => {
                 alt="IAS"
               />
               <span className="ml-2.5 text-[22px] font-bold tracking-tight bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">
-                IAS
+                Institute Of Applied Statistics
               </span>
             </>
           ) : (
