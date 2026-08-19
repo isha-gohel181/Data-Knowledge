@@ -34,7 +34,10 @@ const ALLOWED_ORIGINS = [
   "https://edrila.nexprism.in",
   "https://lapaas.com",
   "https://www.lapaas.com",
-];
+  process.env.ADMIN_URL,
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -42,6 +45,8 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     // Allow any localhost port for local development
     if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+    // Allow Vercel deployments (*.vercel.app)
+    if (/\.vercel\.app$/.test(origin)) return callback(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
     // Deny unknown origins
     callback(new Error('Origin not allowed by CORS'));

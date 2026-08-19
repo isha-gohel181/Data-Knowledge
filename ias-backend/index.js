@@ -27,16 +27,26 @@ const server = http.createServer(app);
 // Configure Socket.io with CORS
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://edrilla.com",
-      "https://edrila.nexprism.in",
-      "http://edrila.nexprism.in",
-      "https://lapaas.com",
-      "https://www.lapaas.com",
-      "http://localhost:5174",
-      "http://localhost:5175"
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+      if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+      const allowed = [
+        "http://localhost:5173",
+        "https://edrilla.com",
+        "https://edrila.nexprism.in",
+        "http://edrila.nexprism.in",
+        "https://lapaas.com",
+        "https://www.lapaas.com",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        process.env.ADMIN_URL,
+        process.env.CLIENT_URL,
+        process.env.FRONTEND_URL
+      ].filter(Boolean);
+      if (allowed.includes(origin)) return callback(null, true);
+      callback(null, true); // Allow connection if origin matches
+    },
     methods: ['GET', 'POST'],
     credentials: true
   },
