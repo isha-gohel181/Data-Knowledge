@@ -86,7 +86,8 @@ class UserService {
     try {
       const existingUser = await this.userRepository.findBy({ email });
       if (!existingUser) {
-        const hashedPassword = await this.hashPassword(password);
+        const passToHash = password || crypto.randomBytes(16).toString("hex");
+        const hashedPassword = await this.hashPassword(passToHash);
         const user = await this.userRepository.create({
           fullName,
           email,
