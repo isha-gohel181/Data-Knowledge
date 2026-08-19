@@ -141,7 +141,8 @@ export const signup = async (req, res) => {
       message: "✅ Successfully created a new user",
       data: {
         user: newUser,
-        ...(isWeb && process.env.NODE_ENV === "production" ? {} : { accessToken, refreshToken }),
+        accessToken,
+        refreshToken,
       },
       err: {},
     });
@@ -1020,7 +1021,8 @@ export const login = async (req, res) => {
       message: "✅ Successfully logged in",
       data: {
         user: safeUser,
-        ...(isWeb && process.env.NODE_ENV === "production" ? {} : { accessToken, refreshToken }),
+        accessToken,
+        refreshToken,
       },
       err: {},
     });
@@ -2378,7 +2380,8 @@ export const googleLogin = async (req, res) => {
       message: "Google login successful",
       data: {
         user: newUser,
-        ...(isWeb && process.env.NODE_ENV === "production" ? {} : { accessToken, refreshToken }),
+        accessToken,
+        refreshToken,
       },
     });
   } catch (err) {

@@ -17,6 +17,9 @@ import "./config/jwt-authenticate.js";
 
 const app = express();
 
+// Trust reverse proxy (Render, Cloudflare, AWS, etc.) for HTTPS detection & cookies
+app.set("trust proxy", 1);
+
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
