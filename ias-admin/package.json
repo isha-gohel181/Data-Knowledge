@@ -81,6 +81,10 @@
     "vite-plugin-svgr": "^4.3.0"
   },
   "overrides": {
+    "react-quill": {
+      "react": "^16.8.0 || ^17 || ^18 || ^19",
+      "react-dom": "^16.8.0 || ^17 || ^18 || ^19"
+    },
     "react-helmet-async": {
       "react": "^16.8.0 || ^17 || ^18 || ^19"
     },
