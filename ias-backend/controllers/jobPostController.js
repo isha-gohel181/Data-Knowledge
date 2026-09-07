@@ -3,7 +3,7 @@ import { initRedis } from '../config/redisClient.js';
 import emailService from '../utils/emailService.js';
 import notificationService from '../service/notificationService.js';
 import User from '../models/user.js';
-
+import { hasAdminRole } from '../middlewares/isAdmin.js';
 
 const jobPostService = JobPostService;
 
@@ -54,7 +54,7 @@ export const createJobPost = async (req, res) => {
         max: parseNumber(req.body.budget?.max ?? req.body.budgetMax),
         currency: req.body.budget?.currency || req.body.currency || 'USD'
       },
-      isAdminApproved: req.user.role === 'admin' || req.user.roles?.includes('admin') ? (req.body.isAdminApproved === 'true' || req.body.isAdminApproved === true) : false,
+      isAdminApproved: hasAdminRole(req.user) ? (req.body.isAdminApproved === 'true' || req.body.isAdminApproved === true) : false,
       category: req.body.category,
       skillsRequired,
       experienceLevel: req.body.experienceLevel,

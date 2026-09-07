@@ -1,9 +1,10 @@
 import Enrollment from '../models/CourseEnrollment.js';
+import { hasAdminRole } from './isAdmin.js';
 
 const canManageJobPosts = async (req, res, next) => {
     try {
-        // If user is admin, allow access
-        if (req.user.role === 'admin' || req.user.roles?.includes('admin')) {
+        // If user is admin/super_admin/instructor, allow access
+        if (hasAdminRole(req.user)) {
             return next();
         }
 

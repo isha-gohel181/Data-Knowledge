@@ -200,7 +200,7 @@ export const createForumThread = createAsyncThunk(
         data.files.forEach((file) => formData.append("files", file));
       }
 
-      const response = await axiosInstance.post("/forum/thread", formData, {
+      const response = await axiosInstance.post("/forum/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
