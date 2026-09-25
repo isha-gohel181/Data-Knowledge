@@ -123,33 +123,33 @@ const Hero = ({ isLoaded }) => {
                {/* Metric 1 */}
                <div
                   ref={glassCard1}
-                  className="absolute top-[15%] left-0 md:-left-8 lg:-left-12 bg-white/95 backdrop-blur-xl border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-xl flex items-center gap-3.5 max-w-[210px]"
+                  className="absolute top-[16%] left-0 md:-left-6 lg:-left-10 bg-white/95 backdrop-blur-xl border border-slate-200/90 py-3 px-4 sm:py-3.5 sm:px-4.5 rounded-2xl shadow-xl flex items-center gap-3 z-10 hover:shadow-2xl transition-shadow"
                >
-                  <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 text-blue-700 flex-shrink-0">
-                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 text-blue-700 flex-shrink-0">
+                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                         <circle cx="9" cy="7" r="4" />
                      </svg>
                   </div>
                   <div className="flex flex-col min-w-0">
-                     <span className="font-inter text-xl sm:text-2xl font-black text-[#011753] leading-none">50K+</span>
-                     <span className="font-inter text-[9px] text-slate-500 uppercase tracking-widest font-bold mt-1 truncate">Researchers Trained</span>
+                     <span className="font-inter text-lg sm:text-xl font-black text-[#011753] leading-none tracking-tight">50K+</span>
+                     <span className="font-inter text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-bold mt-1 whitespace-nowrap">Researchers Trained</span>
                   </div>
                </div>
 
                {/* Metric 2 */}
                <div
                   ref={glassCard2}
-                  className="absolute bottom-[20%] right-0 md:-right-6 lg:-right-10 bg-white/95 backdrop-blur-xl border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-xl flex items-center gap-3.5 max-w-[210px]"
+                  className="absolute bottom-[18%] right-0 md:-right-4 lg:-right-8 bg-white/95 backdrop-blur-xl border border-slate-200/90 py-3 px-4 sm:py-3.5 sm:px-4.5 rounded-2xl shadow-xl flex items-center gap-3 z-10 hover:shadow-2xl transition-shadow"
                >
-                  <div className="flex flex-col items-end text-right min-w-0">
-                     <span className="font-inter text-xl sm:text-2xl font-black text-[#011753] leading-none">6+ Schemes</span>
-                     <span className="font-inter text-[9px] text-slate-500 uppercase tracking-widest font-bold mt-1 truncate">R&D Governing Cells</span>
-                  </div>
-                  <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-200 text-indigo-700 flex-shrink-0">
-                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-200 text-indigo-700 flex-shrink-0">
+                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                      </svg>
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                     <span className="font-inter text-lg sm:text-xl font-black text-[#011753] leading-none tracking-tight">6+ Schemes</span>
+                     <span className="font-inter text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-bold mt-1 whitespace-nowrap">R&D Governing Cells</span>
                   </div>
                </div>
             </div>

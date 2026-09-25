@@ -13,7 +13,6 @@ const Home = ({ isLoaded }) => {
   return (
     <div className="w-full">
       <Hero isLoaded={isLoaded} />
-      <ConsultationBanner />
       <AboutSnapshot />
       <CourseSlider />
 
@@ -24,6 +23,7 @@ const Home = ({ isLoaded }) => {
       <StackingBanners />
       <BrandFeatures />
       <GrowthSection />
+      <ConsultationBanner />
     </div>
   )
 }
