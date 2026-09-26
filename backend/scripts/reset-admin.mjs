@@ -23,12 +23,6 @@ const adminAccounts = [
     password: "Admin@123",
     fullName: "Data Knowledge Admin",
     role: "super_admin",
-  },
-  {
-    email: "admin@iasdcs.com",
-    password: "Admin@123",
-    fullName: "Super Admin",
-    role: "super_admin",
   }
 ];
 

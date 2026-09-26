@@ -1,5 +1,5 @@
 {
-  "name": "lms_backend",
+  "name": "data-knowledge-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
