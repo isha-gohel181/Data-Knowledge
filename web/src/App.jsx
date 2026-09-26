@@ -320,6 +320,8 @@ const AppContent = () => {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<Terms />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/terms-of-service" element={<Terms />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
 
             {/* Auth Routes */}

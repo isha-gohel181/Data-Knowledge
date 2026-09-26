@@ -112,7 +112,7 @@ const ForumFilterModal = ({ stats, tags, discourseTags, onStartTopic }) => {
            <div className="flex items-center justify-between mb-12 shrink-0">
               <div className="flex flex-col gap-1">
                  <span className="font-jetbrains text-[9px] text-amber-700 tracking-[0.6em] font-black uppercase">Protocol Alpha</span>
-                 <h2 className="font-newsreader italic text-4xl text-slate-900 leading-none uppercase">Forum Calibration</h2>
+                 <h2 className="font-inter text-4xl text-slate-900 leading-none uppercase">Forum Calibration</h2>
               </div>
               <button 
                 onClick={handleClose}
@@ -133,7 +133,7 @@ const ForumFilterModal = ({ stats, tags, discourseTags, onStartTopic }) => {
                         {stats.map((stat) => (
                            <div key={stat.label} className="flex items-center justify-between py-6">
                               <span className="font-montserrat text-[14px] text-slate-600 uppercase tracking-widest">{stat.label}</span>
-                              <span className="font-newsreader italic text-2xl text-slate-900">{stat.value}</span>
+                              <span className="font-inter text-2xl text-slate-900">{stat.value}</span>
                            </div>
                         ))}
                     </div>

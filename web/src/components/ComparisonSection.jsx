@@ -146,7 +146,7 @@ const ComparisonSection = ({ course, section }) => {
       {/* SOLOPRENEUR INTRO */}
       <div className="mb-32 text-center space-y-10">
         <div className="space-y-6">
-          <h2 className="solo-heading font-newsreader mb-2 italic text-[clamp(2rem,6vw,5.5rem)] text-normal font-extralight leading-tight">
+          <h2 className="solo-heading font-inter mb-2 text-[clamp(2rem,6vw,5.5rem)] text-normal font-extralight leading-tight">
             What is a <span className="text-accent underline-lime">{sanitize(course?.title) || 'Solopreneur'}?</span>
           </h2>
           <p className="solo-heading font-montserrat pb-6 text-accent text-[14px] md:text-xs text-white/80 max-w-md mx-auto leading-[2.2] tracking-widest uppercase">
@@ -210,20 +210,20 @@ const ComparisonSection = ({ course, section }) => {
       <div className="grid grid-cols-2 gap-12 lg:gap-16 md:mb-16 text-center border-b border-white/5 pb-10">
         <div className="space-y-1">
           <span className="font-jetbrains text-[9px] text-white/80 tracking-[0.4em] uppercase">Status / Outdated</span>
-          <h3 className="font-newsreader italic text-2xl md:text-3xl lg:text-5xl text-normal/80 font-extralight tracking-tight">
+          <h3 className="font-inter text-2xl md:text-3xl lg:text-5xl text-normal/80 font-extralight tracking-tight">
             {sanitizeDisplay(course.comparisonSection?.leftTitle || "Traditional Program")}
           </h3>
         </div>
         <div className="space-y-1">
           <span className="font-jetbrains text-[9px] text-accent tracking-[0.4em] uppercase font-bold">Status / Optimal</span>
-          <h3 className="font-newsreader italic text-2xl md:text-3xl lg:text-5xl text-accent font-extralight tracking-tight">
+          <h3 className="font-inter text-2xl md:text-3xl lg:text-5xl text-accent font-extralight tracking-tight">
             {sanitizeDisplay(course.comparisonSection?.rightTitle || "Our Program")}
           </h3>
         </div>
       </div>
 
       {/* COMPARISON ROWS */}
-      <div className="space-y-4 md:space-y-0 ">
+      <div className="space-y-4 md:space-y-0">
         {apiComparison.map((item, i) => (
           <div key={i} className="comparison-row grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-3 py-2 border-b border-white/[0.02] items-center group">
             {/* Traditional Column (Red Accent - Glowing) */}
@@ -231,7 +231,7 @@ const ComparisonSection = ({ course, section }) => {
               <div className="w-9 h-9 rounded-full border border-red-500/60 flex items-center justify-center shrink-0 bg-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="4"><path d="M18 6L6 18M6 6l12 12" /></svg>
               </div>
-              <p className="font-montserrat text-[12px] md:text-[9px] lg:text-xs text-red-400 font-normal tracking-[0.15em] uppercase italic">{sanitizeDisplay(item.traditional)}</p>
+              <p className="font-montserrat text-[12px] md:text-[9px] lg:text-xs text-red-400 font-normal tracking-[0.15em] uppercase">{sanitizeDisplay(item.traditional)}</p>
             </div>
 
             {/* Our Program Column (Vibrant Green - Glowing) */}
@@ -269,7 +269,7 @@ const ComparisonSection = ({ course, section }) => {
 
       {/* BOTTOM CTA */}
       <div className="cta-reveal text-center space-y-8">
-        <h4 className="font-newsreader italic text-3xl md:text-3xl text-normal font-extralight tracking-tight opacity-60">
+        <h4 className="font-inter text-3xl md:text-3xl text-normal font-extralight tracking-tight opacity-60">
           { "Beat the competition with innovative solutions."}
         </h4>
 

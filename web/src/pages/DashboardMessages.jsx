@@ -514,7 +514,7 @@ const DashboardMessages = () => {
 
                     <div className="p-6 space-y-6">
                         <div className="flex items-center justify-between">
-                            <h1 className="font-newsreader italic text-2xl font-bold text-slate-900">{t('messagesTitle') || 'Messages'}</h1>
+                            <h1 className="font-inter text-2xl font-bold text-slate-900">{t('messagesTitle') || 'Messages'}</h1>
                             <div className="font-jetbrains text-[10px] text-slate-500 font-bold uppercase tracking-wider">{t('activeChats') || 'Active chats:'} {rooms.length}</div>
                         </div>
 
@@ -600,7 +600,7 @@ const DashboardMessages = () => {
 
                         {filteredChats.length === 0 && !chatState.loading && (
                             <div className="flex flex-col items-center justify-center py-10 opacity-50">
-                                <p className="font-newsreader italic text-sm text-slate-500">{t('noMessagesFound') || 'No messages found'}</p>
+                                <p className="font-inter text-sm text-slate-500">{t('noMessagesFound') || 'No messages found'}</p>
                             </div>
                         )}
 
@@ -664,7 +664,7 @@ const DashboardMessages = () => {
                                     {sidebarChats.find(c => c.id === selectedChat)?.initials || '🛠️'}
                                 </div>
                                 <div>
-                                    <h3 className="font-newsreader italic font-bold text-lg md:text-xl text-slate-900 leading-none mb-1">
+                                    <h3 className="font-inter font-bold text-lg md:text-xl text-slate-900 leading-none mb-1">
                                         {sidebarChats.find(c => c.id === selectedChat)?.name || 'Support Team'}
                                     </h3>
                                     <div className="flex items-center gap-2">
@@ -861,7 +861,7 @@ const DashboardMessages = () => {
                     {/* Typing Indicator */}
                     <div className="px-6 md:px-10">
                         {(chatState.typingUsers && chatState.typingUsers[selectedChat] && chatState.typingUsers[selectedChat].length > 0) && (
-                            <div className="text-[11px] text-accent font-montserrat italic mb-2">{
+                            <div className="text-[11px] text-accent font-montserrat mb-2">{
                                 (() => {
                                     const ids = chatState.typingUsers[selectedChat];
                                     const room = rooms.find(r => r._id === selectedChat) || {};

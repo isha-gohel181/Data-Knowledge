@@ -257,7 +257,7 @@ const QuestionCard = ({ question }) => {
 
           <div className="flex flex-col gap-4">
             <div className="space-y-3">
-              <h2 className="font-newsreader italic text-2xl md:text-3xl leading-snug text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
+              <h2 className="font-inter text-xl md:text-2xl leading-snug text-slate-900 font-bold group-hover:text-[#3498db] transition-colors">
                 {question.title}
               </h2>
               {/* Render All Tags */}
@@ -475,7 +475,7 @@ const QuestionCard = ({ question }) => {
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={replyingTo ? `Write your response to ${replyingTo.name}...` : "Share your perspective..."}
-                className="w-full bg-transparent border-none outline-none font-newsreader italic text-xl text-normal placeholder:text-description min-h-[120px] resize-none"
+                className="w-full bg-transparent border border-slate-200 rounded-xl p-4 outline-none font-inter text-sm text-slate-900 placeholder:text-slate-400 min-h-[120px] resize-none focus:border-[#3498db]"
               />
               <div className="pt-6 border-t border-white/5 flex items-center justify-between">
                   <div className="relative">
@@ -593,7 +593,7 @@ const QuestionCard = ({ question }) => {
                     <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center mb-6">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/40"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                     </div>
-                    <h3 className="font-newsreader italic text-3xl text-normal mb-2">No Discussions Yet</h3>
+                    <h3 className="font-inter font-bold text-2xl text-slate-900 mb-2">No Discussions Yet</h3>
                     <p className="font-jetbrains text-[9px] text-description uppercase tracking-widest">Be the first to start a new topic.</p>
                   </div>
                 )}
@@ -626,7 +626,7 @@ const QuestionCard = ({ question }) => {
                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12h14"/></svg>
                       </div>
                       {t('startNewTopic')}
-                      <span className="text-[8px] font-normal tracking-[0.2em] opacity-60 normal-case italic text-center">{t('contributeCollective')}</span>
+                      <span className="text-[9px] font-normal tracking-wider opacity-80 normal-case text-center">{t('contributeCollective') || 'Share insights with the community'}</span>
                    </button>
                 </div>
 
@@ -718,8 +718,8 @@ const QuestionCard = ({ question }) => {
                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div className="text-center">
-                 <h3 className="font-newsreader italic text-2xl">Topic Published</h3>
-                 <p className="font-jetbrains text-[9px] uppercase tracking-[0.3em] opacity-70">Discourse added to terminal</p>
+                 <h3 className="font-inter font-bold text-xl">Topic Published</h3>
+                 <p className="font-inter text-xs uppercase tracking-wider opacity-90">Discourse added to community</p>
               </div>
            </div>
         </div>

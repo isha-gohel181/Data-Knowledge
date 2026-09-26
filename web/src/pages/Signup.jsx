@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { registerUser, googleLoginUser, clearAuthError, sendOtp, verifyOtp } from '../redux/slices/authSlice'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useLanguage } from '../context/LanguageContext'
-
 import './Signup.css'
 
 const Signup = () => {
@@ -21,11 +20,14 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [localError, setLocalError] = useState(null)
+  const [termsAgreed, setTermsAgreed] = useState(true)
+
+  // OTP states
   const [otpSent, setOtpSent] = useState(false)
   const [otpCode, setOtpCode] = useState('')
-
   const [sendingOtp, setSendingOtp] = useState(false)
   const [verifyingOtp, setVerifyingOtp] = useState(false)
+  const [otpSuccessMessage, setOtpSuccessMessage] = useState('')
 
   // Redirect if already logged in
   useEffect(() => {
@@ -42,11 +44,16 @@ const Signup = () => {
     // Reset OTP state when email changes
     setOtpSent(false)
     setOtpCode('')
+    setOtpSuccessMessage('')
   }, [email])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!name.trim() || !email.trim() || !password.trim()) return
+    if (!termsAgreed) {
+      setLocalError('Please agree to the Terms of Service & Privacy Policy')
+      return
+    }
     if (password !== confirm) {
       setLocalError('Passwords do not match')
       return
@@ -55,20 +62,30 @@ const Signup = () => {
       setLocalError('Password must be at least 6 characters')
       return
     }
-    // include is_verify flag based on OTP verification state (from Redux)
-    dispatch(registerUser({ name: name.trim(), fullName: name.trim(), email: email.trim(), password, phone: phone.trim(), is_verify: !!otpVerifiedStore }))
+    const resultAction = await dispatch(registerUser({
+      name: name.trim(),
+      fullName: name.trim(),
+      email: email.trim(),
+      password,
+      phone: phone.trim(),
+      is_verify: !!otpVerifiedStore
+    }))
+    if (registerUser.fulfilled.match(resultAction)) {
+      navigate('/dashboard', { replace: true })
+    }
   }
 
   const handleSendOtp = async () => {
     if (!email || !email.includes('@')) {
-      setLocalError('Enter a valid email to send OTP')
+      setLocalError('Please enter a valid email address to send verification code')
       return
     }
     setSendingOtp(true)
+    setLocalError(null)
     try {
-      const res = await dispatch(sendOtp({ email: email.trim() })).unwrap()
-      // API returns success message
+      await dispatch(sendOtp({ email: email.trim() })).unwrap()
       setOtpSent(true)
+      setOtpSuccessMessage('Verification code sent to your email.')
     } catch (err) {
       setLocalError(err || 'Failed to send OTP')
     } finally {
@@ -77,16 +94,18 @@ const Signup = () => {
   }
 
   const handleVerifyOtp = async () => {
-    if (!otpCode || otpCode.length < 4) {
-      setLocalError('Enter the OTP')
+    if (!otpCode || otpCode.trim().length < 4) {
+      setLocalError('Please enter the 4-6 digit OTP sent to your email')
       return
     }
     setVerifyingOtp(true)
+    setLocalError(null)
     try {
-      const res = await dispatch(verifyOtp({ email: email.trim(), otp: otpCode.trim() })).unwrap()
+      await dispatch(verifyOtp({ email: email.trim(), otp: otpCode.trim() })).unwrap()
+      setOtpSuccessMessage('Email verified successfully! ✓')
       setLocalError(null)
     } catch (err) {
-      setLocalError(err || 'OTP verification failed')
+      setLocalError(err || 'OTP verification failed. Please try again.')
     } finally {
       setVerifyingOtp(false)
     }
@@ -99,265 +118,395 @@ const Signup = () => {
           googleAccessToken: tokenResponse.access_token,
           deviceId: 'browser',
           platform: 'web'
-        }));
+        }))
         if (googleLoginUser.fulfilled.match(resultAction)) {
           navigate('/dashboard', { replace: true })
         }
       } catch (err) {
-        console.error('Google Login Error:', err);
+        setLocalError(err?.message || 'Google Login failed. Please try standard registration.')
       }
     },
-    onError: (error) => console.log('Login Failed:', error),
-  });
+    onError: (error) => {
+      console.warn('Google Sign-in popup closed or failed:', error)
+      setLocalError('Google Sign-In was cancelled or could not be initialized.')
+    },
+  })
 
   const displayError = localError || error
 
   return (
-    <div className="signup-container">
-      {/* Left Section: Signup Form */}
-      <div className="signup-left">
-        <div className="flex items-center justify-between w-full mb-8">
-          <Link to="/" className="signup-logo flex items-center gap-2.5">
-            <img src="/logo/iasdcs-logo.png" alt="IAS DCS Logo" className="h-10 w-auto object-contain rounded-lg" />
-          </Link>
-        </div>
-
-        <div className="signup-form-wrap">
-          <h1 className="signup-title">{t('joinTheCircleTitle')}</h1>
-          <p className="signup-subtitle">{t('signupSubtitle')}</p>
-
-          <button type="button" className="google-btn" onClick={() => handleGoogleLogin()}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1 .67-2.28 1.07-3.71 1.07-2.85 0-5.27-1.92-6.13-4.51H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-              <path d="M5.87 14.13c-.22-.67-.35-1.38-.35-2.13s.13-1.46.35-2.13V7.03H2.18C1.43 8.53 1 10.21 1 12s.43 3.47 1.18 4.97l3.69-2.84z" fill="#FBBC05" />
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.03l3.69 2.84c.86-2.59 3.28-4.51 6.13-4.51z" fill="#EA4335" />
-            </svg>
-            {t('joinWithGoogle')}
-          </button>
-
-          <div className="divider">
-            <span>{t('orCreateAccount')}</span>
+    <div className="auth-page-wrapper">
+      <div className="auth-card-container auth-card-container--signup">
+        
+        {/* Left Side: Signup Form */}
+        <div className="auth-form-side">
+          {/* Logo Header */}
+          <div className="auth-header-top">
+            <Link to="/" className="auth-brand-logo">
+              <img
+                src="/data_knowlege/logo/logo.png"
+                alt="Data Knowledge"
+                className="auth-logo-img"
+              />
+              <div className="auth-brand-text">
+                <span className="auth-brand-name">Data Knowledge</span>
+                <span className="auth-brand-badge">Create Account</span>
+              </div>
+            </Link>
           </div>
 
-          {/* Error Banner */}
-          {displayError && (
-            <div className="auth-error-banner">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+          <div className="auth-form-content">
+            <div className="auth-welcome-block">
+              <h1 className="auth-main-title">{t('joinTheCircleTitle') || 'Start Learning Today'}</h1>
+              <p className="auth-main-subtitle">
+                {t('signupSubtitle') || 'Create your free account to access industry courses and live mentorship.'}
+              </p>
+            </div>
+
+            {/* Google OAuth Button */}
+            <button
+              type="button"
+              className="auth-google-button"
+              onClick={() => handleGoogleLogin()}
+            >
+              <svg className="google-icon-svg" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1 .67-2.28 1.07-3.71 1.07-2.85 0-5.27-1.92-6.13-4.51H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.87 14.13c-.22-.67-.35-1.38-.35-2.13s.13-1.46.35-2.13V7.03H2.18C1.43 8.53 1 10.21 1 12s.43 3.47 1.18 4.97l3.69-2.84z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.03l3.69 2.84c.86-2.59 3.28-4.51 6.13-4.51z" fill="#EA4335" />
               </svg>
-              {displayError}
-            </div>
-          )}
+              <span>{t('joinWithGoogle') || 'Sign up with Google'}</span>
+            </button>
 
-          <form className="signup-form" onSubmit={handleSubmit}>
-            {/* Full Name */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="signup-name">{t('fullName')}</label>
-              <input
-                id="signup-name"
-                type="text"
-                className="signup-input"
-                placeholder="Aurelius Smith"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                autoComplete="name"
-              />
+            {/* Divider */}
+            <div className="auth-divider-row">
+              <span>{t('orCreateAccount') || 'Or register with email'}</span>
             </div>
 
-            {/* Phone Number */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="signup-phone">Phone Number (Optional)</label>
-              <input
-                id="signup-phone"
-                type="tel"
-                className="signup-input"
-                placeholder="+1 234 567 8900"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                autoComplete="tel"
-              />
-            </div>
+            {/* Error Message */}
+            {displayError && (
+              <div className="auth-alert-error">
+                <svg className="alert-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{displayError}</span>
+              </div>
+            )}
 
-            {/* Email */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="signup-email">{t('emailAddress')}</label>
-              <input
-                id="signup-email"
-                type="email"
-                className="signup-input"
-                placeholder="scholar@edrilla.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-              <div className="mt-2 flex items-center gap-3">
-                <button type="button" onClick={handleSendOtp} disabled={sendingOtp} className={`px-4 py-2 bg-amber-400 text-white rounded-xl font-bold font-jetbrains text-xs ${sendingOtp ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                  {sendingOtp ? t('sendingOtpBtn') : (otpSent ? t('resendOtpBtn') : t('sendOtpBtn'))}
-                </button>
-                {otpSent && (
-                  <div className="flex items-center gap-2">
-                    <input value={otpCode} onChange={(e) => setOtpCode(e.target.value)} placeholder={t('enterOtpPlaceholder')} className="signup-input !p-2 !h-9 !w-40" />
-                    <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp} className={`px-3 py-2 bg-amber-400 text-white rounded-xl font-bold font-jetbrains text-xs ${verifyingOtp ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      {verifyingOtp ? t('verifyingBtn') : (otpVerifiedStore ? t('verifiedBtn') : t('verifyBtn'))}
+            {/* Success Message for OTP */}
+            {otpSuccessMessage && !displayError && (
+              <div className="auth-alert-success">
+                <span>{otpSuccessMessage}</span>
+              </div>
+            )}
+
+            {/* Form */}
+            <form className="auth-actual-form" onSubmit={handleSubmit}>
+              
+              {/* Full Name */}
+              <div className="auth-field-group">
+                <label className="auth-input-label" htmlFor="signup-name">
+                  {t('fullName') || 'Full Name'}
+                </label>
+                <div className="auth-input-wrapper">
+                  <svg className="auth-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <circle cx="12" cy="8" r="5" />
+                    <path d="M20 21a8 8 0 0 0-16 0" />
+                  </svg>
+                  <input
+                    id="signup-name"
+                    type="text"
+                    className="auth-text-input"
+                    placeholder="e.g. Aman Sharma"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    autoComplete="name"
+                  />
+                </div>
+              </div>
+
+              {/* Email + OTP Row */}
+              <div className="auth-field-group">
+                <div className="auth-label-flex">
+                  <label className="auth-input-label" htmlFor="signup-email">
+                    {t('emailAddress') || 'Email Address'}
+                  </label>
+                  {otpVerifiedStore ? (
+                    <span className="auth-verified-badge">✓ Verified</span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="auth-otp-trigger-btn"
+                      onClick={handleSendOtp}
+                      disabled={sendingOtp || !email.includes('@')}
+                    >
+                      {sendingOtp ? 'Sending code...' : (otpSent ? 'Resend Code' : 'Verify with OTP')}
+                    </button>
+                  )}
+                </div>
+                <div className="auth-input-wrapper">
+                  <svg className="auth-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  <input
+                    id="signup-email"
+                    type="email"
+                    className="auth-text-input"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+
+                {/* Inline OTP Input Box if sent */}
+                {otpSent && !otpVerifiedStore && (
+                  <div className="auth-otp-box">
+                    <input
+                      type="text"
+                      className="auth-otp-input"
+                      placeholder="Enter verification code"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      maxLength={6}
+                    />
+                    <button
+                      type="button"
+                      className="auth-otp-verify-btn"
+                      onClick={handleVerifyOtp}
+                      disabled={verifyingOtp || otpCode.trim().length < 4}
+                    >
+                      {verifyingOtp ? 'Verifying...' : 'Verify'}
                     </button>
                   </div>
                 )}
               </div>
+
+              {/* Phone (Optional) */}
+              <div className="auth-field-group">
+                <label className="auth-input-label" htmlFor="signup-phone">
+                  Phone Number <span className="auth-optional-tag">(Optional)</span>
+                </label>
+                <div className="auth-input-wrapper">
+                  <svg className="auth-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  <input
+                    id="signup-phone"
+                    type="tel"
+                    className="auth-text-input"
+                    placeholder="+91 98765 43210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    autoComplete="tel"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="auth-field-group">
+                <label className="auth-input-label" htmlFor="signup-password">
+                  {t('password') || 'Password'}
+                </label>
+                <div className="auth-input-wrapper">
+                  <svg className="auth-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <input
+                    id="signup-password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="auth-text-input"
+                    placeholder="At least 6 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="auth-eye-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label="Toggle password visibility"
+                  >
+                    {showPassword ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="auth-field-group">
+                <label className="auth-input-label" htmlFor="signup-confirm">
+                  {t('confirmPassword') || 'Confirm Password'}
+                </label>
+                <div className="auth-input-wrapper">
+                  <svg className="auth-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <input
+                    id="signup-confirm"
+                    type={showConfirm ? 'text' : 'password'}
+                    className={`auth-text-input ${confirm && password !== confirm ? 'auth-input-mismatch' : ''}`}
+                    placeholder="Re-enter password"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="auth-eye-toggle"
+                    onClick={() => setShowConfirm((prev) => !prev)}
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    {showConfirm ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                {confirm && (
+                  <span className={`auth-match-hint ${password === confirm ? 'hint-match-ok' : 'hint-match-err'}`}>
+                    {password === confirm ? '✓ Passwords match' : '✗ Passwords do not match'}
+                  </span>
+                )}
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="auth-remember-row">
+                <label className="auth-checkbox-label">
+                  <input
+                    type="checkbox"
+                    className="auth-custom-checkbox"
+                    checked={termsAgreed}
+                    onChange={(e) => setTermsAgreed(e.target.checked)}
+                  />
+                  <span>
+                    I agree to the <Link to="/terms" className="auth-inline-link">Terms</Link> and <Link to="/privacy-policy" className="auth-inline-link">Privacy Policy</Link>
+                  </span>
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className={`auth-primary-submit ${loading ? 'auth-btn-loading' : ''}`}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="auth-submit-spinner" />
+                    <span>Creating your account...</span>
+                  </>
+                ) : (
+                  <span>{t('createAccount') || 'Create Free Account'}</span>
+                )}
+              </button>
+            </form>
+
+            {/* Bottom Switch Link */}
+            <div className="auth-switch-prompt">
+              <span>{t('alreadyHaveAccount') || 'Already have an account?'}</span>
+              <Link to="/login" className="auth-switch-link">
+                {t('signIn') || 'Sign In'}
+              </Link>
+            </div>
+          </div>
+
+          <div className="auth-footer-note">
+            © {new Date().getFullYear()} Data Knowledge. All rights reserved.
+          </div>
+        </div>
+
+        {/* Right Side: Brand Visual Showcase for Signup */}
+        <div className="auth-visual-side">
+          <div className="auth-visual-inner">
+            {/* Live Indicator */}
+            <div className="auth-live-pill">
+              <span className="live-dot-pulse" />
+              <span>Free Community &amp; Starter Access</span>
             </div>
 
-            {/* Password */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="signup-password">{t('password')}</label>
-              <div className="password-field-wrap">
-                <input
-                  id="signup-password"
-                  type={showPassword ? 'text' : 'password'}
-                  className={`signup-input ${password && confirm && password !== confirm ? 'signup-input--error' : ''}`}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label="Toggle password visibility"
-                >
-                  {showPassword ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
+            {/* Visual Header */}
+            <div className="auth-visual-headline">
+              <h2>Accelerate Your Career in Modern Data Engineering &amp; AI</h2>
+              <p>
+                Join thousands of students and working professionals mastering in-demand tech stacks through project-driven learning.
+              </p>
+            </div>
+
+            {/* Feature Perks Box */}
+            <div className="auth-testimonial-box auth-perks-box">
+              <h4 className="perks-title">What You Get With Data Knowledge:</h4>
+              <ul className="perks-list">
+                <li>
+                  <span className="perk-check">✓</span>
+                  <span><strong>Industry-Grade Projects:</strong> Build production ETL pipelines, dashboards &amp; models.</span>
+                </li>
+                <li>
+                  <span className="perk-check">✓</span>
+                  <span><strong>Dedicated Doubt Clearance:</strong> Direct mentor access on Discord and live sessions.</span>
+                </li>
+                <li>
+                  <span className="perk-check">✓</span>
+                  <span><strong>Placement Support:</strong> Mock interviews, resume screening &amp; job referrals.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Stats Metrics Grid */}
+            <div className="auth-stats-grid">
+              <div className="auth-stat-col">
+                <span className="stat-number">84,000+</span>
+                <span className="stat-caption">{t('studentsEnrolled') || 'Enrolled Students'}</span>
+              </div>
+              <div className="auth-stat-col">
+                <span className="stat-number">100+</span>
+                <span className="stat-caption">Hiring Partners</span>
+              </div>
+              <div className="auth-stat-col">
+                <span className="stat-number">4.9 ★</span>
+                <span className="stat-caption">Student Rating</span>
               </div>
             </div>
 
-            {/* Confirm Password */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="signup-confirm">{t('confirmPassword')}</label>
-              <div className="password-field-wrap">
-                <input
-                  id="signup-confirm"
-                  type={showConfirm ? 'text' : 'password'}
-                  className={`signup-input ${password && confirm && password !== confirm ? 'signup-input--error' : ''}`}
-                  placeholder="••••••••"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowConfirm((v) => !v)}
-                  aria-label="Toggle confirm password visibility"
-                >
-                  {showConfirm ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {/* Inline match indicator */}
-              {confirm && (
-                <span className={`password-match-hint ${password === confirm ? 'password-match-hint--ok' : 'password-match-hint--err'}`}>
-                  {password === confirm ? '✓ Passwords match' : '✗ Passwords do not match'}
-                </span>
-              )}
+            {/* Tech Tags */}
+            <div className="auth-tags-strip">
+              <span>Python</span>
+              <span>SQL</span>
+              <span>PowerBI</span>
+              <span>Snowflake</span>
+              <span>Databricks</span>
+              <span>Tableau</span>
             </div>
-
-            <button
-              type="submit"
-              className={`signin-btn ${loading ? 'signin-btn--loading' : ''}`}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="signin-spinner" />
-                  CREATING ACCOUNT...
-                </>
-              ) : (
-                t('createAccount')
-              )}
-            </button>
-          </form>
-
-          <div className="signup-text">
-            {t('alreadyHaveAccount')} <Link to="/login" className="signup-link">{t('signIn')}</Link>
           </div>
         </div>
 
-        <div className="signup-footer">
-          © 2026 IAS DCS. ALL RIGHTS RESERVED.
-        </div>
-      </div>
-
-      {/* Right Section: Visual/Info */}
-      <div className="signup-right">
-        <div className="system-status">
-          <div className="status-dot"></div>
-          ENROLLMENT ACTIVE
-        </div>
-
-        <div className="bg-text-wrap">
-          <div className="bg-text">Build.</div>
-          <div className="bg-text">Build.</div>
-          <div className="bg-text">Build.</div>
-        </div>
-
-        <div className="testimonial-card">
-          <p className="testimonial-quote">
-            "Joining IAS DCS isn't just about learning; it's about entering an ecosystem designed for those who refuse to settle for the ordinary."
-          </p>
-        </div>
-
-        <div className="stats-wrap">
-          <div className="stat-item">
-            <span className="stat-value">84k+</span>
-            <span className="stat-label">{t('studentsEnrolled')}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">Elite</span>
-            <span className="stat-label">{t('accessTier')}</span>
-          </div>
-        </div>
-
-        <p className="right-description">
-          Unlock your potential within a community that values deep work and tactical precision.
-        </p>
-
-        <div className="nav-arrows">
-          <button type="button" className="arrow-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </button>
-          <button type="button" className="arrow-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </button>
-        </div>
       </div>
     </div>
   )

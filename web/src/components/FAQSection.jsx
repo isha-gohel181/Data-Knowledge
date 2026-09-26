@@ -85,7 +85,7 @@ const FAQSection = () => {
           <span className="font-jetbrains text-[9px] text-accent tracking-[1em] uppercase font-bold">{t('faqTitle')}</span>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
-          <h2 className="font-newsreader italic text-4xl md:text-6xl text-normal font-extralight tracking-tighter leading-tight">
+          <h2 className="font-inter text-4xl md:text-6xl text-normal font-extralight tracking-tighter leading-tight">
             {t('faqSubtitle')}
           </h2>
 
@@ -121,7 +121,7 @@ const FAQSection = () => {
               className="w-full flex items-center justify-between p-5 md:p-6 text-left"
             >
               <div className="flex items-center gap-4">
-                <h4 className="font-newsreader italic text-xl md:text-2xl text-slate-900 text-start font-extralight tracking-tight leading-tight group-hover:text-amber-700 transition-colors">
+                <h4 className="font-inter text-xl md:text-2xl text-slate-900 text-start font-extralight tracking-tight leading-tight group-hover:text-amber-700 transition-colors">
                   {item.q}
                 </h4>
               </div>

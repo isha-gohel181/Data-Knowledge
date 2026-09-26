@@ -78,7 +78,7 @@ const CertificatePricingSection = ({ course }) => {
 
          {/* 1. Header Area with fixed overlap */}
          <div className="text-center mb-10 lg:mb-24 reveal-item">
-            <h2 className="font-newsreader italic text-[clamp(3rem,8vw,5rem)] text-normal font-extralight tracking-tighter leading-tight">
+            <h2 className="font-inter text-[clamp(3rem,8vw,5rem)] text-normal font-extralight tracking-tighter leading-tight">
                Get Started with the <span className="text-accent underline decoration-accent/20">Perfect Plan.</span>
             </h2>
          </div>
@@ -97,14 +97,14 @@ const CertificatePricingSection = ({ course }) => {
 
                    {/* USER NAME OVERLAY - Positioned above the line */}
                    <div className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none">
-                      <span className="font-montserrat font-medium italic text-dark/80 text-[clamp(1rem,2.2vw,1.8rem)] leading-none">
+                      <span className="font-montserrat font-medium text-dark/80 text-[clamp(1rem,2.2vw,1.8rem)] leading-none">
                          {displayName}
                       </span>
                    </div>
 
                    {/* COURSE INFO OVERLAY - Positioned just below the physical line */}
                    <div className="absolute top-[58%] left-1/2 -translate-x-1/2 w-full text-center pointer-events-none px-12">
-                      <p className="font-newsreader !font-medium italic text-dark/80 text-[clamp(0.3rem,0.9vw,0.6rem)] leading-tight">
+                      <p className="font-inter !font-medium text-dark/80 text-[clamp(0.3rem,0.9vw,0.6rem)] leading-tight">
                          has successfully completed the cohort <span className="text-dark font-semibold">{courseTitle}</span>
                          <br />
                          Masterclass on <span className="text-dark font-semibold">{formattedDate}</span>
@@ -141,7 +141,7 @@ const CertificatePricingSection = ({ course }) => {
 
                          <div className="flex justify-between items-center">
                             <div className="space-y-1">
-                               <h3 className="font-newsreader italic text-3xl md:text-4xl text-slate-900 leading-none font-extralight tracking-tight">
+                               <h3 className="font-inter text-3xl md:text-4xl text-slate-900 leading-none font-extralight tracking-tight">
                                   {plan.title}
                                </h3>
                                <p className="font-jetbrains text-[9px] text-slate-600 tracking-widest uppercase font-bold">
@@ -151,7 +151,7 @@ const CertificatePricingSection = ({ course }) => {
 
                             <div className="flex items-center gap-8">
                                <div className="flex flex-col items-end">
-                                  <span className="font-newsreader italic text-3xl md:text-5xl text-amber-700 font-normal">₹{plan.price}</span>
+                                  <span className="font-inter text-3xl md:text-5xl text-amber-700 font-normal">₹{plan.price}</span>
                                   <span className="font-jetbrains text-[7px] text-slate-400 uppercase tracking-widest">Single Access</span>
                                </div>
 

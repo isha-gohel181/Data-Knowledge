@@ -41,7 +41,7 @@ const CheckoutBreakdown = ({ basePrice = 0, discount = 0, gstRate = 0.18, coupon
 
         <div className="flex justify-between items-center">
           <dt className="text-[14px] text-normal/80 font-bold">Total</dt>
-          <dd className="font-newsreader italic text-[20px] text-accent font-extralight">{format(total)}</dd>
+          <dd className="font-inter text-[20px] text-accent font-extralight">{format(total)}</dd>
         </div>
       </dl>
 

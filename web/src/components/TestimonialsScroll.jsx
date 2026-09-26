@@ -153,7 +153,7 @@ const TestimonialsScroll = ({ reviews = [] }) => {
         <span className="ts-heading block font-jetbrains text-[9px] text-accent tracking-[0.4em] md:tracking-[0.7em] uppercase font-bold opacity-70 mb-4">
           Verified / Testimonials
         </span>
-        <h2 className="ts-heading font-newsreader italic text-[clamp(2rem,6vw,5rem)] text-normal font-extralight leading-tight">
+        <h2 className="ts-heading font-inter text-[clamp(2rem,6vw,5rem)] text-normal font-extralight leading-tight">
           What Our Students <span className="text-accent underline-lime">Say</span>
         </h2>
       </div>
@@ -183,9 +183,7 @@ const TestimonialsScroll = ({ reviews = [] }) => {
               {col.map((t, ti) => (
                 <div
                   key={ti}
-                  className="group relative border border-white/8 bg-white/[0.015] p-5 backdrop-blur-xl cursor-pointer
-                             transition-all duration-400 hover:border-accent/40 hover:bg-accent/[0.03]
-                             hover:-translate-y-1 hover:scale-[1.015] active:scale-[0.98]"
+                  className="group relative border border-white/8 bg-white/[0.015] p-5 backdrop-blur-xl cursor-pointer transition-all duration-400 hover:border-accent/40 hover:bg-accent/[0.03] hover:-translate-y-1 hover:scale-[1.015] active:scale-[0.98]"
                 >
                   {/* Left accent bar */}
                   <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
@@ -206,7 +204,7 @@ const TestimonialsScroll = ({ reviews = [] }) => {
                     </div>
                     <div>
                       <p className="font-jetbrains text-[9px] text-description font-bold tracking-[0.2em] uppercase">{t.name}</p>
-                      <p className="font-jetbrains text-[7px] text-description/80 tracking-widest italic">{t.role}</p>
+                      <p className="font-jetbrains text-[7px] text-description/80 tracking-widest">{t.role}</p>
                     </div>
                   </div>
 

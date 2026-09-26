@@ -74,10 +74,10 @@ const ProfileSkills = () => {
       
       {/* Skills Section */}
       <div className="space-y-6">
-         <h3 className="font-jetbrains text-[10px] text-normal uppercase tracking-[0.4em] font-black italic">My Skills</h3>
+         <h3 className="font-jetbrains text-[10px] text-normal uppercase tracking-[0.4em] font-black">My Skills</h3>
          <div className="flex flex-wrap gap-2">
             {skills.map((skill, i) => (
-               <div key={i} className="px-5 py-2.5 bg-white/[0.03] border border-white/10 font-newsreader italic text-[14px] text-normal hover:border-accent hover:text-accent transition-all cursor-default">
+               <div key={i} className="px-5 py-2.5 bg-white/[0.03] border border-white/10 font-inter text-[14px] text-normal hover:border-accent hover:text-accent transition-all cursor-default">
                   {skill}
                </div>
             ))}
@@ -93,7 +93,7 @@ const ProfileSkills = () => {
 
       {/* Documents Section */}
       <div className="space-y-6">
-         <h3 className="font-jetbrains text-[10px] text-normal uppercase tracking-[0.4em] font-black italic">Certificates</h3>
+         <h3 className="font-jetbrains text-[10px] text-normal uppercase tracking-[0.4em] font-black">Certificates</h3>
          
          <div className="space-y-[1px] bg-white/5 border border-white/5 shadow-2xl max-h-[300px] overflow-y-auto">
             {documentation.length > 0 ? (
@@ -133,7 +133,7 @@ const ProfileSkills = () => {
                ))
             ) : (
                <div className="bg-dark p-10 text-center border-b border-white/5">
-                  <p className="font-newsreader italic text-xl text-normal/20">No certificates uploaded yet.</p>
+                  <p className="font-inter text-xl text-normal/20">No certificates uploaded yet.</p>
                </div>
             )}
          </div>

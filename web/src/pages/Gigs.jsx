@@ -53,7 +53,7 @@ const GigCard = ({ gig }) => {
       {/* Content */}
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <h3 className="font-newsreader italic text-2xl md:text-3xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-amber-600">
+          <h3 className="font-inter text-lg md:text-xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-[#3498db]">
             {safeRender(gig.title)}
           </h3>
 
@@ -161,11 +161,11 @@ const Gigs = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <div className="flex items-baseline gap-6 gig-header-reveal flex-wrap">
-            <h1 className="font-newsreader text-4xl md:text-6xl font-bold italic text-slate-900 tracking-tight">
-              {t('gigsTitle')}
+            <h1 className="font-inter text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+              {t('gigsTitle') || 'Gigs & Opportunities'}
             </h1>
           </div>
-          <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black italic mt-2">{t('gigsSubtitle')}</p>
+          <p className="font-inter text-xs text-slate-600 uppercase tracking-[0.2em] font-bold mt-2">{t('gigsSubtitle') || 'Verified projects and role openings'}</p>
         </div>
 
         <div className="mb-10">
@@ -286,8 +286,8 @@ const JobDetail = ({ job, onBack, submitting, dispatch }) => {
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr,1fr] gap-12">
           <div className="flex flex-col gap-8 bg-white border border-slate-200/80 p-8 rounded-2xl shadow-sm">
             <div className="flex flex-col gap-2">
-              <h1 className="font-newsreader text-4xl md:text-5xl font-bold italic text-slate-900 leading-tight">{safeRender(job.title)}</h1>
-              <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-wider font-medium">
+              <h1 className="font-inter text-2xl md:text-4xl font-extrabold text-slate-900 leading-tight">{safeRender(job.title)}</h1>
+              <p className="font-inter text-xs text-slate-500 uppercase tracking-wider font-semibold">
                 Posted by Client • {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}
               </p>
             </div>
@@ -297,8 +297,8 @@ const JobDetail = ({ job, onBack, submitting, dispatch }) => {
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-newsreader text-2xl italic font-bold text-slate-900">Position Overview</h4>
-              <p className="font-montserrat text-sm text-slate-700 leading-relaxed font-medium">{safeRender(job.description)}</p>
+              <h4 className="font-inter text-xl font-bold text-slate-900">Position Overview</h4>
+              <p className="font-inter text-sm text-slate-700 leading-relaxed font-normal">{safeRender(job.description)}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -321,7 +321,7 @@ const JobDetail = ({ job, onBack, submitting, dispatch }) => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h4 className="font-newsreader text-2xl italic font-bold text-slate-900">Skills Required</h4>
+              <h4 className="font-inter text-xl font-bold text-slate-900">Skills Required</h4>
               <div className="flex flex-wrap gap-2">
                 {(job.skills || job.tags || ['Design', 'Growth', 'Strategy']).map((skill, i) => (
                   <span key={i} className="px-4 py-2 border border-slate-200 font-jetbrains text-xs font-bold text-slate-800 uppercase tracking-wider bg-slate-50 rounded-lg">
@@ -340,8 +340,8 @@ const JobDetail = ({ job, onBack, submitting, dispatch }) => {
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </div>
                   <div>
-                    <h3 className="font-newsreader text-3xl italic font-bold text-slate-900">Submit Your Proposal</h3>
-                    <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-wider font-medium">Stand out with a compelling proposal</p>
+                    <h3 className="font-inter text-2xl font-bold text-slate-900">Submit Your Proposal</h3>
+                    <p className="font-inter text-xs text-slate-500 uppercase tracking-wider font-medium">Stand out with a compelling proposal</p>
                   </div>
                 </div>
 

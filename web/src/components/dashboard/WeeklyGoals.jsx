@@ -23,8 +23,8 @@ const WeeklyGoals = () => {
     <div className="p-8 border border-slate-200/80 bg-white rounded-2xl shadow-sm flex flex-col items-center justify-between space-y-6 h-full relative overflow-hidden">
       
       <div className="text-center space-y-1">
-         <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight">{t('weeklyGoalsTitle')}</h3>
-         <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-widest font-black italic">{t('focusConsistency')}</p>
+         <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight">{t('weeklyGoalsTitle')}</h3>
+         <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-widest font-black">{t('focusConsistency')}</p>
       </div>
 
       <div className="relative w-40 h-40 flex items-center justify-center my-2">

@@ -86,9 +86,9 @@ const AcademicInfo = () => {
       {/* -------------------- EDUCATION HISTORY -------------------- */}
       <div className="space-y-6">
          <div className="flex justify-between items-end border-b border-slate-100 pb-4">
-            <h2 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight lowercase flex items-center gap-2">
+            <h2 className="font-inter text-3xl text-slate-900 font-bold tracking-tight lowercase flex items-center gap-2">
                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-600"><path d="M12 2L2 7l10 5l10-5l-10-5z M2 17l10 5l10-5 M2 12l10 5l10-5" /></svg>
-               {t('academic') || 'Education'} <span className="text-slate-400 italic font-normal">History</span>
+               {t('academic') || 'Education'} <span className="text-slate-400 font-normal">History</span>
             </h2>
             <button className="px-5 py-2 border border-slate-200 font-jetbrains text-xs text-slate-700 font-bold uppercase tracking-[0.2em] hover:bg-slate-100 transition-all rounded-full">{t('viewAll') || 'VIEW ALL'}</button>
          </div>
@@ -104,7 +104,7 @@ const AcademicInfo = () => {
                               {edu.startDate ? new Date(edu.startDate).getFullYear() : 'N/A'} — {edu.endDate ? new Date(edu.endDate).getFullYear() : 'Present'}
                            </p>
                         </div>
-                        <h4 className="font-newsreader italic text-2xl text-slate-900 font-bold tracking-tight">{edu.institution || 'Institution Name'}</h4>
+                        <h4 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">{edu.institution || 'Institution Name'}</h4>
                         <p className="font-jetbrains text-xs text-slate-600 font-medium uppercase tracking-widest pt-2 border-t border-slate-200/80 mt-3">Field of Study: {edu.fieldOfStudy || 'General'}</p>
                      </div>
                      
@@ -122,7 +122,7 @@ const AcademicInfo = () => {
                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-5-4.5-5-4.5s-3 2.9-5 4.5s-3 3.5-3 5.5a7 7 0 0 0 7 7z" /></svg>
                   </div>
                   <div className="space-y-1">
-                     <p className="font-newsreader italic text-xl text-slate-500 capitalize">{t('noHistoryRecorded') || 'No History Recorded'}</p>
+                     <p className="font-inter text-xl text-slate-500 capitalize">{t('noHistoryRecorded') || 'No History Recorded'}</p>
                      <p className="font-jetbrains text-[10px] text-slate-400 uppercase tracking-widest font-bold">{t('addEducationDetails') || 'Add your education details'}</p>
                   </div>
                </div>
@@ -138,9 +138,9 @@ const AcademicInfo = () => {
       {/* -------------------- DOCUMENT VAULT -------------------- */}
       <div className="pt-8 border-t border-slate-100">
          <div className="flex justify-between items-end border-b border-slate-100 pb-4">
-            <h2 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight lowercase flex items-center gap-2">
+            <h2 className="font-inter text-3xl text-slate-900 font-bold tracking-tight lowercase flex items-center gap-2">
                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-600"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-               My <span className="text-slate-400 italic font-normal">{t('myDocuments') || 'Documents'}</span>
+               My <span className="text-slate-400 font-normal">{t('myDocuments') || 'Documents'}</span>
             </h2>
             <button 
                onClick={handleUploadClick}

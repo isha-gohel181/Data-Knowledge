@@ -63,22 +63,22 @@ const MyCourses = () => {
           {/* CURRICULUM DOSSIER HEADER */}
           <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-8 curriculum-header opacity-0 invisible">
             <div className="space-y-2">
-               <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('continuingEducation')}</p>
-               <h1 className="font-newsreader italic text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
-                   {t('myCurriculum')}
+               <p className="font-inter text-xs text-[#3498db] uppercase tracking-[0.3em] font-bold not-">{t('continuingEducation') || 'Learning Dashboard'}</p>
+               <h1 className="font-inter not- text-3xl md:text-5xl text-slate-900 font-extrabold tracking-tight leading-none uppercase">
+                   {t('myCurriculum') || 'My Courses'}
                </h1>
             </div>
             
             <div className="flex gap-8 md:gap-16 items-center self-end md:self-auto">
                <div className="text-right group relative">
-                  <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('activeCoursesLabel')}</p>
-                  <p className="font-newsreader italic text-3xl md:text-5xl text-slate-900 leading-none font-medium tracking-tighter">
+                  <p className="font-inter text-xs text-slate-500 uppercase tracking-wider mb-1 font-bold not-">{t('activeCoursesLabel') || 'Enrolled Courses'}</p>
+                  <p className="font-inter not- text-3xl md:text-4xl text-slate-900 leading-none font-bold tracking-tight">
                      {activeCount < 10 ? `0${activeCount}` : activeCount}
                   </p>
                </div>
                <div className="text-right group relative">
-                  <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('completionRateLabel')}</p>
-                  <p className="font-newsreader italic text-3xl md:text-5xl text-slate-900 leading-none font-medium tracking-tighter">{avgProgress}<span className="text-amber-600">%</span></p>
+                  <p className="font-inter text-xs text-slate-500 uppercase tracking-wider mb-1 font-bold not-">{t('completionRateLabel') || 'Avg Progress'}</p>
+                  <p className="font-inter not- text-3xl md:text-4xl text-slate-900 leading-none font-bold tracking-tight">{avgProgress}<span className="text-[#3498db]">%</span></p>
                </div>
             </div>
           </div>
@@ -166,7 +166,7 @@ const MyCourses = () => {
                             </span>
                          </div>
   
-                         <h2 className="font-newsreader italic text-2xl md:text-3xl text-slate-900 group-hover:text-amber-600 transition-colors duration-300 leading-tight font-bold tracking-tight line-clamp-2">
+                         <h2 className="font-inter not- text-xl md:text-2xl text-slate-900 group-hover:text-[#3498db] transition-colors duration-300 leading-tight font-bold tracking-tight line-clamp-2">
                             {item.course?.title}
                          </h2>
   

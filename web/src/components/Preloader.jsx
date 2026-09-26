@@ -156,7 +156,7 @@ const Preloader = ({ onComplete }) => {
             ref={signatureRef}
             className="lg:absolute lg:bottom-12 lg:right-12 lg:text-right relative text-center pointer-events-none mt-4 lg:mt-0"
           >
-            <span className="block font-jetbrains text-[8px] tracking-[0.6em] text-white/20 uppercase ">Designed & Directed by</span>
+            <span className="block font-jetbrains text-[8px] tracking-[0.6em] text-white/20 uppercase">Designed & Directed by</span>
             <div ref={sigRevealRef} className="overflow-hidden py-4 lg:py-6">
                 <div 
                     className="font-signature text-4xl sm:text-5xl lg:text-6xl text-accent/90 whitespace-nowrap px-4"

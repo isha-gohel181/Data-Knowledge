@@ -20,7 +20,7 @@ export default function SessionExpiredPopup({ isOpen, message, onClose }) {
 
             <div className="space-y-2">
                 <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-[0.4em] font-black">Security Alert</p>
-                <h2 className="font-newsreader italic text-3xl text-normal tracking-tight">Session Expired</h2>
+                <h2 className="font-inter text-3xl text-normal tracking-tight">Session Expired</h2>
                 <p className="font-jetbrains text-[11px] text-normal/70 uppercase tracking-widest mt-2 leading-relaxed">
                     {message}
                 </p>

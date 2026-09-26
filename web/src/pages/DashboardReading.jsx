@@ -48,7 +48,7 @@ const DashboardReading = () => {
                     <div className="w-20 h-20 bg-accent/10 border border-accent/20 rounded-full flex items-center justify-center mx-auto text-accent">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
                     </div>
-                    <h2 className="font-newsreader text-4xl italic">Transcript Not Found</h2>
+                    <h2 className="font-inter text-4xl">Transcript Not Found</h2>
                     <p className="text-description/60 font-jetbrains uppercase tracking-widest text-[10px]">Data Stream Interrupted or Invalid Record ID</p>
                     <Link to="/dashboard/my-courses" className="inline-block px-12 py-4 bg-accent text-dark font-jetbrains font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all">Return to Command</Link>
                 </div>
@@ -75,11 +75,11 @@ const DashboardReading = () => {
                                     <span className="font-jetbrains text-[8px] text-accent uppercase tracking-widest font-black">Reading Protocol</span>
                                 </div>
                             </div>
-                            <h1 className="font-newsreader italic text-4xl md:text-6xl text-normal font-extralight tracking-tight leading-[0.9] uppercase">
+                            <h1 className="font-inter text-4xl md:text-6xl text-normal font-extralight tracking-tight leading-[0.9] uppercase">
                                 {sanitizeDisplay(reading.title || lessonData.title)}
                             </h1>
                             {reading.subTitle && (
-                                <p className="font-newsreader italic text-2xl md:text-3xl text-accent/60 tracking-tight leading-tight">
+                                <p className="font-inter text-2xl md:text-3xl text-accent/60 tracking-tight leading-tight">
                                     {sanitizeDisplay(reading.subTitle)}
                                 </p>
                             )}
@@ -96,7 +96,7 @@ const DashboardReading = () => {
                                     <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(139, 92, 246,0.5)]" />
                                     <h3 className="font-jetbrains text-xl text-accent uppercase tracking-widest font-black">Summary</h3>
                                 </div>
-                                <div className="p-8 bg-white/[0.02] border-l-2 border-accent/40 font-newsreader italic text-md text-normal/80 leading-relaxed break-all">
+                                <div className="p-8 bg-white/[0.02] border-l-2 border-accent/40 font-inter text-md text-normal/80 leading-relaxed break-all">
                                     {reading.summary}
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ const DashboardReading = () => {
                                 <h3 className="font-jetbrains text-xl text-accent uppercase tracking-widest font-black">Intelligence</h3>
                             </div>
                             <div 
-                                className="font-newsreader italic text-md md:text-md text-normal/70 leading-[1.8] space-y-8 dashboard-reading-content break-all"
+                                className="font-inter text-md md:text-md text-normal/70 leading-[1.8] space-y-8 dashboard-reading-content break-all"
                                 dangerouslySetInnerHTML={{ __html: reading.content || 'No transcript data recorded for this session.' }}
                             />
                         </div>

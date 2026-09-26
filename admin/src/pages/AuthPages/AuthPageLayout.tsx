@@ -19,13 +19,13 @@ export default function AuthLayout({
             <div className="flex flex-col items-center max-w-xs">
               <Link to="/" className="block mb-4">
                 <img
-                  className="h-24 w-24 rounded-2xl shadow-theme-xl"
-                  src="/images/logo/iasdcs-logo.png"
-                  alt="IAS"
+                  className="h-24 w-24 rounded-2xl shadow-theme-xl object-contain bg-white p-2"
+                  src="/images/logo/logo.png"
+                  alt="Data Knowledge"
                 />
               </Link>
                 <p className="text-lg font-semibold text-white">
-                IAS Admin
+                Data Knowledge Admin
                 </p>
                 <p className="text-sm text-gray-400 dark:text-white/60">
                 Course &amp; Learning Management Dashboard

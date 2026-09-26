@@ -35,24 +35,25 @@ const ConsultationModal = ({ isOpen, onClose }) => {
     loading,
     bookingLoading,
     error,
-    bookingSuccess,
     lastBooking
   } = useSelector((state) => state.consultation);
 
   const authUser = useSelector((state) => state.auth?.user);
   const authToken = useSelector((state) => state.auth?.token) || localStorage.getItem('edrilla_token');
 
-  // Step state: 1 = Date & Slot selection, 2 = Consultation Details, 3 = Confirmation / Success
+  // Step state: 1 = Date & Slot selection, 2 = Candidate Details, 3 = Confirmation / Success
   const [step, setStep] = useState(1);
 
   // Calendar View Date state (month/year navigation)
   const [viewDate, setViewDate] = useState(new Date());
 
-  // Form Details state
+  // Form Details state tailored for Data Knowledge learners
   const [formData, setFormData] = useState({
     fullName: '',
-    designation: '',
-    department: '',
+    email: '',
+    phone: '',
+    currentRole: 'Fresher / College Graduate',
+    interestedTrack: 'Master Data & Business Analyst',
     institute: '',
     query: '',
     fileUpload: null,
@@ -77,8 +78,8 @@ const ConsultationModal = ({ isOpen, onClose }) => {
       setFormData((prev) => ({
         ...prev,
         fullName: prev.fullName || authUser.fullName || authUser.name || '',
-        designation: prev.designation || authUser.designation || '',
-        department: prev.department || authUser.department || '',
+        email: prev.email || authUser.email || '',
+        phone: prev.phone || authUser.phone || '',
         institute: prev.institute || authUser.institute || authUser.organization || '',
       }));
     }
@@ -196,10 +197,9 @@ const ConsultationModal = ({ isOpen, onClose }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.fullName.trim()) errors.fullName = 'Full Name is required';
-    if (!formData.designation.trim()) errors.designation = 'Designation is required';
-    if (!formData.department.trim()) errors.department = 'Department is required';
-    if (!formData.institute.trim()) errors.institute = 'Institute / Organization is required';
-    if (!formData.query.trim()) errors.query = 'Query / Guidance description is required';
+    if (!formData.email?.trim()) errors.email = 'Email address is required';
+    if (!formData.phone?.trim()) errors.phone = 'Phone / WhatsApp number is required';
+    if (!formData.query?.trim()) errors.query = 'Please share your questions or career goals';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -220,16 +220,19 @@ const ConsultationModal = ({ isOpen, onClose }) => {
     const submission = new FormData();
     submission.append('slotId', selectedSlot._id);
     submission.append('fullName', formData.fullName.trim());
-    submission.append('designation', formData.designation.trim());
-    submission.append('department', formData.department.trim());
-    submission.append('institute', formData.institute.trim());
-    submission.append('query', formData.query.trim());
+    submission.append('designation', formData.currentRole.trim());
+    submission.append('department', formData.interestedTrack.trim());
+    submission.append('institute', (formData.institute || formData.currentRole).trim());
+    
+    // Combine contact & query for complete context
+    const fullQuery = `[Phone: ${formData.phone.trim()}] [Email: ${formData.email.trim()}] [Track: ${formData.interestedTrack}] - ${formData.query.trim()}`;
+    submission.append('query', fullQuery);
 
     if (formData.fileUpload) {
       submission.append('fileUpload', formData.fileUpload);
     }
 
-    // Check if slot is paid (duration 30 and price > 0)
+    // Check if slot is paid
     if (selectedSlot.price > 0 && selectedSlot.duration === 30) {
       try {
         const orderResult = await dispatch(createConsultationOrder({ slotId: selectedSlot._id })).unwrap();
@@ -246,8 +249,8 @@ const ConsultationModal = ({ isOpen, onClose }) => {
             key: orderResult.key,
             amount: orderResult.amount,
             currency: orderResult.currency || 'INR',
-            name: 'Institute of Applied Statistics',
-            description: `Consultation Appointment (${selectedSlot.duration} Mins)`,
+            name: 'Data Knowledge',
+            description: `Career Consultation Appointment (${selectedSlot.duration} Mins)`,
             order_id: orderResult.orderId,
             handler: async (response) => {
               try {
@@ -269,17 +272,17 @@ const ConsultationModal = ({ isOpen, onClose }) => {
             },
             prefill: {
               name: formData.fullName,
-              email: authUser?.email || '',
-              contact: authUser?.phone || '',
+              email: formData.email || authUser?.email || '',
+              contact: formData.phone || authUser?.phone || '',
             },
-            theme: { color: '#011753' },
+            theme: { color: '#3498db' },
           };
 
           if (window.Razorpay) {
             const rzp = new window.Razorpay(options);
             rzp.open();
           } else {
-            alert('Razorpay payment gateway script not loaded. Please try again.');
+            alert('Payment gateway script loading. Please retry.');
           }
         }
       } catch (err) {
@@ -315,14 +318,14 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh] my-auto animate-in zoom-in-95 duration-200 select-text"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Sticky Header */}
-        <div className="flex items-center justify-between px-5 sm:px-7 py-4 border-b border-slate-100 bg-slate-50/90 backdrop-blur-sm shrink-0">
+        {/* Sticky Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/90 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             {step === 2 && (
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-700 transition-colors shrink-0"
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-700 transition-colors shrink-0 cursor-pointer"
                 title="Back to Date & Slots"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -334,22 +337,22 @@ const ConsultationModal = ({ isOpen, onClose }) => {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 <h3 className="font-inter font-bold text-slate-900 text-base sm:text-lg leading-snug truncate">
-                  {step === 1 && 'Book Consultation — DARC Helpline'}
-                  {step === 2 && 'Enter Consultation Details'}
-                  {step === 3 && 'Booking Confirmed!'}
+                  {step === 1 && 'Book 1-on-1 Career Consultation'}
+                  {step === 2 && 'Candidate Details & Goals'}
+                  {step === 3 && 'Consultation Confirmed!'}
                 </h3>
               </div>
               <p className="font-inter text-xs text-slate-500 truncate mt-0.5">
-                {step === 1 && 'Pick an available date & time slot for your 1-on-1 session'}
-                {step === 2 && 'Fill out your research guidance requirement details'}
-                {step === 3 && 'Your expert consultation appointment has been scheduled'}
+                {step === 1 && 'Choose an available date & time for your personalized session'}
+                {step === 2 && 'Tell our mentors about your background and target career path'}
+                {step === 3 && 'Your 1-on-1 session with industry mentors has been scheduled'}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors shrink-0 ml-3"
+            className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors shrink-0 ml-3 cursor-pointer"
             aria-label="Close"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -385,7 +388,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
           {step === 1 && (
             <div className="space-y-6">
               {/* Calendar Container */}
-              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs">
+              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
                 {/* Month Navigation */}
                 <div className="flex items-center justify-between mb-3.5">
                   <span className="font-inter font-bold text-slate-900 text-sm sm:text-base">
@@ -395,7 +398,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                     <button
                       type="button"
                       onClick={handlePrevMonth}
-                      className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs"
+                      className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer"
                       aria-label="Previous Month"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -405,7 +408,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                     <button
                       type="button"
                       onClick={handleNextMonth}
-                      className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs"
+                      className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer"
                       aria-label="Next Month"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -448,24 +451,24 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                         type="button"
                         disabled={isPast}
                         onClick={() => handleSelectDay(day)}
-                        className={`h-9 sm:h-10 w-full rounded-xl font-inter text-xs flex flex-col items-center justify-center relative transition-all ${
+                        className={`h-9 sm:h-10 w-full rounded-xl font-inter text-xs flex flex-col items-center justify-center relative transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[#011753] text-white shadow-md font-bold ring-2 ring-blue-700/40 scale-[1.02]'
+                            ? 'bg-[#3498db] text-white shadow-md font-bold ring-2 ring-[#3498db]/40 scale-[1.02]'
                             : isPast
                             ? 'text-slate-300 opacity-40 cursor-not-allowed'
                             : isToday
                             ? 'bg-blue-50 text-blue-900 border border-blue-300 font-bold'
-                            : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-blue-50/70 hover:border-blue-300 font-medium'
+                            : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-blue-50/70 hover:border-[#3498db]/40 font-medium'
                         }`}
                       >
                         <span>{day}</span>
                         {!isPast && (
                           <span className="flex items-center gap-0.5 mt-0.5">
                             {hasAvailable && (
-                              <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-300' : 'bg-emerald-500'}`} />
+                              <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-emerald-500'}`} />
                             )}
                             {!hasAvailable && hasBooked && (
-                              <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-rose-300' : 'bg-rose-500'}`} />
+                              <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-rose-200' : 'bg-rose-500'}`} />
                             )}
                           </span>
                         )}
@@ -482,7 +485,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-rose-100" />
-                    <span>Booked / Reserved</span>
+                    <span>Booked</span>
                   </div>
                 </div>
               </div>
@@ -492,19 +495,21 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 <div className="flex items-center justify-between">
                   <h4 className="font-inter font-bold text-slate-900 text-sm flex items-center gap-2">
                     <span>Available Consultation Slots</span>
-                    <span className="text-xs font-normal text-slate-500">
-                      ({new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })})
-                    </span>
+                    {selectedDate && (
+                      <span className="text-xs font-normal text-slate-500">
+                        ({new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })})
+                      </span>
+                    )}
                   </h4>
                   {loading && (
-                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-[#3498db] border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
 
                 {loading ? (
                   <div className="py-10 text-center text-slate-400 font-inter text-xs flex flex-col items-center justify-center gap-2 bg-slate-50 rounded-2xl border border-slate-200">
-                    <div className="w-5 h-5 border-2 border-[#011753] border-t-transparent rounded-full animate-spin" />
-                    <span>Loading available slots...</span>
+                    <div className="w-5 h-5 border-2 border-[#3498db] border-t-transparent rounded-full animate-spin" />
+                    <span>Checking available slots...</span>
                   </div>
                 ) : slots.length === 0 ? (
                   <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-2">
@@ -515,10 +520,10 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                       <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                     <p className="font-inter text-xs text-slate-700 font-medium">
-                      No consultation slots open for this date.
+                      No slots open for this date.
                     </p>
                     <p className="font-inter text-[11px] text-slate-500">
-                      Please select another date indicated with a green dot on the calendar.
+                      Please pick another date marked with a green indicator on the calendar above.
                     </p>
                   </div>
                 ) : (
@@ -536,12 +541,12 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                           type="button"
                           disabled={isDisabled}
                           onClick={() => dispatch(setSelectedSlot(slot))}
-                          className={`p-3.5 rounded-2xl border text-left transition-all relative flex flex-col justify-between ${
+                          className={`p-3.5 rounded-2xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
                             isSelected
-                              ? 'bg-blue-50/90 border-[#011753] ring-2 ring-[#011753]/20 shadow-sm'
+                              ? 'bg-blue-50/90 border-[#3498db] ring-2 ring-[#3498db]/30 shadow-sm'
                               : isDisabled
                               ? 'bg-slate-100 border-slate-200 opacity-60 cursor-not-allowed'
-                              : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50/30'
+                              : 'bg-white border-slate-200 hover:border-[#3498db]/60 hover:bg-blue-50/30'
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -549,7 +554,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                               {formatSlotTime(slot.startTime)} - {formatSlotTime(slot.endTime)}
                             </span>
                             {isSelected ? (
-                              <span className="w-5 h-5 rounded-full bg-[#011753] text-white flex items-center justify-center text-[10px] font-bold">
+                              <span className="w-5 h-5 rounded-full bg-[#3498db] text-white flex items-center justify-center text-[10px] font-bold">
                                 ✓
                               </span>
                             ) : null}
@@ -593,11 +598,11 @@ const ConsultationModal = ({ isOpen, onClose }) => {
           {/* ──────────────── STEP 2: Consultation Details Form ──────────────── */}
           {step === 2 && selectedSlot && (
             <div className="space-y-4">
-              {/* Selected Slot Recap Card */}
-              <div className="p-4 rounded-2xl bg-blue-50/80 border border-blue-200 flex items-center justify-between">
+              {/* Selected Slot Summary Bar */}
+              <div className="p-4 rounded-2xl bg-[#3498db]/10 border border-[#3498db]/20 flex items-center justify-between">
                 <div>
-                  <span className="font-inter text-[10px] text-blue-800 font-bold uppercase tracking-wider block">
-                    Selected Appointment
+                  <span className="font-jetbrains text-[10px] text-[#1f6696] font-bold uppercase tracking-wider block">
+                    Selected Appointment Slot
                   </span>
                   <span className="font-inter font-bold text-slate-900 text-sm">
                     {new Date(selectedSlot.startTime).toLocaleDateString('en-US', {
@@ -609,8 +614,8 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                     • {formatSlotTime(selectedSlot.startTime)} - {formatSlotTime(selectedSlot.endTime)}
                   </span>
                 </div>
-                <span className="font-inter text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  {selectedSlot.price === 0 || selectedSlot.duration === 15 ? 'FREE 15m' : `₹${selectedSlot.price}`}
+                <span className="font-inter text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  {selectedSlot.price === 0 || selectedSlot.duration === 15 ? 'FREE (15 Mins)' : `₹${selectedSlot.price}`}
                 </span>
               </div>
 
@@ -619,127 +624,113 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 <label className="block font-inter text-xs font-semibold text-slate-700">
                   Full Name <span className="text-rose-500">*</span>
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Dr. Rajesh Sharma"
-                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#011753]/20 ${
-                      formErrors.fullName ? 'border-rose-300' : 'border-slate-200'
-                    }`}
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Rahul Sharma"
+                  className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30 ${
+                    formErrors.fullName ? 'border-rose-300' : 'border-slate-200'
+                  }`}
+                />
                 {formErrors.fullName && (
                   <p className="font-inter text-[11px] text-rose-500">{formErrors.fullName}</p>
                 )}
               </div>
 
-              {/* Designation & Department */}
+              {/* Email & Phone Number */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="block font-inter text-xs font-semibold text-slate-700">
-                    Designation <span className="text-rose-500">*</span>
+                    Email Address <span className="text-rose-500">*</span>
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      name="designation"
-                      value={formData.designation}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Student / Researcher / Faculty"
-                      className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#011753]/20 ${
-                        formErrors.designation ? 'border-rose-300' : 'border-slate-200'
-                      }`}
-                    />
-                  </div>
-                  {formErrors.designation && (
-                    <p className="font-inter text-[11px] text-rose-500">{formErrors.designation}</p>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="e.g. rahul@example.com"
+                    className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30 ${
+                      formErrors.email ? 'border-rose-300' : 'border-slate-200'
+                    }`}
+                  />
+                  {formErrors.email && (
+                    <p className="font-inter text-[11px] text-rose-500">{formErrors.email}</p>
                   )}
                 </div>
 
                 <div className="space-y-1">
                   <label className="block font-inter text-xs font-semibold text-slate-700">
-                    Department <span className="text-rose-500">*</span>
+                    Phone / WhatsApp Number <span className="text-rose-500">*</span>
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4" />
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Biostatistics / Medicine / Science"
-                      className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#011753]/20 ${
-                        formErrors.department ? 'border-rose-300' : 'border-slate-200'
-                      }`}
-                    />
-                  </div>
-                  {formErrors.department && (
-                    <p className="font-inter text-[11px] text-rose-500">{formErrors.department}</p>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="e.g. +91 9876543210"
+                    className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30 ${
+                      formErrors.phone ? 'border-rose-300' : 'border-slate-200'
+                    }`}
+                  />
+                  {formErrors.phone && (
+                    <p className="font-inter text-[11px] text-rose-500">{formErrors.phone}</p>
                   )}
                 </div>
               </div>
 
-              {/* Institute / Organization */}
-              <div className="space-y-1">
-                <label className="block font-inter text-xs font-semibold text-slate-700">
-                  Institute / Organization <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="7" height="7" />
-                      <rect x="14" y="3" width="7" height="7" />
-                      <rect x="14" y="14" width="7" height="7" />
-                      <rect x="3" y="14" width="7" height="7" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    name="institute"
-                    value={formData.institute}
+              {/* Current Background & Interested Track */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block font-inter text-xs font-semibold text-slate-700">
+                    Current Background
+                  </label>
+                  <select
+                    name="currentRole"
+                    value={formData.currentRole}
                     onChange={handleInputChange}
-                    placeholder="e.g. IAS DCS / AIIMS / Delhi University"
-                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#011753]/20 ${
-                      formErrors.institute ? 'border-rose-300' : 'border-slate-200'
-                    }`}
-                  />
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30"
+                  >
+                    <option value="Fresher / College Graduate">Fresher / College Graduate</option>
+                    <option value="Working Professional (IT)">Working Professional (IT)</option>
+                    <option value="Career Switcher (Non-IT / Non-Tech)">Career Switcher (Non-IT / Non-Tech)</option>
+                    <option value="Business / Sales / Operations Professional">Business / Operations Professional</option>
+                    <option value="Self-Learner / Other">Self-Learner / Other</option>
+                  </select>
                 </div>
-                {formErrors.institute && (
-                  <p className="font-inter text-[11px] text-rose-500">{formErrors.institute}</p>
-                )}
+
+                <div className="space-y-1">
+                  <label className="block font-inter text-xs font-semibold text-slate-700">
+                    Interested Program Track
+                  </label>
+                  <select
+                    name="interestedTrack"
+                    value={formData.interestedTrack}
+                    onChange={handleInputChange}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30"
+                  >
+                    <option value="Master Data & Business Analyst">Master Data & Business Analyst</option>
+                    <option value="Master Data Science">Master Data Science</option>
+                    <option value="Master Machine Learning">Master Machine Learning</option>
+                    <option value="Master Generative AI">Master Generative AI</option>
+                    <option value="General Career Guidance & Demo Class">General Career Guidance & Demo</option>
+                  </select>
+                </div>
               </div>
 
-              {/* Query / Guidance Needed */}
+              {/* Query / Goals */}
               <div className="space-y-1">
                 <label className="block font-inter text-xs font-semibold text-slate-700">
-                  Query / Guidance Needed <span className="text-rose-500">*</span>
+                  What would you like to discuss with the mentor? <span className="text-rose-500">*</span>
                 </label>
                 <textarea
                   name="query"
                   rows={3}
                   value={formData.query}
                   onChange={handleInputChange}
-                  placeholder="Describe your statistical problem, study design query, sample size calculation, or research guidance requirement..."
-                  className={`w-full p-3 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#011753]/20 resize-none ${
+                  placeholder="Tell us about your career transition goals, current skill level, or what you'd like guidance on..."
+                  className={`w-full p-3 bg-slate-50 border rounded-xl font-inter text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3498db]/30 resize-none ${
                     formErrors.query ? 'border-rose-300' : 'border-slate-200'
                   }`}
                 />
@@ -748,16 +739,16 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 )}
               </div>
 
-              {/* Attach Document (Optional) */}
+              {/* Attach Resume (Optional) */}
               <div className="space-y-1">
                 <label className="block font-inter text-xs font-semibold text-slate-700">
-                  Attach Document / Synopsis (Optional)
+                  Attach Resume / Profile (Optional)
                 </label>
                 <div className="p-3 border border-dashed border-slate-300 rounded-xl bg-slate-50/70 hover:bg-slate-50 transition-colors">
                   {fileName ? (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 min-w-0">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-700 shrink-0">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3498db" strokeWidth="2" className="shrink-0">
                           <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                         </svg>
                         <span className="font-inter text-xs text-slate-800 font-medium truncate">
@@ -767,7 +758,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                       <button
                         type="button"
                         onClick={handleRemoveFile}
-                        className="text-xs font-bold text-rose-600 hover:text-rose-800 ml-2"
+                        className="text-xs font-bold text-rose-600 hover:text-rose-800 ml-2 cursor-pointer"
                       >
                         Remove
                       </button>
@@ -778,7 +769,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                       </svg>
                       <span className="font-inter text-xs text-slate-600 font-medium">
-                        Upload PDF / Document (Max 10MB)
+                        Upload Resume PDF / Doc (Optional, Max 10MB)
                       </span>
                       <input
                         type="file"
@@ -795,14 +786,14 @@ const ConsultationModal = ({ isOpen, onClose }) => {
               </div>
 
               {!authToken && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
-                  <span className="font-inter text-xs text-amber-800">
-                    You need to be logged in to confirm your appointment.
+                <div className="p-3 bg-blue-50/80 border border-blue-200 rounded-xl flex items-center justify-between">
+                  <span className="font-inter text-xs text-blue-900">
+                    💡 Please log in or sign up to instantly confirm and manage your appointment.
                   </span>
                   <button
                     type="button"
                     onClick={() => navigate('/login', { state: { returnUrl: location.pathname } })}
-                    className="font-inter text-xs font-bold text-blue-700 hover:underline shrink-0 ml-2"
+                    className="font-inter text-xs font-bold text-[#1f6696] hover:underline shrink-0 ml-2 cursor-pointer"
                   >
                     Log In →
                   </button>
@@ -821,18 +812,22 @@ const ConsultationModal = ({ isOpen, onClose }) => {
               </div>
 
               <div className="space-y-1">
-                <h4 className="font-inter font-black text-xl text-slate-900">
+                <h4 className="font-inter font-extrabold text-2xl text-slate-900">
                   Consultation Booked Successfully!
                 </h4>
                 <p className="font-inter text-xs text-slate-600 max-w-md mx-auto">
-                  Your appointment with the <strong className="text-slate-900">DARC Support Helpline</strong> panel has been registered.
+                  Your 1-on-1 mentorship session with the <strong className="text-slate-900">Data Knowledge Mentor Panel</strong> has been scheduled.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-2 max-w-md mx-auto">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-2.5 max-w-md mx-auto">
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500 font-medium">Candidate:</span>
                   <span className="font-bold text-slate-800">{formData.fullName}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 font-medium">Track:</span>
+                  <span className="font-bold text-[#1f6696]">{formData.interestedTrack}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500 font-medium">Date & Time:</span>
@@ -846,7 +841,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500 font-medium">Duration:</span>
-                  <span className="font-bold text-emerald-700">{selectedSlot?.duration || 15} Minutes</span>
+                  <span className="font-bold text-emerald-700">{selectedSlot?.duration || 15} Minutes (Free)</span>
                 </div>
                 {lastBooking?._id && (
                   <div className="flex justify-between text-xs pt-2 border-t border-slate-200">
@@ -857,14 +852,14 @@ const ConsultationModal = ({ isOpen, onClose }) => {
               </div>
 
               <p className="font-inter text-[11px] text-slate-500 max-w-sm mx-auto">
-                Our statistical research specialists will connect with you via Google Meet / Zoom at the scheduled appointment time.
+                Our mentor will connect with you via Google Meet / Zoom at the scheduled appointment time. Details will be sent to your email.
               </p>
             </div>
           )}
         </div>
 
         {/* Sticky Footer */}
-        <div className="px-5 sm:px-7 py-4 border-t border-slate-100 bg-slate-50/90 backdrop-blur-sm flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/90 backdrop-blur-sm flex items-center justify-between shrink-0">
           {step === 1 && (
             <>
               <div className="text-xs text-slate-500 font-inter truncate mr-2">
@@ -880,7 +875,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 type="button"
                 disabled={!selectedSlot}
                 onClick={handleProceedToDetails}
-                className="bg-[#011753] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-900 text-white font-inter text-xs font-bold px-6 py-3 rounded-full transition-all shadow-md flex items-center gap-2 shrink-0"
+                className="bg-[#3498db] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#2980b9] text-white font-inter text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-full transition-all shadow-md shadow-[#3498db]/30 flex items-center gap-2 shrink-0 cursor-pointer"
               >
                 <span>Continue to Details</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -895,7 +890,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="font-inter text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2"
+                className="font-inter text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 cursor-pointer"
               >
                 ← Back
               </button>
@@ -903,7 +898,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 type="button"
                 disabled={bookingLoading}
                 onClick={handleConfirmBooking}
-                className="bg-[#011753] hover:bg-blue-900 disabled:opacity-60 text-white font-inter text-xs font-bold px-7 py-3 rounded-full transition-all shadow-md flex items-center gap-2"
+                className="bg-[#3498db] hover:bg-[#2980b9] disabled:opacity-60 text-white font-inter text-xs font-bold uppercase tracking-wider px-7 py-3 rounded-full transition-all shadow-md shadow-[#3498db]/30 flex items-center gap-2 cursor-pointer"
               >
                 {bookingLoading ? (
                   <>
@@ -921,7 +916,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="w-full bg-[#011753] hover:bg-blue-900 text-white font-inter text-xs font-bold py-3 rounded-full transition-all shadow-md"
+              className="w-full bg-[#3498db] hover:bg-[#2980b9] text-white font-inter text-xs font-bold uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md cursor-pointer"
             >
               Done
             </button>

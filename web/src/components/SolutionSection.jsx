@@ -64,7 +64,7 @@ const SolutionSection = ({ course, section }) => {
 
       <div className="grid grid-cols-1 min-[1301px]:grid-cols-[1fr_1.8fr] gap-12 min-[1301px]:gap-20 items-start mb-28 px-4 md:px-0">
         <div className="space-y-8 min-[1301px]:sticky min-[1301px]:top-32 transition-all duration-500">
-          <h2 className="sol-title font-newsreader italic text-4xl md:text-5xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
+          <h2 className="sol-title font-inter text-4xl md:text-5xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
             {sanitizeDisplay(section?.title || "The Solution").split(' ').map((word, i, arr) => (
               <React.Fragment key={i}>
                 {i === arr.length - 1 ? (
@@ -94,7 +94,7 @@ const SolutionSection = ({ course, section }) => {
         <div className="space-y-16 mb-20">
           {section?.outcomeTitle && (
             <div className="text-center">
-              <h3 className="sol-title font-newsreader italic text-3xl md:text-5xl text-normal font-extralight tracking-tight">
+              <h3 className="sol-title font-inter text-3xl md:text-5xl text-normal font-extralight tracking-tight">
                 {sanitizeDisplay(section.outcomeTitle)}
               </h3>
             </div>
@@ -102,11 +102,11 @@ const SolutionSection = ({ course, section }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
             {section?.outcomePoints?.map((p, i) => (
-              <div key={i} className="sol-point group flex  items-center gap-5 px-6 py-5 bg-red-500/[0.2] border-l-2 border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.02)] transition-all duration-500">
+              <div key={i} className="sol-point group flex items-center gap-5 px-6 py-5 bg-red-500/[0.2] border-l-2 border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.02)] transition-all duration-500">
                 <div className="w-8 h-8 rounded-full border border-red-500/40 flex items-center justify-center shrink-0 bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="4"><path d="M18 6L6 18M6 6l12 12" /></svg>
                 </div>
-                <span className="font-montserrat text-sm text-red-400 font-normal tracking-wide uppercase italic">{sanitizeDisplay(p)}</span>
+                <span className="font-montserrat text-sm text-red-400 font-normal tracking-wide uppercase">{sanitizeDisplay(p)}</span>
               </div>
             ))}
           </div>
@@ -117,7 +117,7 @@ const SolutionSection = ({ course, section }) => {
       <div className="space-y-16">
         {section?.solutionTitle && (
           <div className="text-center">
-            <h3 className="sol-title font-newsreader italic text-3xl md:text-5xl text-normal font-extralight tracking-tight">
+            <h3 className="sol-title font-inter text-3xl md:text-5xl text-normal font-extralight tracking-tight">
               {sanitizeDisplay(section.solutionTitle)}
             </h3>
           </div>

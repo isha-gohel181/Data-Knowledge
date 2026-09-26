@@ -7,7 +7,7 @@ const MasterclassBanner = () => {
     <section className="relative w-full bg-dark overflow-x-hidden py-10 md:py-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto relative rounded-3xl overflow-hidden border border-white/10 group shadow-2xl">
         
-        <div className="relative overflow-hidden ">
+        <div className="relative overflow-hidden">
         {/* <div className="relative overflow-hidden aspect-[16/9] md:aspect-[21/9]"> */}
           <img 
             src={bannerImg} 
@@ -23,12 +23,12 @@ const MasterclassBanner = () => {
           {/* Call to Action Row */}
           <div className="flex flex-col md:flex-row items-start gap-4 w-full md:w-auto pointer-events-auto">
             {/* Primary Accent Button */}
-            <button className=" md:w-auto bg-accent text-dark px-10 py-5  font-montserrat text-[10px] font-bold tracking-[0.2em] relative overflow-hidden group/btn hover:scale-105 transition-all">
+            <button className="md:w-auto bg-accent text-dark px-10 py-5 font-montserrat text-[10px] font-bold tracking-[0.2em] relative overflow-hidden group/btn hover:scale-105 transition-all">
               <RollingText text="EXPLORE COURSES" className="relative z-10" />
             </button>
 
             {/* Ghost Watching Button */}
-            <button className=" md:w-auto border border-white/20 text-normal px-10 py-5  font-montserrat text-[10px] font-bold tracking-[0.2em] relative overflow-hidden group/btn hover:bg-white/5 transition-all">
+            <button className="md:w-auto border border-white/20 text-normal px-10 py-5 font-montserrat text-[10px] font-bold tracking-[0.2em] relative overflow-hidden group/btn hover:bg-white/5 transition-all">
               <RollingText text="WATCH THE STORY" className="relative z-10" />
             </button>
           </div>

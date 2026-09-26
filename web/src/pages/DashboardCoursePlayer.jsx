@@ -339,8 +339,8 @@ const DashboardCoursePlayer = () => {
         return (
             <div className="min-h-screen bg-dark flex flex-col items-center justify-center p-8 space-y-6">
                 <div className="bg-red-500/10 border border-red-500/20 p-12 text-center space-y-4 max-w-xl">
-                    <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-[0.4em] font-black italic">Decryption Error</p>
-                    <p className="font-newsreader italic text-2xl text-red-500/80">{error}</p>
+                    <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-[0.4em] font-black">Decryption Error</p>
+                    <p className="font-inter text-2xl text-red-500/80">{error}</p>
                     <button 
                         onClick={() => dispatch(fetchCourseDetail(id))}
                         className="px-12 py-4 bg-red-500/20 text-red-500 font-jetbrains text-[10px] uppercase tracking-widest hover:bg-red-500/30 transition-all"
@@ -367,7 +367,7 @@ const DashboardCoursePlayer = () => {
                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="m15 18-6-6 6-6"/></svg>
                                Return to Curriculum
                            </Link>
-                           <h1 className="font-newsreader italic text-3xl md:text-6xl text-normal font-extralight tracking-tight leading-none uppercase">
+                           <h1 className="font-inter text-3xl md:text-6xl text-normal font-extralight tracking-tight leading-none uppercase">
                                {sanitizeDisplay(currentCourse.title)}
                            </h1>
                            <div className="flex items-center gap-6 pt-2">
@@ -458,7 +458,7 @@ const DashboardCoursePlayer = () => {
                     {/* Curated Curriculum Accordion */}
                     <div className="player-reveal opacity-0 space-y-4">
                         <div className="flex items-center gap-4 mb-2">
-                           <p className="font-jetbrains text-[8px] text-accent uppercase tracking-[0.6em] font-black italic underline decoration-accent/20 underline-offset-4">Dossier Index</p>
+                           <p className="font-jetbrains text-[8px] text-accent uppercase tracking-[0.6em] font-black underline decoration-accent/20 underline-offset-4">Dossier Index</p>
                            <div className="h-[1px] bg-white/5 flex-1" />
                         </div>
 
@@ -491,7 +491,7 @@ const DashboardCoursePlayer = () => {
                                                 {String(i + 1).padStart(2, '0')}
                                             </div>
                                             <div className="space-y-1">
-                                                <h3 className={`font-newsreader italic text-xl md:text-2xl lowercase tracking-tight transition-colors ${activeAccordion === (module._id || i) ? 'text-slate-900 font-semibold' : 'text-slate-700 group-hover:text-slate-900'}`}>
+                                                <h3 className={`font-inter italic text-xl md:text-2xl lowercase tracking-tight transition-colors ${activeAccordion === (module._id || i) ? 'text-slate-900 font-semibold' : 'text-slate-700 group-hover:text-slate-900'}`}>
                                                     {sanitizeDisplay(module.title)}
                                                 </h3>
                                                 <p className="font-jetbrains text-[8px] text-slate-500 uppercase tracking-widest">
@@ -558,7 +558,7 @@ const DashboardCoursePlayer = () => {
 
                             <div className="space-y-2">
                                 <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-[0.4em] font-black">Security Violation</p>
-                                <h3 className="font-newsreader italic text-3xl md:text-4xl text-normal tracking-tight">Warning Issued.</h3>
+                                <h3 className="font-inter text-3xl md:text-4xl text-normal tracking-tight">Warning Issued.</h3>
                                 <p className="font-jetbrains text-[11px] text-normal/70 uppercase tracking-widest mt-4 leading-relaxed">
                                     {securityWarning}
                                 </p>

@@ -186,7 +186,7 @@ const PersonalityTest = () => {
                    </div>
                 </div>
                 <div className="text-center md:text-left pt-4">
-                  <h1 className="font-newsreader text-6xl md:text-[5.5rem] italic text-normal font-extralight mb-6 tracking-tight leading-none overflow-visible">
+                  <h1 className="font-inter text-6xl md:text-[5.5rem] text-normal font-extralight mb-6 tracking-tight leading-none overflow-visible">
                     Your Type: <span className="text-accent underline-lime">{resultData.name}</span>
                   </h1>
                   <p className="font-jetbrains text-xs md:text-sm text-description/80 max-w-2xl leading-relaxed uppercase tracking-widest mb-10">
@@ -223,8 +223,8 @@ const PersonalityTest = () => {
                             />
                         </div>
                         <div className="mt-3 flex justify-between">
-                            <span className="font-jetbrains text-[8px] italic text-description/80 tracking-[0.4em] uppercase">Core Accuracy Threshold 99.8%</span>
-                            <span className="font-montserrat text-[14px] font-bold text-accent italic tracking-widest">{trait.score}% {trait.activeSide === 'right' ? trait.right : trait.left}</span>
+                            <span className="font-jetbrains text-[8px] text-description/80 tracking-[0.4em] uppercase">Core Accuracy Threshold 99.8%</span>
+                            <span className="font-montserrat text-[14px] font-bold text-accent tracking-widest">{trait.score}% {trait.activeSide === 'right' ? trait.right : trait.left}</span>
                         </div>
                       </div>
                    ))}
@@ -251,7 +251,7 @@ const PersonalityTest = () => {
                         <div className="absolute top-0 right-0 p-10 opacity-5">
                             <span className="font-jetbrains text-[90px] font-black tracking-tighter text-white leading-none">0{Object.keys(resultData.tabs).indexOf(activeTab) + 1}</span>
                         </div>
-                        <h4 className="font-newsreader italic text-4xl text-normal mb-10 font-extralight tracking-tight underline-lime decoration-accent/30">{resultData.tabs[activeTab].title}</h4>
+                        <h4 className="font-inter text-4xl text-normal mb-10 font-extralight tracking-tight underline-lime decoration-accent/30">{resultData.tabs[activeTab].title}</h4>
                         <div className="space-y-8">
                             {resultData.tabs[activeTab].content.map((p, i) => (
                                 <p key={i} className="font-jetbrains text-[11px] text-description/80 leading-[2.2] tracking-widest uppercase">
@@ -267,8 +267,8 @@ const PersonalityTest = () => {
             <div className="result-reveal pt-12 border-t border-white/5">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-20">
                     <div>
-                        <h2 className="font-newsreader italic text-5xl md:text-6xl text-normal font-extralight mb-4 tracking-tighter">Recommended Architecture</h2>
-                        <p className="font-jetbrains text-[9px] text-description/80 tracking-[0.5em] uppercase italic">Accelerated learning paths tailored to your frequency.</p>
+                        <h2 className="font-inter text-5xl md:text-6xl text-normal font-extralight mb-4 tracking-tighter">Recommended Architecture</h2>
+                        <p className="font-jetbrains text-[9px] text-description/80 tracking-[0.5em] uppercase">Accelerated learning paths tailored to your frequency.</p>
                     </div>
                     <div className="flex items-center gap-6">
                         <div className="flex -space-x-3">
@@ -319,7 +319,7 @@ const PersonalityTest = () => {
                 <div className="absolute inset-0 border-2 border-accent/20 rounded-full" />
                 <div className="absolute inset-0 border-t-2 border-accent rounded-full animate-spin shadow-[0_0_20px_rgba(139, 92, 246,0.3)]" />
             </div>
-            <h2 className="font-newsreader italic text-5xl text-normal mb-4 font-extralight tracking-tight opacity-0 animate-reveal-up">Synthesizing Your Frequency</h2>
+            <h2 className="font-inter text-5xl text-normal mb-4 font-extralight tracking-tight opacity-0 animate-reveal-up">Synthesizing Your Frequency</h2>
             <p className="font-jetbrains text-[9px] text-description tracking-[0.5em] uppercase opacity-30 animate-pulse">Mapping Core Intelligence...</p>
         </div>
     )
@@ -346,7 +346,7 @@ const PersonalityTest = () => {
           </div>
 
           <div className="pt-reveal">
-            <h1 className="font-newsreader italic text-[clamp(2.8rem,10vw,7rem)] leading-[0.85] font-extralight text-normal mb-8 md:mb-10">
+            <h1 className="font-inter text-[clamp(2.8rem,10vw,7rem)] leading-[0.85] font-extralight text-normal mb-8 md:mb-10">
               Discover Your <br />
               <span className="text-accent underline-lime">Frequency</span>
             </h1>
@@ -377,7 +377,7 @@ const PersonalityTest = () => {
             <div className="quiz-inner w-full flex flex-col h-full justify-between">
                 {/* HUD / Progress */}
                 <div className="w-full flex items-center justify-center h-12 relative quiz-content-reveal">
-                    <span className="absolute left-0 font-jetbrains text-[8px] md:text-[9px] text-description/30 tracking-[0.3em] font-bold italic">
+                    <span className="absolute left-0 font-jetbrains text-[8px] md:text-[9px] text-description/30 tracking-[0.3em] font-bold">
                        QUESTION {currentIndex + 1} / {questions.length}
                     </span>
                     <div className="h-[1.5px] bg-white/5 w-full md:w-2/3 lg:w-1/2 relative overflow-hidden">
@@ -390,7 +390,7 @@ const PersonalityTest = () => {
 
                 {/* Question Area - Taking more space */}
                 <div className="flex-1 flex flex-col justify-center py-10 md:py-16 text-center">
-                    <h2 className="quiz-content-reveal font-newsreader italic text-[clamp(1.8rem,7vw,3.8rem)] text-normal leading-[1.1] font-extralight mb-12 md:mb-20 max-w-3xl mx-auto px-4 drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                    <h2 className="quiz-content-reveal font-inter text-[clamp(1.8rem,7vw,3.8rem)] text-normal leading-[1.1] font-extralight mb-12 md:mb-20 max-w-3xl mx-auto px-4 drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                         "{questions[currentIndex].text}"
                     </h2>
 

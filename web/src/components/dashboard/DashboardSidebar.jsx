@@ -9,7 +9,7 @@ const TopLearners = ({ learners = [] }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-         <h4 className="font-newsreader italic text-2xl text-slate-900 font-bold tracking-tight">{t('topLearners')}</h4>
+         <h4 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">{t('topLearners')}</h4>
          <div className="h-[1px] w-12 bg-slate-200" />
       </div>
 
@@ -33,7 +33,7 @@ const TopLearners = ({ learners = [] }) => {
                           ${isMe ? 'bg-accent text-slate-950 shadow-sm' : 'bg-slate-100 border border-slate-200 text-slate-700'}`}>
                            {learnerData.fullName?.[0] || 'U'}
                         </div>
-                        <span className={`font-newsreader italic text-base font-bold ${isMe ? 'text-slate-900' : 'text-slate-700'}`}>
+                        <span className={`font-inter italic text-base font-bold ${isMe ? 'text-slate-900' : 'text-slate-700'}`}>
                            {learnerData.fullName} {isMe ? '(You)' : ''}
                         </span>
                      </div>
@@ -56,7 +56,7 @@ const UpcomingDeadlines = ({ assignments = [] }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-         <h4 className="font-newsreader italic text-2xl text-slate-900 font-bold tracking-tight">{t('upcomingDeadlines')}</h4>
+         <h4 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">{t('upcomingDeadlines')}</h4>
          <div className="h-[1px] w-12 bg-slate-200" />
       </div>
 
@@ -78,7 +78,7 @@ const UpcomingDeadlines = ({ assignments = [] }) => {
                         <line x1="8" y1="12" x2="16" y2="12" />
                      </svg>
                   </div>
-                  <h5 className="font-newsreader italic text-lg text-slate-900 font-bold group-hover:text-amber-600 transition-colors">{assignment.title}</h5>
+                  <h5 className="font-inter text-lg text-slate-900 font-bold group-hover:text-amber-600 transition-colors">{assignment.title}</h5>
                   <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-medium">{t('submissionRequired')}</p>
                </div>
             ))
@@ -103,7 +103,7 @@ const DashboardSidebar = () => {
                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" strokeWidth="2" />
                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" strokeWidth="2" />
             </svg>
-            <p className="font-newsreader italic text-3xl md:text-4xl text-slate-900 font-bold leading-none">
+            <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
               {stats.enrolledCourses || '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('activeCoursesCount')}</p>
@@ -114,7 +114,7 @@ const DashboardSidebar = () => {
                <circle cx="12" cy="8" r="7" stroke="currentColor" strokeWidth="2" />
                <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12" stroke="currentColor" strokeWidth="2" />
             </svg>
-            <p className="font-newsreader italic text-3xl md:text-4xl text-slate-900 font-bold leading-none">
+            <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
                {stats.certificatesEarned || '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('certificatesEarned')}</p>
@@ -124,7 +124,7 @@ const DashboardSidebar = () => {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="mx-auto text-amber-600 transition-colors">
                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <p className="font-newsreader italic text-3xl md:text-4xl text-slate-900 font-bold leading-none">
+            <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
                {(stats.xp || 0).toLocaleString()}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('totalXP')}</p>
@@ -135,7 +135,7 @@ const DashboardSidebar = () => {
                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                <path d="M22 4L12 14.01l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <p className="font-newsreader italic text-3xl md:text-4xl text-slate-900 font-bold leading-none">
+            <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
                {stats.completedCourses || '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('completedModules')}</p>

@@ -9,60 +9,80 @@ import EventHero from '../components/EventHero'
 import { fetchEvents } from '../redux/slices/eventSlice'
 import { useLanguage } from '../context/LanguageContext'
 
-import { eventData } from '../constants/events'
-
-const courseData = [
+const defaultCourses = [
   {
     id: 1,
-    category: 'EDITORIAL DESIGN',
-    title: 'The Architecture of the Page',
-    description: 'Mastering grid systems and visual tension in high-end publishing.',
-    price: '$249.00',
+    category: 'DATA ANALYTICS',
+    title: 'Complete Data Analytics Masterclass',
+    description: 'Master SQL, Excel, Power BI, and Python with hands-on projects and real datasets.',
+    price: '₹14,999',
     image: '/courses/architecture.png',
+    level: ['Beginner', 'Intermediate'],
+    difficulty: 'Beginner',
+    duration: '40 hours',
     isNew: true,
   },
   {
     id: 2,
-    category: 'TYPOGRAPHY',
-    title: 'The Romantic Serif',
-    description: 'History and application of intricate display typefaces in digital systems.',
-    price: '$189.00',
+    category: 'POWER BI & TABLEAU',
+    title: 'Power BI & Tableau Dashboard Mastery',
+    description: 'Build executive-ready interactive dashboards, DAX queries, and KPI storytelling.',
+    price: '₹9,999',
     image: '/courses/typography.png',
+    level: ['Beginner', 'Intermediate', 'Advanced'],
+    difficulty: 'Intermediate',
+    duration: '25 hours',
+    isNew: true,
   },
   {
     id: 3,
-    category: 'CURATION',
-    title: 'The Digital Curator',
-    description: 'Transitioning from content manager to high-end content architect.',
-    price: '$322.00',
+    category: 'SQL & PYTHON',
+    title: 'SQL & Python for Data Analysis',
+    description: 'Learn database query optimization, Pandas, NumPy, and automated data pipelines.',
+    price: '₹11,499',
     image: '/courses/curator.png',
+    level: ['Beginner', 'Intermediate'],
+    difficulty: 'Beginner',
+    duration: '30 hours',
+    isNew: true,
   },
   {
     id: 4,
-    category: 'ART DIRECTION',
-    title: 'Visual Narrative & Identity',
-    description: 'Building cohesive brand worlds through cinematic storytelling.',
-    price: '$599.00',
+    category: 'DATA SCIENCE & AI',
+    title: 'Applied Data Science & Machine Learning',
+    description: 'End-to-end ML model building, predictive modeling, Scikit-learn, and real business cases.',
+    price: '₹19,999',
     image: '/courses/narrative.png',
+    level: ['Intermediate', 'Advanced'],
+    difficulty: 'Advanced',
+    duration: '50 hours',
+    isNew: true,
   },
   {
     id: 5,
-    category: 'DIGITAL ART',
-    title: 'Motion & Tonal Stacking',
-    description: 'Creating depth and atmosphere without traditional drop shadows.',
-    price: '$420.00',
+    category: 'BUSINESS ANALYSIS',
+    title: 'Business Analysis & Strategy Foundations',
+    description: 'Translate complex data into actionable business requirements, wireframes, and strategic roadmaps.',
+    price: '₹8,999',
     image: '/courses/motion.png',
+    level: ['Beginner', 'Intermediate'],
+    difficulty: 'Beginner',
+    duration: '20 hours',
+    isNew: false,
   },
   {
     id: 6,
-    category: 'PROFESSIONAL PRACTICE',
-    title: 'Pricing the Premium',
-    description: 'The economics of high-end design services and luxury positioning.',
-    price: '$144.00',
+    category: 'POWER BI & TABLEAU',
+    title: 'Advanced DAX & Business Intelligence',
+    description: 'Advanced data modeling, row-level security, and enterprise BI reporting architectures.',
+    price: '₹12,499',
     image: '/courses/pricing.png',
+    level: ['Advanced'],
+    difficulty: 'Advanced',
+    duration: '28 hours',
+    isNew: false,
   }
 ]
-
 
 const Courses = () => {
   const dispatch = useDispatch()
@@ -78,59 +98,85 @@ const Courses = () => {
   const advancedRef = useRef(null)
   const [hasFetchedEvents, setHasFetchedEvents] = useState(false)
 
+  // Use API courses if available and non-empty, otherwise fallback to curated Data Knowledge course catalog
+  const displayCourses = useMemo(() => {
+    if (courses && courses.length > 0) return courses
+    return defaultCourses
+  }, [courses])
+
   const filteredCourses = useMemo(() => {
-    return (courses || []).filter(item => {
+    return (displayCourses || []).filter(item => {
       // 1. Category Filter
       const matchesCategory = (() => {
-        if (activeFilter === 'ALL COURSES') return true;
-        const courseCat = (item.category?.name || item.category || '').toUpperCase();
-        const filterCat = activeFilter.toUpperCase();
-        return courseCat === filterCat || courseCat.includes(filterCat) || filterCat.includes(courseCat);
-      })();
+        if (activeFilter === 'ALL COURSES') return true
+        const courseCat = (item.category?.name || item.category || '').toUpperCase()
+        const courseTitle = (item.title || '').toUpperCase()
+        const courseTags = Array.isArray(item.tags) ? item.tags.join(' ').toUpperCase() : ''
+        const combined = `${courseCat} ${courseTitle} ${courseTags}`
+        const filterCat = activeFilter.toUpperCase()
+
+        if (filterCat === 'DATA ANALYTICS') {
+          return combined.includes('ANALYTICS') || combined.includes('DATA') || combined.includes('ANALYST')
+        }
+        if (filterCat === 'DATA SCIENCE & AI') {
+          return combined.includes('SCIENCE') || combined.includes('AI') || combined.includes('ML') || combined.includes('MACHINE LEARNING')
+        }
+        if (filterCat === 'POWER BI & TABLEAU') {
+          return combined.includes('POWER BI') || combined.includes('TABLEAU') || combined.includes('BI') || combined.includes('VISUALIZATION')
+        }
+        if (filterCat === 'SQL & PYTHON') {
+          return combined.includes('SQL') || combined.includes('PYTHON') || combined.includes('DATABASE') || combined.includes('PROGRAMMING')
+        }
+        if (filterCat === 'BUSINESS ANALYSIS') {
+          return combined.includes('BUSINESS') || combined.includes('ANALYSIS') || combined.includes('STRATEGY')
+        }
+
+        return courseCat === filterCat || courseCat.includes(filterCat) || filterCat.includes(courseCat) || combined.includes(filterCat)
+      })()
 
       // 2. Difficulty Filter
       const matchesDifficulty = (() => {
-        if (selectedDifficulty === 'All') return true;
-        const filterDiff = selectedDifficulty.toLowerCase();
+        if (selectedDifficulty === 'All') return true
+        const filterDiff = selectedDifficulty.toLowerCase()
         
         if (item.level && Array.isArray(item.level) && item.level.length > 0) {
-          return item.level.some(l => l.toLowerCase() === filterDiff);
+          return item.level.some(l => l.toLowerCase() === filterDiff)
         }
         
-        const courseDiff = (item.difficulty || '').toLowerCase();
-        if (filterDiff === 'intermediate' && courseDiff === 'medium') return true;
-        return courseDiff === filterDiff;
-      })();
+        const courseDiff = (item.difficulty || '').toLowerCase()
+        if (filterDiff === 'intermediate' && courseDiff === 'medium') return true
+        return courseDiff === filterDiff
+      })()
 
       // 3. Duration Filter
       const matchesDuration = (() => {
-        if (selectedDuration === 'All hours') return true;
+        if (selectedDuration === 'All hours') return true
         
         const getCourseDurationInHours = (c) => {
-          if (!c.duration) return 0;
-          const val = parseFloat(c.duration);
-          if (isNaN(val)) return 0;
+          if (!c.duration) return 0
+          const val = parseFloat(c.duration)
+          if (isNaN(val)) return 0
           if (typeof c.duration === 'string' && c.duration.toLowerCase().includes('min')) {
-            return val / 60;
+            return val / 60
           }
           if (val > 100) {
-            return val / 60;
+            return val / 60
           }
-          return val;
-        };
+          return val
+        }
 
-        const duration = getCourseDurationInHours(item);
-        if (selectedDuration === '0-2 hours') return duration >= 0 && duration <= 2;
-        if (selectedDuration === '2-5 hours') return duration > 2 && duration <= 5;
-        if (selectedDuration === '5-10 hours') return duration > 5 && duration <= 10;
-        if (selectedDuration === '10-20 hours') return duration > 10 && duration <= 20;
-        if (selectedDuration === '20+ hours') return duration > 20;
-        return true;
-      })();
+        const duration = getCourseDurationInHours(item)
+        if (selectedDuration === '0-2 hours') return duration >= 0 && duration <= 2
+        if (selectedDuration === '2-5 hours') return duration > 2 && duration <= 5
+        if (selectedDuration === '5-10 hours') return duration > 5 && duration <= 10
+        if (selectedDuration === '10-20 hours') return duration > 10 && duration <= 20
+        if (selectedDuration === '20+ hours') return duration > 20
+        return true
+      })()
 
-      return matchesCategory && matchesDifficulty && matchesDuration;
-    });
-  }, [courses, activeFilter, selectedDifficulty, selectedDuration]);
+      return matchesCategory && matchesDifficulty && matchesDuration
+    })
+  }, [displayCourses, activeFilter, selectedDifficulty, selectedDuration])
 
   useEffect(() => {
     dispatch(fetchCourses())
@@ -140,13 +186,13 @@ const Courses = () => {
     const ctx = gsap.context(() => {
       // 1. Hero Entrance
       gsap.from('.courses-hero > *', {
-        y: 60, opacity: 0, filter: 'blur(15px)', stagger: 0.15, duration: 1.5, ease: 'expo.out'
+        y: 40, opacity: 0, filter: 'blur(10px)', stagger: 0.1, duration: 1.2, ease: 'expo.out'
       })
 
       // 2. Filter Row Entrance
       gsap.fromTo('.course-filter-reveal',
-        { y: 30, opacity: 0, filter: 'blur(10px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out', stagger: 0.08, delay: 0.2 }
+        { y: 20, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out', stagger: 0.05, delay: 0.15 }
       )
 
       // 3. Grid Entrance (ScrollTrigger)
@@ -172,33 +218,49 @@ const Courses = () => {
     return thumb.startsWith('/') ? `${baseUrl}${thumb}` : `${baseUrl}/${thumb}`
   }
 
+  const categoryOptions = [
+    'ALL COURSES',
+    'DATA ANALYTICS',
+    'DATA SCIENCE & AI',
+    'POWER BI & TABLEAU',
+    'SQL & PYTHON',
+    'BUSINESS ANALYSIS'
+  ]
+
+  const hasActiveEvents = eventList && eventList.length > 0
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-dark pt-0 pb-24">
+    <div ref={containerRef} className="min-h-screen bg-dark pb-24">
 
       {/* 1. Dynamic Hero Banner */}
-      {eventList && eventList.length > 0 && <EventHero events={eventList} />}
+      {hasActiveEvents && <EventHero events={eventList} />}
 
       {/* 2. Page Content Wrapper */}
-      <div className="px-4 md:px-12">
-        <div className="courses-hero max-w-7xl mx-auto mb-0 pt-24">
-          <h1 className="font-newsreader text-[clamp(4rem,10vw,8rem)] leading-tight font-extralight">
-            {t('ourCourses')}
-          </h1>
+      <div className={`px-4 md:px-12 ${hasActiveEvents ? 'pt-12' : 'pt-36 sm:pt-40 md:pt-48'}`}>
+        <div className="courses-hero max-w-7xl mx-auto mb-10">
+          <div className="flex flex-col gap-2.5">
+            <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+              {t('ourCourses') || 'Our Courses'}
+            </h1>
+            <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-inter leading-relaxed">
+              Master in-demand industry tools with hands-on projects, real datasets, and step-by-step guidance.
+            </p>
+          </div>
         </div>
 
-        {/* 2. Filter Row Header (Replicating Screenshot Layout) */}
+        {/* 2. Filter Row Header */}
         <div className="max-w-7xl mx-auto mb-12">
           {/* Desktop Header Grid */}
-          <div className="hidden md:grid grid-cols-12 items-end gap-12 w-full pb-8 border-b border-white/5">
+          <div className="hidden md:grid grid-cols-12 items-center gap-8 w-full pb-8 border-b border-slate-200">
             {/* Section 1: Filters (Cols 1-8) */}
-            <div className="col-span-8 flex items-center gap-3">
-              {['ALL COURSES', 'BUSINESS', 'DIGITAL MARKETING'].map((filter) => (
+            <div className="col-span-8 flex flex-wrap items-center gap-2.5">
+              {categoryOptions.map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`course-filter-reveal opacity-0 px-6 py-3 font-montserrat text-[11px] font-bold tracking-[0.2em] border transition-all duration-500 uppercase ${activeFilter === filter
-                    ? 'bg-accent text-dark border-accent'
-                    : 'text-description border-white/10 hover:border-white/30 hover:text-normal'
+                  className={`course-filter-reveal opacity-0 px-5 py-2.5 rounded-full font-inter text-xs font-bold tracking-wider transition-all duration-300 uppercase shadow-sm ${activeFilter === filter
+                    ? 'bg-[#3498db] text-white border border-[#3498db] shadow-md shadow-[#3498db]/25'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:border-[#3498db]/50 hover:text-[#3498db]'
                     }`}
                 >
                   <RollingText text={filter} />
@@ -207,14 +269,14 @@ const Courses = () => {
             </div>
 
             {/* Section 2: Info & More (Cols 9-12) */}
-            <div className="col-span-4 flex flex-col items-end gap-10 course-filter-reveal opacity-0">
-               <span className="font-montserrat text-[11px] text-description/80 uppercase tracking-[0.15em] font-bold">
+            <div className="col-span-4 flex flex-col items-end gap-4 course-filter-reveal opacity-0">
+               <span className="font-inter text-xs text-slate-500 uppercase tracking-wider font-bold">
                  {filteredCourses.length} COURSE{filteredCourses.length === 1 ? '' : 'S'} AVAILABLE
                </span>
 
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`flex items-center gap-3 font-montserrat text-[11px] text-description font-bold tracking-[0.2em] transition-colors group/filters ${showAdvanced ? 'text-accent' : 'hover:text-accent'}`}
+                className={`flex items-center gap-2.5 font-inter text-xs font-bold tracking-wider transition-colors group/filters ${showAdvanced ? 'text-[#3498db]' : 'text-slate-600 hover:text-[#3498db]'}`}
               >
                 <svg width="18" height="12" viewBox="0 0 24 16" fill="none" className={`transition-transform duration-500 ${showAdvanced ? 'rotate-180 scale-110' : 'group-hover/filters:scale-110'}`}>
                   <path d="M4 4H20M7 8H17M10 12H14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
@@ -227,28 +289,28 @@ const Courses = () => {
           {/* Collapsible Advanced Filters Drawer */}
           <div
             ref={advancedRef}
-            className={`overflow-hidden transition-all duration-700 ease-memo ${showAdvanced ? 'max-h-[600px] opacity-100 mt-12 mb-12' : 'max-h-0 opacity-0'}`}
+            className={`overflow-hidden transition-all duration-700 ease-memo ${showAdvanced ? 'max-h-[600px] opacity-100 mt-8 mb-8' : 'max-h-0 opacity-0'}`}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 py-12 border-t border-white/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8 border-t border-slate-200 bg-white/60 rounded-2xl p-6 border">
               {/* 1. Difficulty Section */}
-              <div className="flex flex-col gap-8">
-                <div className="flex items-center gap-4">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-accent">
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[#3498db]">
                     <path d="M13 18L13 6M13 6L11 9M13 6L15 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M5 18L5 12M5 12L3 15M5 12L7 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M21 18L21 2M21 2L19 5M21 2L23 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <h3 className="font-newsreader text-2xl italic text-normal">Difficulty</h3>
+                  <h3 className="font-inter text-base font-bold text-slate-900">Difficulty</h3>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2.5">
                   {['All', 'Beginner', 'Intermediate', 'Advanced'].map((level) => (
                     <button
                       key={level}
                       onClick={() => setSelectedDifficulty(level)}
-                      className={`px-8 py-4 font-montserrat text-[11px] font-bold tracking-[0.2em] border transition-all duration-500 uppercase ${selectedDifficulty === level
-                        ? 'bg-accent text-dark border-accent'
-                        : 'text-description border-white/10 hover:border-white/20 hover:text-normal'
+                      className={`px-5 py-2 rounded-full font-inter text-xs font-bold tracking-wider border transition-all duration-300 uppercase ${selectedDifficulty === level
+                        ? 'bg-[#3498db] text-white border-[#3498db] shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-[#3498db]/40 hover:text-[#3498db]'
                         }`}
                     >
                       {level}
@@ -258,28 +320,28 @@ const Courses = () => {
               </div>
 
               {/* 2. Duration Section */}
-              <div className="flex flex-col gap-8">
-                <div className="flex items-center gap-4">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-accent">
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[#3498db]">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" />
                     <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <h3 className="font-newsreader text-2xl italic text-normal">Duration</h3>
+                  <h3 className="font-inter text-base font-bold text-slate-900">Duration</h3>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                   {['All hours', '0-2 hours', '2-5 hours', '5-10 hours', '10-20 hours', '20+ hours'].map((range) => (
                     <div
                       key={range}
                       onClick={() => setSelectedDuration(range)}
-                      className="flex items-center gap-4 cursor-pointer group/dur"
+                      className="flex items-center gap-3 cursor-pointer group/dur"
                     >
-                      <div className={`w-4 h-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${selectedDuration === range ? 'border-accent bg-accent/10' : 'border-white/10 group-hover/dur:border-white/30'
+                      <div className={`w-4 h-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${selectedDuration === range ? 'border-[#3498db] bg-[#3498db]/10' : 'border-slate-300 group-hover/dur:border-[#3498db]'
                         }`}>
-                        <div className={`w-1.5 h-1.5 rounded-full bg-accent transition-transform duration-300 ${selectedDuration === range ? 'scale-100' : 'scale-0'
+                        <div className={`w-1.5 h-1.5 rounded-full bg-[#3498db] transition-transform duration-300 ${selectedDuration === range ? 'scale-100' : 'scale-0'
                           }`} />
                       </div>
-                      <span className={`font-montserrat text-[11px] tracking-[0.1em] transition-colors ${selectedDuration === range ? 'text-normal font-bold' : 'text-description group-hover/dur:text-normal'
+                      <span className={`font-inter text-xs tracking-wider transition-colors ${selectedDuration === range ? 'text-slate-900 font-bold' : 'text-slate-600 group-hover/dur:text-slate-900'
                         }`}>
                         {range}
                       </span>
@@ -291,14 +353,14 @@ const Courses = () => {
           </div>
 
           {/* Mobile Layout */}
-          <div className="md:hidden flex flex-col gap-8">
+          <div className="md:hidden flex flex-col gap-6">
             <div className="flex items-center justify-between">
-              <span className="font-jetbrains text-[8px] text-description/80 uppercase tracking-[0.2em] font-bold">
+              <span className="font-inter text-xs text-slate-500 uppercase tracking-wider font-bold">
                 {filteredCourses.length} COURSE{filteredCourses.length === 1 ? '' : 'S'} AVAILABLE
               </span>
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`flex items-center gap-2 font-jetbrains text-[9px] font-bold tracking-[0.2em] transition-colors ${showAdvanced ? 'text-accent' : 'text-description hover:text-accent'}`}
+                className={`flex items-center gap-2 font-inter text-xs font-bold tracking-wider transition-colors ${showAdvanced ? 'text-[#3498db]' : 'text-slate-600 hover:text-[#3498db]'}`}
               >
                 <svg width="14" height="10" viewBox="0 0 24 16" fill="none" className={`transition-transform duration-500 ${showAdvanced ? 'rotate-180 scale-110' : ''}`}>
                   <path d="M4 4H20M7 8H17M10 12H14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
@@ -310,7 +372,7 @@ const Courses = () => {
             <div className="relative group">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="w-full flex items-center justify-between px-6 py-5 bg-white/5 border border-white/10 font-montserrat text-[11px] font-bold tracking-[0.2em]"
+                className="w-full flex items-center justify-between px-5 py-3.5 bg-white border border-slate-200 rounded-full font-inter text-xs font-bold tracking-wider shadow-sm text-slate-900"
               >
                 <span>CATEGORY: {activeFilter}</span>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className={isFilterOpen ? 'rotate-180' : ''} stroke="currentColor">
@@ -318,12 +380,12 @@ const Courses = () => {
                 </svg>
               </button>
               {isFilterOpen && (
-                <div className="absolute top-full left-0 w-full z-50 bg-[#0A0A0A] border-x border-b border-white/10">
-                  {['ALL COURSES', 'BUSINESS', 'DIGITAL MARKETING'].map((filter) => (
+                <div className="absolute top-full left-0 w-full z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-2 overflow-hidden">
+                  {categoryOptions.map((filter) => (
                     <button
                       key={filter}
                       onClick={() => { setActiveFilter(filter); setIsFilterOpen(false); }}
-                      className="w-full px-8 py-5 text-left font-montserrat text-[11px] border-b border-white/5 text-description hover:text-accent"
+                      className={`w-full px-6 py-3.5 text-left font-inter text-xs font-bold border-b border-slate-100 last:border-0 transition-colors ${activeFilter === filter ? 'text-[#3498db] bg-[#3498db]/5' : 'text-slate-700 hover:text-[#3498db] hover:bg-slate-50'}`}
                     >
                       {filter}
                     </button>
@@ -336,10 +398,8 @@ const Courses = () => {
 
         {/* 3. Asymmetrical Masonry Grid */}
         <div className="course-grid max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24 mb-12">
-          {loading ? (
-            <div className="col-span-full text-center py-20 text-accent font-montserrat">LOADING COURSES...</div>
-          ) : error ? (
-            <div className="col-span-full text-center py-20 text-red-500 font-montserrat">{t('failedToLoad')}</div>
+          {loading && !displayCourses.length ? (
+            <div className="col-span-full text-center py-20 text-[#3498db] font-inter font-bold">LOADING COURSES...</div>
           ) : filteredCourses.length > 0 ? (
             filteredCourses.map((item) => (
               <CourseCard
@@ -349,27 +409,27 @@ const Courses = () => {
                   title: item.title,
                   category: item.category?.name || item.category || 'COURSE',
                   description: item.shortDescription || item.description,
-                  price: item.salePrice ? `₹${item.salePrice}` : item.price ? `₹${item.price}` : 'FREE',
-                  image: getImageUrl(item.thumbnail),
-                  isNew: true,
+                  price: item.salePrice ? `₹${item.salePrice}` : item.price ? (typeof item.price === 'number' ? `₹${item.price}` : item.price) : 'FREE',
+                  image: getImageUrl(item.thumbnail || item.image),
+                  isNew: item.isNew ?? true,
                 }}
               />
             ))
           ) : (
-            <div className="col-span-full text-center py-20 text-description font-montserrat">{t('noCoursesAvailable')}</div>
+            <div className="col-span-full text-center py-20 text-slate-500 font-inter font-bold">{t('noCoursesAvailable') || 'No courses match your filter criteria.'}</div>
           )}
         </div>
 
         {/* 4. Upcoming Events Section */}
-        <div className="events-section max-w-7xl mx-auto pt-24 border-t border-white/5">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+        <div className="events-section max-w-7xl mx-auto pt-20 border-t border-slate-200">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-              <h2 className="font-newsreader text-5xl md:text-6xl italic text-normal mb-4">Upcoming Events</h2>
-              <p className="font-montserrat text-[11px] text-description uppercase tracking-[0.2em]">Curated experiences & intensive workshops.</p>
+              <h2 className="font-inter text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">Upcoming Events & Workshops</h2>
+              <p className="font-inter text-xs text-slate-600 uppercase tracking-wider font-semibold">Hands-on live sessions and intensive masterclasses.</p>
             </div>
-            <div className="flex items-center gap-4 text-[10px] font-jetbrains text-description">
-              <span className="text-accent">•</span> <span>{t('berlin')}</span>
-              <span className="text-accent">•</span> <span>{t('remotelyAvailable')}</span>
+            <div className="flex items-center gap-4 text-xs font-inter font-bold text-slate-600">
+              <span className="text-[#3498db] font-black">•</span> <span>Live Interactive</span>
+              <span className="text-[#3498db] font-black">•</span> <span>{t('remotelyAvailable') || 'Online Available'}</span>
             </div>
           </div>
 

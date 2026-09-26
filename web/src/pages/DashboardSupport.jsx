@@ -129,15 +129,15 @@ const DashboardSupport = () => {
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-8 support-reveal opacity-0">
                         <div className="space-y-3">
-                           <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('supportProtocolTag')}</p>
-                           <h1 className="font-newsreader italic text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
+                           <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black">{t('supportProtocolTag')}</p>
+                           <h1 className="font-inter text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
                                {t('supportCenter')}
                            </h1>
                         </div>
                         
                         <div className="text-right group relative hidden md:block">
                            <p className="font-jetbrains text-[9px] text-slate-500 uppercase tracking-[0.4em] mb-1 font-bold">{t('activeDispatches')}</p>
-                           <p className="font-newsreader italic text-3xl md:text-5xl text-slate-900 leading-none font-bold tracking-tighter">04</p>
+                           <p className="font-inter text-3xl md:text-5xl text-slate-900 leading-none font-bold tracking-tighter">04</p>
                            <div className="absolute -bottom-2 right-0 w-12 h-[2px] bg-amber-400 group-hover:w-full transition-all duration-700" />
                         </div>
                     </div>
@@ -169,8 +169,8 @@ const DashboardSupport = () => {
                                 {/* Contact Info */}
                                 <div className="space-y-10 support-reveal opacity-0">
                                     <div className="space-y-2">
-                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('infoArchitectureTag')}</p>
-                                       <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('contactInfo')}</h3>
+                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black">{t('infoArchitectureTag')}</p>
+                                       <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('contactInfo')}</h3>
                                     </div>
                                     
                                     <div className="space-y-6">
@@ -248,8 +248,8 @@ const DashboardSupport = () => {
                                 {/* Select Query */}
                                 <div className="space-y-10 support-reveal opacity-0">
                                     <div className="space-y-2">
-                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('strategicClassificationTag')}</p>
-                                       <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('supportCategory')}</h3>
+                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black">{t('strategicClassificationTag')}</p>
+                                       <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('supportCategory')}</h3>
                                     </div>
                                     
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -278,8 +278,8 @@ const DashboardSupport = () => {
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 support-reveal opacity-0">
                                 <div className="lg:col-span-8 space-y-10">
                                     <div className="space-y-2">
-                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('detailedDossierTag')}</p>
-                                       <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('intelligenceBriefingTitle')}</h3>
+                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black">{t('detailedDossierTag')}</p>
+                                       <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('intelligenceBriefingTitle')}</h3>
                                     </div>
                                     <div className="relative">
                                         <textarea 
@@ -323,8 +323,8 @@ const DashboardSupport = () => {
 
                                 <div className="lg:col-span-4 space-y-10">
                                     <div className="space-y-2">
-                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('supportingAssetsTag')}</p>
-                                       <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('attachmentsTitle')}</h3>
+                                       <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black">{t('supportingAssetsTag')}</p>
+                                       <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase leading-none">{t('attachmentsTitle')}</h3>
                                     </div>
                                     <input 
                                         type="file" 
@@ -357,7 +357,7 @@ const DashboardSupport = () => {
                             {/* Submit Section (Strategic Action) */}
                             <div className="pt-24 pb-20 border-t border-slate-200 grid grid-cols-1 lg:grid-cols-2 items-center gap-20 support-reveal opacity-0">
                                 <div className="space-y-8">
-                                    <h2 className="font-newsreader italic text-4xl md:text-5xl text-slate-900 font-bold tracking-tighter leading-[0.9]">
+                                    <h2 className="font-inter text-4xl md:text-5xl text-slate-900 font-bold tracking-tighter leading-[0.9]">
                                        {t('establishCommunication')}
                                     </h2>
                                     <p className="font-jetbrains text-xs text-slate-600 leading-[2] uppercase tracking-widest max-w-md font-medium">
@@ -371,7 +371,7 @@ const DashboardSupport = () => {
                                         >
                                             {submitting ? 'PROTOCOL INITIATED...' : t('submitDispatch')}
                                         </button>
-                                        {error && <p className="font-jetbrains text-[9px] text-red-500 uppercase tracking-widest mt-4 italic">{error}</p>}
+                                        {error && <p className="font-jetbrains text-[9px] text-red-500 uppercase tracking-widest mt-4">{error}</p>}
                                     </div>
                                 </div>
                                 
@@ -388,14 +388,14 @@ const DashboardSupport = () => {
                     ) : (
                         <div className="support-reveal opacity-0 space-y-8">
                             <div className="space-y-2">
-                                <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('intelligenceLogTag')}</p>
-                                <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase">{t('raisedTickets')}</h3>
+                                <p className="font-jetbrains text-[9px] text-amber-800 uppercase tracking-[0.4em] font-black">{t('intelligenceLogTag')}</p>
+                                <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase">{t('raisedTickets')}</h3>
                             </div>
                             
                             <div className="overflow-hidden border border-slate-200 bg-white rounded-2xl shadow-sm">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-slate-100/90 border-b border-slate-200 font-jetbrains text-xs text-amber-900 uppercase tracking-[0.2em] font-black italic">
+                                        <tr className="bg-slate-100/90 border-b border-slate-200 font-jetbrains text-xs text-amber-900 uppercase tracking-[0.2em] font-black">
                                             <th className="p-6 border-r border-slate-200">{t('protocolIdCol')}</th>
                                             <th className="p-6 border-r border-slate-200">{t('briefingSubjectCol')}</th>
                                             <th className="p-6 border-r border-slate-200">{t('classificationCol')}</th>
@@ -412,7 +412,7 @@ const DashboardSupport = () => {
                                             tickets.map((ticket) => (
                                                 <tr key={ticket._id} className="hover:bg-slate-50 transition-all cursor-pointer group">
                                                     <td className="p-6 font-jetbrains text-xs text-amber-800 font-bold tracking-widest">#{ticket._id?.slice(-6).toUpperCase()}</td>
-                                                    <td className="p-6 font-newsreader italic text-lg text-slate-900 font-bold group-hover:text-amber-600 transition-colors">{ticket.subject}</td>
+                                                    <td className="p-6 font-inter text-lg text-slate-900 font-bold group-hover:text-amber-600 transition-colors">{ticket.subject}</td>
                                                     <td className="p-6">
                                                         <span className="font-jetbrains text-[10px] border border-slate-200 bg-slate-50 px-3 py-1 rounded-full text-slate-700 uppercase tracking-widest font-bold">{ticket.category}</span>
                                                     </td>
@@ -429,7 +429,7 @@ const DashboardSupport = () => {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="5" className="p-16 text-center font-jetbrains text-xs text-slate-400 uppercase tracking-widest italic">{t('noDispatchesFound')}</td>
+                                                <td colSpan="5" className="p-16 text-center font-jetbrains text-xs text-slate-400 uppercase tracking-widest">{t('noDispatchesFound')}</td>
                                             </tr>
                                         )}
                                     </tbody>

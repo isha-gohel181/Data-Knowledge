@@ -92,7 +92,7 @@ const CreateTopicModal = ({ isOpen, onClose, onSubmit }) => {
               <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center font-jetbrains text-slate-950 text-sm font-black">
                  AS
               </div>
-              <span className="font-newsreader italic text-lg text-slate-900">Anshul</span>
+              <span className="font-inter text-lg text-slate-900">Anshul</span>
            </div>
             <button 
               onClick={handleClose}
@@ -144,7 +144,7 @@ const CreateTopicModal = ({ isOpen, onClose, onSubmit }) => {
            <div className="space-y-4">
               <div className="flex items-center gap-3">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-600"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                 <span className="font-jetbrains text-[9px] font-black text-amber-700 tracking-[0.3em] uppercase">Tags <span className="text-slate-500 font-normal ml-2 italic">(Select up to 5)</span></span>
+                 <span className="font-jetbrains text-[9px] font-black text-amber-700 tracking-[0.3em] uppercase">Tags <span className="text-slate-500 font-normal ml-2">(Select up to 5)</span></span>
               </div>
               <div className="flex flex-wrap gap-2 pt-2">
                  {tags.map((tag) => (
@@ -164,7 +164,7 @@ const CreateTopicModal = ({ isOpen, onClose, onSubmit }) => {
            <div className="space-y-4">
               <div className="flex items-center gap-3">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-600"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                 <span className="font-jetbrains text-[9px] font-black text-amber-700 tracking-[0.3em] uppercase">Attachments <span className="text-slate-500 font-normal ml-2 italic">(Optional)</span></span>
+                 <span className="font-jetbrains text-[9px] font-black text-amber-700 tracking-[0.3em] uppercase">Attachments <span className="text-slate-500 font-normal ml-2">(Optional)</span></span>
               </div>
 
               <input 

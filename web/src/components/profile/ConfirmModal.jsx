@@ -24,7 +24,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
            </div>
            
            <div className="space-y-2">
-              <h3 className="font-newsreader italic text-3xl text-slate-900 font-extralight tracking-tighter leading-tight">
+              <h3 className="font-inter text-3xl text-slate-900 font-extralight tracking-tighter leading-tight">
                  {title}
               </h3>
               <p className="font-jetbrains text-[10px] text-slate-600 uppercase tracking-[0.2em] leading-relaxed max-w-[280px] mx-auto font-medium">

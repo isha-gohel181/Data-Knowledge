@@ -102,7 +102,7 @@ const FrameworkSection = ({ course, section }) => {
           
           <div className="space-y-12 relative z-10">
             <div className="space-y-4">
-              <h2 className="framework-intro-item font-newsreader italic text-3xl md:text-4xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
+              <h2 className="framework-intro-item font-inter text-3xl md:text-4xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
                 {sanitizeDisplay(section?.title || 'The Framework')}
               </h2>
                 <span className="framework-intro-item block font-jetbrains text-accent text-[10px] tracking-[0.1em] uppercase font-black opacity-60">
@@ -160,11 +160,11 @@ const FrameworkSection = ({ course, section }) => {
                       <span className="font-jetbrains text-[9px] tracking-[0.5em] text-accent uppercase font-bold">MODULE_0{index + 1}</span>
                     </div>
                     
-                    <h3 className="font-newsreader italic text-2xl md:text-3xl lg:text-4xl text-white font-extralight leading-tight tracking-tight">
+                    <h3 className="font-inter text-2xl md:text-3xl lg:text-4xl text-white font-extralight leading-tight tracking-tight">
                       {sanitizeDisplay(stripHtml(phase.title))}
                     </h3>
                     
-                    <p className="font-montserrat text-white/90 text-[11px] md:text-[10px] leading-[1.8] tracking-widest uppercase italic font-medium">
+                    <p className="font-montserrat text-white/90 text-[11px] md:text-[10px] leading-[1.8] tracking-widest uppercase font-medium">
                       {sanitizeDisplay(stripHtml(phase.description))}
                     </p>
 

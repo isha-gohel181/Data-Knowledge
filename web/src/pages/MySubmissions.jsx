@@ -100,7 +100,7 @@ const MySubmissions = () => {
          <div ref={containerRef} className="min-h-screen bg-dark relative selection:bg-accent/30 overflow-x-clip">
             <DashboardHeader />
 
-            <main className="pt-24 pb-20 px-4 ">
+            <main className="pt-24 pb-20 px-4">
                {/* Detail Header */}
                <div className="sub-reveal opacity-0 mb-12">
                   <button
@@ -112,7 +112,7 @@ const MySubmissions = () => {
                   </button>
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
-                     <h1 className="font-newsreader italic text-4xl text-normal tracking-tight">
+                     <h1 className="font-inter text-4xl text-normal tracking-tight">
                         {selectedSub.assignmentId?.title || 'Tactical Assignment'}
                      </h1>
                      <div className="flex items-center gap-3">
@@ -154,7 +154,7 @@ const MySubmissions = () => {
                   {/* Left Column: Submission Details */}
                   <div className="lg:col-span-7 space-y-10">
                      <div className="space-y-4">
-                        <h3 className="font-newsreader italic text-xl text-normal">Submission Details</h3>
+                        <h3 className="font-inter text-xl text-normal">Submission Details</h3>
                         <div className="space-y-2">
                            <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Submission Text</p>
                            <div className="w-full bg-white/[0.02] border border-white/5 p-6 min-h-[100px] rounded-sm">
@@ -210,7 +210,7 @@ const MySubmissions = () => {
                   {/* Right Column: Assignment Information */}
                   <div className="lg:col-span-5">
                      <div className="bg-white/[0.02] border border-white/10 p-10 rounded-sm space-y-8 h-full">
-                        <h3 className="font-newsreader italic text-xl text-normal">Assignment Information</h3>
+                        <h3 className="font-inter text-xl text-normal">Assignment Information</h3>
 
                         <div className="space-y-6">
                            <div className="flex items-center justify-between">
@@ -254,12 +254,12 @@ const MySubmissions = () => {
       <div ref={containerRef} className="min-h-screen bg-dark relative selection:bg-accent/30 overflow-x-clip">
          <DashboardHeader />
 
-         <main className="pt-24 pb-20 px-4 ">
+         <main className="pt-24 pb-20 px-4">
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 sub-reveal opacity-0">
                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-4">
-                     <h1 className="font-newsreader italic text-5xl text-normal tracking-tight">{t('assignmentArchive') || 'Assignment Archive'}</h1>
+                     <h1 className="font-inter text-5xl text-normal tracking-tight">{t('assignmentArchive') || 'Assignment Archive'}</h1>
                      <div className="h-[1px] w-20 bg-white/5" />
                   </div>
                   <p className="font-jetbrains text-[10px] text-description uppercase tracking-[0.4em]">{t('submissionsSub') || 'Track your tactical submissions and performance metrics'}</p>
@@ -302,7 +302,7 @@ const MySubmissions = () => {
                               </div>
 
                               <div className="space-y-2">
-                                 <h2 className="font-newsreader italic text-2xl text-normal tracking-tight group-hover:text-accent transition-colors">
+                                 <h2 className="font-inter text-2xl text-normal tracking-tight group-hover:text-accent transition-colors">
                                     {sub.assignmentId?.title || 'Unknown Assignment'}
                                  </h2>
                                  <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">
@@ -316,7 +316,7 @@ const MySubmissions = () => {
                               <div className="flex flex-col items-end gap-1">
                                  <span className="font-jetbrains text-[8px] text-normal uppercase tracking-widest">{t('performance') || 'Performance'}</span>
                                  <div className="flex items-baseline gap-1">
-                                    <span className="font-newsreader italic text-3xl text-normal">{sub.scoreGiven || '--'}</span>
+                                    <span className="font-inter text-3xl text-normal">{sub.scoreGiven || '--'}</span>
                                     {sub.assignmentId?.maxScore && (
                                        <span className="font-jetbrains text-[12px] text-normal">/ {sub.assignmentId.maxScore}</span>
                                     )}
@@ -345,7 +345,7 @@ const MySubmissions = () => {
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
                      </div>
                      <div className="flex flex-col items-center gap-2">
-                        <h3 className="font-newsreader italic text-2xl text-normal/40">No records detected</h3>
+                        <h3 className="font-inter text-2xl text-normal/40">No records detected</h3>
                         <p className="font-jetbrains text-[10px] text-description/30 uppercase tracking-widest">Your mission logs are currently empty</p>
                      </div>
                      <button className="mt-4 font-jetbrains text-[10px] text-accent font-black uppercase tracking-[0.4em] border border-accent/20 px-8 py-3 hover:bg-accent hover:text-dark transition-all">

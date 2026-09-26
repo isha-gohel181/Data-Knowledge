@@ -50,7 +50,7 @@ const DashboardJobPosts = () => {
           {/* Page Header Area */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 job-dash-reveal opacity-0">
             <div className="flex flex-col gap-2">
-              <h1 className="font-newsreader italic text-5xl text-slate-900 font-bold tracking-tight uppercase">{t('jobPostings')}</h1>
+              <h1 className="font-inter text-5xl text-slate-900 font-bold tracking-tight uppercase">{t('jobPostings')}</h1>
               <p className="font-jetbrains text-[12px] font-bold text-amber-800 uppercase tracking-[0.4em]">{t('manageJobOpps')}</p>
             </div>
             
@@ -67,15 +67,15 @@ const DashboardJobPosts = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 job-dash-reveal opacity-0">
             <div className="bg-white border border-slate-200 p-8 rounded-2xl flex flex-col gap-2 group hover:border-amber-400 shadow-sm transition-all">
                <span className="font-jetbrains text-[9px] text-slate-500 font-bold uppercase tracking-[0.4em] group-hover:text-amber-700 transition-colors">{t('totalPostsLabel')}</span>
-               <span className="font-newsreader italic text-4xl text-slate-900 tracking-tighter">{total}</span>
+               <span className="font-inter text-4xl text-slate-900 tracking-tighter">{total}</span>
             </div>
             <div className="bg-white border border-slate-200 p-8 rounded-2xl flex flex-col gap-2 group hover:border-amber-400 shadow-sm transition-all">
                <span className="font-jetbrains text-[9px] text-slate-500 font-bold uppercase tracking-[0.4em] group-hover:text-amber-700 transition-colors">{t('activeLeadsLabel')}</span>
-               <span className="font-newsreader italic text-4xl text-slate-900 tracking-tighter">0</span>
+               <span className="font-inter text-4xl text-slate-900 tracking-tighter">0</span>
             </div>
             <div className="bg-white border border-slate-200 p-8 rounded-2xl flex flex-col gap-2 group hover:border-amber-400 shadow-sm transition-all">
                <span className="font-jetbrains text-[9px] text-slate-500 font-bold uppercase tracking-[0.4em] group-hover:text-amber-700 transition-colors">{t('totalProposalsLabel')}</span>
-               <span className="font-newsreader italic text-4xl text-slate-900 tracking-tighter">0</span>
+               <span className="font-inter text-4xl text-slate-900 tracking-tighter">0</span>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ const DashboardJobPosts = () => {
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               </div>
               <div className="flex flex-col items-center gap-2">
-                <h3 className="font-newsreader italic text-2xl text-slate-600 font-bold">No publications found</h3>
+                <h3 className="font-inter text-2xl text-slate-600 font-bold">No publications found</h3>
                 <p className="font-jetbrains text-[10px] text-slate-400 uppercase tracking-widest">You haven't posted any jobs yet</p>
               </div>
               <button 

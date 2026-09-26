@@ -112,14 +112,14 @@ const JobDetail = () => {
                    {currentJob.createdBy?.fullName?.substring(0, 2).toUpperCase() || '??'}
                  </div> */}
                  <div className="flex flex-col">
-                   <span className="font-jetbrains text-[10px] text-description uppercase ">Posted by <span className="font-newsreader italic text-lg text-normal pl-2">{currentJob.createdBy?.fullName || 'Anonymous'}</span></span>
+                   <span className="font-jetbrains text-[10px] text-description uppercase">Posted by <span className="font-inter text-lg text-normal pl-2">{currentJob.createdBy?.fullName || 'Anonymous'}</span></span>
                    
                  </div>
               </div>
             </div>
 
             <div className="space-y-8 job-detail-reveal mb-20">
-              <h3 className="font-montserrat italic text-lg font-medium text-light tracking-[0.2em] border-l-4 border-accent pl-6">
+              <h3 className="font-montserrat text-lg font-medium text-light tracking-[0.2em] border-l-4 border-accent pl-6">
                 Job Description
               </h3>
               <div className="font-jetbrains text-normal/80 text-base leading-relaxed whitespace-pre-wrap max-w-none prose prose-invert">
@@ -130,7 +130,7 @@ const JobDetail = () => {
             {/* Highlighted Skills - Technical Badge Cluster */}
             <div className="space-y-8 job-detail-reveal">
                <div className="flex items-center justify-between border-b border-white/5 pb-6">
-                  <h3 className="font-montserrat text-lg font-medium italic text-light tracking-[0.2em] border-l-4 border-accent pl-6 uppercase">
+                  <h3 className="font-montserrat text-lg font-medium text-light tracking-[0.2em] border-l-4 border-accent pl-6 uppercase">
                     Skill set
                   </h3>
                   <div className="flex items-center gap-2">

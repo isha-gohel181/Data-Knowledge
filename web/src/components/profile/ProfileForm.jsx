@@ -61,7 +61,7 @@ const ProfileForm = () => {
       {/* -------------------- PROFILE SECTION -------------------- */}
       <div className="space-y-10">
          <div className="flex justify-between items-end border-b border-slate-100 pb-4">
-            <h2 className="font-newsreader italic text-4xl text-slate-900 font-bold tracking-tight lowercase">{t('profile') || 'Profile'} <span className="text-slate-400 italic font-normal">{t('profileDetails') || 'Details'}</span></h2>
+            <h2 className="font-inter text-4xl text-slate-900 font-bold tracking-tight lowercase">{t('profile') || 'Profile'} <span className="text-slate-400 font-normal">{t('profileDetails') || 'Details'}</span></h2>
             <div className="flex gap-4">
                {saveSuccess && (
                   <span className="font-jetbrains text-xs text-amber-600 uppercase tracking-widest flex items-center gap-2 font-bold">
@@ -80,7 +80,7 @@ const ProfileForm = () => {
          <form className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8" onSubmit={handleSave}>
             
             <div className="space-y-2">
-               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('fullNameLabel') || 'Full Name'}</label>
+               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('fullNameLabel') || 'Full Name'}</label>
                <input 
                   type="text" 
                   name="fullName"
@@ -91,14 +91,14 @@ const ProfileForm = () => {
             </div>
 
             <div className="space-y-2">
-               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('emailAddressLabel') || 'Email Address'} <span className="text-amber-600 font-normal lowercase">({t('lockedLabel') || 'Locked'})</span></label>
+               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('emailAddressLabel') || 'Email Address'} <span className="text-amber-600 font-normal lowercase">({t('lockedLabel') || 'Locked'})</span></label>
                <div className="w-full bg-slate-100 border border-slate-200 p-3.5 font-jetbrains text-xs text-slate-500 rounded-xl">
                   {user?.email || 'N/A'}
                </div>
             </div>
 
             <div className="space-y-2">
-               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('phoneNumberLabel') || 'Phone Number'}</label>
+               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('phoneNumberLabel') || 'Phone Number'}</label>
                <input 
                   type="tel" 
                   name="phone"
@@ -109,7 +109,7 @@ const ProfileForm = () => {
             </div>
 
             <div className="space-y-2">
-               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('locationLabel') || 'Location'}</label>
+               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('locationLabel') || 'Location'}</label>
                <input 
                   type="text" 
                   name="location"
@@ -120,7 +120,7 @@ const ProfileForm = () => {
             </div>
 
             <div className="col-span-1 md:col-span-2 space-y-2">
-               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('aboutMeBio') || 'About Me / Bio'}</label>
+               <label className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('aboutMeBio') || 'About Me / Bio'}</label>
                <textarea 
                   rows="4"
                   name="bio"
@@ -142,7 +142,7 @@ const ProfileForm = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-500 group-hover:text-amber-600 transition-colors"><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M3 21h18"/></svg>
                </div>
                <div className="space-y-1 w-full">
-                  <p className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('companyNameLabel') || 'Company Name'}</p>
+                  <p className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('companyNameLabel') || 'Company Name'}</p>
                   <input 
                     type="text" 
                     name="companyName"
@@ -158,7 +158,7 @@ const ProfileForm = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-500 group-hover:text-amber-600 transition-colors"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 4v16"/><path d="M12 4v16"/><path d="M8 4v16"/><path d="M3 10h18"/><path d="M3 14h18"/></svg>
                </div>
                <div className="space-y-1 w-full">
-                  <p className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold italic">{t('gstNumberLabel') || 'GST Number'}</p>
+                  <p className="font-jetbrains text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">{t('gstNumberLabel') || 'GST Number'}</p>
                   <input 
                     type="text" 
                     name="gstNumber"

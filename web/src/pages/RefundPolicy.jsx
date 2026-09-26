@@ -12,11 +12,11 @@ const RefundPolicy = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="refund-animate text-4xl md:text-5xl font-newsreader font-bold text-amber-600 mb-8">Refund Policy</h1>
+        <h1 className="refund-animate text-4xl md:text-5xl font-inter font-bold text-amber-600 mb-8">Refund Policy</h1>
         
         <div className="refund-animate space-y-6 text-base leading-relaxed">
           <p>
-            Thank you for choosing Bankers Grade for your banking exam preparation. We strive to provide the highest quality educational content. Please read our refund policy carefully.
+            Thank you for choosing Data Knowledge for your data analytics and data science training. We strive to provide the highest quality educational content. Please read our refund policy carefully.
           </p>
           
           <h2 className="text-xl font-bold text-amber-600 mt-6">1. Digital Products</h2>

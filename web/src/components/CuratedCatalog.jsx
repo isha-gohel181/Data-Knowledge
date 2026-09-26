@@ -95,7 +95,7 @@ const CuratedCatalog = () => {
     <section ref={containerRef} className="relative w-full py-20 px-4 md:px-12 bg-dark perspective-mesh overflow-x-hidden">
       {/* Header Section */}
       <div className="catalog-header max-w-7xl mx-auto mb-12">
-        <h1 className="font-newsreader text-[clamp(3.5rem,8vw,6rem)] italic leading-[0.9] text-normal mb-8">
+        <h1 className="font-inter text-[clamp(3.5rem,8vw,6rem)] leading-[0.9] text-normal mb-8">
           The Curated Catalog.
         </h1>
         <p className="font-montserrat text-[11px] text-description uppercase tracking-[0.2em] max-w-lg leading-medium mt-6">

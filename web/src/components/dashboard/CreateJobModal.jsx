@@ -241,7 +241,7 @@ const CreateJobModal = ({ isOpen, onClose, editData = null }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 md:p-8 border-b border-slate-100 shrink-0 bg-white">
            <div className="flex flex-col">
-              <h2 className="font-newsreader italic text-3xl font-bold text-slate-900">{editData ? t('editJobPostTitle') : t('createJobPostTitle')}</h2>
+              <h2 className="font-inter text-3xl font-bold text-slate-900">{editData ? t('editJobPostTitle') : t('createJobPostTitle')}</h2>
               <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-widest mt-1 font-bold">
                 {editData ? t('editJobPostDesc') : t('createJobPostDesc')}
               </p>
@@ -383,7 +383,7 @@ const CreateJobModal = ({ isOpen, onClose, editData = null }) => {
                    <div className="space-y-4 md:col-span-2">
                      <div className="space-y-2">
                        <label className="font-jetbrains text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-2">
-                         <div className="w-5 h-5 border border-amber-500 rounded flex items-center justify-center text-[10px] font-black italic">₹</div>
+                         <div className="w-5 h-5 border border-amber-500 rounded flex items-center justify-center text-[10px] font-black">₹</div>
                          Budget in LPA (Lakhs Per Annum)
                        </label>
                        <input 

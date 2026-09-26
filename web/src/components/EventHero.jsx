@@ -64,7 +64,7 @@ const EventHero = ({ events }) => {
             <img  
               src={bannerImg} 
               alt="" 
-              className=" inset-0 w-full h-full object-cover object-top"
+              className="inset-0 w-full h-full object-cover object-top"
             />
             {/* Event Specific Overlay Image / Element */}
             <div className="absolute inset-0 bg-black/40" />

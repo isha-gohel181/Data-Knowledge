@@ -152,7 +152,7 @@ const Contact = () => {
                     <span className="font-jetbrains text-[10px] font-bold text-amber-800 tracking-[0.5em] uppercase mb-4 block">
                         {t('getInTouch')}
                     </span>
-                    <h1 className="font-newsreader text-[clamp(3rem,8vw,7rem)] leading-[0.9] font-extralight uppercase select-none tracking-tighter text-slate-900">
+                    <h1 className="font-inter text-[clamp(3rem,8vw,7rem)] leading-[0.9] font-extralight uppercase select-none tracking-tighter text-slate-900">
                         {t('contactUs')}
                     </h1>
                     <p className="font-jetbrains text-slate-600 text-sm max-w-xl mt-6 leading-relaxed">
@@ -164,7 +164,7 @@ const Contact = () => {
                     {/* Left Column: Form */}
                     <div className="lg:col-span-7 space-y-10 contact-reveal">
                         <div className="space-y-2">
-                            <h2 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight uppercase">
+                            <h2 className="font-inter text-3xl text-slate-900 font-bold tracking-tight uppercase">
                                 {t('sendMessage')}
                             </h2>
                             <div className="h-[2px] w-12 bg-amber-400 mt-4" />
@@ -259,7 +259,7 @@ const Contact = () => {
                                 {submitting ? 'SENDING...' : t('sendMessageBtn')}
                             </button>
 
-                            {error && <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-widest text-center italic">{error}</p>}
+                            {error && <p className="font-jetbrains text-[10px] text-red-500 uppercase tracking-widest text-center">{error}</p>}
                         </form>
                     </div>
 
@@ -272,63 +272,83 @@ const Contact = () => {
                             <div className="space-y-8">
                                 {/* Header bracket */}
                                 <div className="flex justify-between items-center opacity-40">
-                                    <span className="font-jetbrains text-[8px] tracking-[0.4em] uppercase text-slate-500">Coordinates</span>
+                                    <span className="font-jetbrains text-[8px] tracking-[0.4em] uppercase text-slate-500">Contact Channels</span>
                                     <div className="h-[1px] w-16 bg-slate-300" />
-                                    <span className="font-jetbrains text-[8px] tracking-[0.1em] uppercase text-slate-500">Edrilla HQ</span>
+                                    <span className="font-jetbrains text-[8px] tracking-[0.1em] uppercase text-slate-500">Data Knowledge</span>
                                 </div>
 
                                 <div className="space-y-6">
                                     {/* Email Section */}
                                     <div className="space-y-2">
-                                        <h3 className="font-newsreader text-xl italic text-amber-800 font-bold">{t('emailSupport')}</h3>
+                                        <h3 className="font-inter text-xl text-amber-800 font-bold">{t('emailSupport')}</h3>
                                         <p className="font-jetbrains text-xs text-slate-600 leading-relaxed">
-                                            For general inquiries, course-related questions, or technical assistance:
+                                            For program inquiries, course questions, or mentorship assistance:
                                         </p>
                                         <div className="pt-2">
                                             <a
-                                                href="mailto:support@bankersgrade.com"
-                                                className="font-jetbrains text-lg font-bold text-slate-900 hover:text-amber-600 transition-colors"
+                                                href="mailto:dataknowledge.class@gmail.com"
+                                                className="font-jetbrains text-base sm:text-lg font-bold text-slate-900 hover:text-amber-600 transition-colors break-all"
                                             >
-                                                support@bankersgrade.com
+                                                dataknowledge.class@gmail.com
                                             </a>
                                         </div>
-                                        <p className="font-jetbrains text-[9px] text-slate-500 uppercase tracking-wider">
-                                            Response timeframe: <span className="text-amber-800 font-bold">24–48 hours</span>
-                                        </p>
                                     </div>
 
-                                    {/* Address Section */}
-                                    {/* <div className="space-y-2 pt-4 border-t border-slate-100">
-                                        <h3 className="font-newsreader text-xl italic text-amber-800 font-bold">{t('officeAddress')}</h3>
-                                        <div className="font-jetbrains text-sm text-slate-800 leading-relaxed">
-                                            <p className="font-bold text-slate-900">Lapaas Digital Private Limited</p>
-                                            <p className="text-slate-600">Sec 11, Rohini</p>
-                                            <p className="text-slate-600">New Delhi, India</p>
+                                    {/* Phone & WhatsApp Section */}
+                                    <div className="space-y-3 pt-4 border-t border-slate-100">
+                                        <h3 className="font-inter text-xl text-amber-800 font-bold">Call & WhatsApp</h3>
+                                        <div className="space-y-2 font-jetbrains text-sm">
+                                            <div>
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Primary Call & WhatsApp:</p>
+                                                <a href="tel:+917483741501" className="text-slate-900 font-bold hover:text-amber-600 transition-colors">
+                                                    +91 74837 41501
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Alternate Phone:</p>
+                                                <a href="tel:+918237700626" className="text-slate-900 font-bold hover:text-amber-600 transition-colors">
+                                                    +91 82377 00626
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div> */}
+                                    </div>
 
-                                    {/* Feedback Info Section */}
-                                    <div className="space-y-1.5 pt-4 border-t border-slate-100">
-                                        <h3 className="font-newsreader text-xl italic text-amber-800 font-bold">{t('feedbackSuggestions')}</h3>
+                                    {/* Official Website Portal */}
+                                    <div className="space-y-2 pt-4 border-t border-slate-100">
+                                        <h3 className="font-inter text-xl text-amber-800 font-bold">Live Classes Portal</h3>
                                         <p className="font-jetbrains text-xs text-slate-600 leading-relaxed">
-                                            Your feedback helps us improve. If you have ideas, suggestions, or feature requests, email us with the subject: <span className="text-amber-800 font-bold">"Feedback – [Your Name]"</span>.
+                                            Access online live sessions, assignments, and mock test portal:
                                         </p>
+                                        <div className="pt-1">
+                                            <a
+                                                href="https://classes.dataknowledge.in/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-jetbrains text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors flex items-center gap-1.5"
+                                            >
+                                                <span>classes.dataknowledge.in</span>
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                                    <polyline points="15 3 21 3 21 9" />
+                                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                                </svg>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* Social Grid */}
-                            <div className="pt-8 mt-8 border-t border-slate-100">
-                                <h3 className="font-newsreader text-xl italic text-amber-800 font-bold mb-3">{t('socialMedia')}</h3>
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-jetbrains text-xs text-slate-600">
-                                        YouTube – <a href="https://www.youtube.com/@bankersgrade" target="_blank" rel="noopener noreferrer" className="text-amber-800 font-bold hover:underline transition-all">Bankers Grade</a>
-                                    </div>
-                                    <div className="font-jetbrains text-xs text-slate-600">
-                                        Instagram – <a href="https://www.instagram.com/bankersgrade" target="_blank" rel="noopener noreferrer" className="text-amber-800 font-bold hover:underline transition-all">@bankersgrade</a>
-                                    </div>
-                                    <div className="font-jetbrains text-xs text-slate-600">
-                                        WhatsApp – <a href="https://wa.me/message/5WRJJMD2XK7XP1" target="_blank" rel="noopener noreferrer" className="text-amber-800 font-bold hover:underline transition-all">WhatsApp</a>
+                                    {/* WhatsApp Direct Action */}
+                                    <div className="pt-2">
+                                        <a
+                                            href="https://wa.me/917483741501"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-jetbrains font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm"
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M20.52 3.48A11.85 11.85 0 0 0 12.05 0C5.46 0 .1 5.36.1 11.95c0 2.1.55 4.15 1.6 5.96L0 24l6.26-1.64a11.9 11.9 0 0 0 5.79 1.48h.01c6.59 0 11.95-5.36 11.95-11.95 0-3.19-1.24-6.19-3.49-8.41zm-8.47 18.36h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.72.97.99-3.62-.23-.37a9.89 9.89 0 0 1-1.52-5.28c0-5.46 4.45-9.91 9.92-9.91 2.65 0 5.14 1.03 7.01 2.9a9.85 9.85 0 0 1 2.9 7.01c0 5.46-4.45 9.89-9.94 9.89zm5.44-7.44c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.49-.9-.8-1.5-1.78-1.67-2.08-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.05 1.03-1.05 2.51s1.08 2.91 1.23 3.11c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z"/>
+                                            </svg>
+                                            <span>Chat on WhatsApp</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -356,7 +376,7 @@ const Contact = () => {
 
                             <div className="space-y-2">
                                 <span className="font-jetbrains text-[9px] text-green-700 uppercase tracking-[0.4em] font-black">Message Sent</span>
-                                <h3 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight">Thank You.</h3>
+                                <h3 className="font-inter text-3xl text-slate-900 font-bold tracking-tight">Thank You.</h3>
                                 <p className="font-jetbrains text-[10px] text-slate-600 uppercase tracking-widest mt-2">
                                     We have received your message. Our team aims to respond within 24–48 hours.
                                 </p>

@@ -267,7 +267,7 @@ const Navbar = ({ isLoaded }) => {
         >
 
           <Link to="/" ref={logoRef} className="flex items-center hover:opacity-80 transition-opacity gap-2.5 text-slate-900">
-            <img src="/logo/iasdcs-logo.png" alt="IAS DCS Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
+            <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
           </Link>
 
           <div
@@ -278,7 +278,7 @@ const Navbar = ({ isLoaded }) => {
             {/* Liquid Active Pill Indicator strictly scoped to nav links */}
             <div
               ref={pillRef}
-              className="absolute top-1/2 -translate-y-1/2 h-9 bg-amber-100 border border-amber-300 rounded-full pointer-events-none transition-all duration-300 z-0 opacity-0"
+              className="absolute top-1/2 -translate-y-1/2 h-9 bg-[#3498db]/15 border border-[#3498db]/30 rounded-full pointer-events-none transition-all duration-300 z-0 opacity-0 shadow-xs"
             />
 
             {navLinks.map((link) => (
@@ -287,7 +287,7 @@ const Navbar = ({ isLoaded }) => {
                 to={link.path}
                 onMouseEnter={handleHover}
                 className={({ isActive }) =>
-                  `nav-link-item group px-5 py-2 rounded-full font-inter text-[10px] font-bold uppercase transition-all duration-300 tracking-[0.2em] relative z-10 ${isActive ? 'text-amber-900 font-black' : 'text-slate-700 hover:text-slate-900'
+                  `nav-link-item group px-5 py-2 rounded-full font-inter text-[10px] font-bold uppercase transition-all duration-300 tracking-[0.2em] relative z-10 ${isActive ? 'text-[#1f6696] font-black' : 'text-slate-700 hover:text-[#3498db]'
                   }`
                 }
               >
@@ -300,19 +300,19 @@ const Navbar = ({ isLoaded }) => {
 
             <Link
               to={token ? "/dashboard" : "/login"}
-              className="relative group bg-accent text-slate-950 font-black px-6 py-2.5 rounded-full font-inter text-[10px] uppercase tracking-[0.2em] overflow-hidden transition-all duration-300 hover:scale-[1.05] active:scale-95 shadow-accent-soft flex items-center justify-center gap-2"
+              className="relative group bg-[#3498db] text-white font-bold px-6 py-2.5 rounded-full font-inter text-[10px] uppercase tracking-[0.2em] overflow-hidden transition-all duration-300 hover:bg-[#2980b9] hover:scale-[1.05] active:scale-95 shadow-md shadow-[#3498db]/30 flex items-center justify-center gap-2"
             >
               <span className="relative z-10">{token ? t('dashboard') : t('signIn')}</span>
-              <div className="absolute inset-0 bg-white/30 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out skew-x-12" />
+              <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out skew-x-12" />
             </Link>
 
             <button
               onClick={toggleMenu}
-              className="xl:hidden w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex flex-col items-center justify-center gap-[5px] relative z-[130] group hover:bg-accent/20 hover:border-accent/40 transition-colors"
+              className="xl:hidden w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex flex-col items-center justify-center gap-[5px] relative z-[130] group hover:bg-[#3498db]/15 hover:border-[#3498db]/40 transition-colors"
             >
-              <span ref={line1Ref} className="w-4 h-[2px] bg-slate-800 transition-colors group-hover:bg-accent" />
-              <span ref={line2Ref} className="w-5 h-[2px] bg-slate-800 transition-colors group-hover:bg-accent" />
-              <span ref={line3Ref} className="w-4 h-[2px] bg-slate-800 transition-colors group-hover:bg-accent" />
+              <span ref={line1Ref} className="w-4 h-[2px] bg-slate-800 transition-colors group-hover:bg-[#3498db]" />
+              <span ref={line2Ref} className="w-5 h-[2px] bg-slate-800 transition-colors group-hover:bg-[#3498db]" />
+              <span ref={line3Ref} className="w-4 h-[2px] bg-slate-800 transition-colors group-hover:bg-[#3498db]" />
             </button>
           </div>
         </div>
@@ -324,14 +324,14 @@ const Navbar = ({ isLoaded }) => {
         className="fixed inset-0 z-[110] h-[100dvh] overflow-hidden opacity-0 invisible"
       >
         <div ref={shutter1Ref} className="absolute inset-0 bg-slate-50 translate-x-full" />
-        <div ref={shutter2Ref} className="absolute inset-0 bg-amber-100/60 translate-x-full border-r border-amber-300/40 backdrop-blur-xl" />
+        <div ref={shutter2Ref} className="absolute inset-0 bg-[#3498db]/10 translate-x-full border-r border-[#3498db]/20 backdrop-blur-xl" />
         <div ref={shutter3Ref} className="absolute inset-0 bg-white translate-x-full overflow-hidden">
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] [background-size:200px_200px]" />
 
           {/* Internal Menu Header */}
           <header className="menu-header absolute top-0 left-0 w-full px-8 md:px-12 py-8 md:py-10 flex items-center justify-between z-50">
             <Link to="/" onClick={toggleMenu} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img src="/logo/iasdcs-logo.png" alt="IAS DCS Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
+              <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
             </Link>
 
             <button
@@ -353,7 +353,7 @@ const Navbar = ({ isLoaded }) => {
                   to={link.path}
                   onClick={toggleMenu}
                   className={({ isActive }) =>
-                    `menu-item font-newsreader text-3xl sm:text-4xl md:text-8xl font-extralight transition-all duration-300 block ${isActive ? 'text-accent italic' : 'text-slate-800 opacity-60 hover:opacity-100 hover:tracking-wider'
+                    `menu-item font-inter text-3xl sm:text-4xl md:text-8xl font-extralight transition-all duration-300 block ${isActive ? 'text-[#3498db] italic font-medium' : 'text-slate-800 opacity-60 hover:text-[#3498db] hover:opacity-100 hover:tracking-wider'
                     }`
                   }
                 >
@@ -399,8 +399,8 @@ const Navbar = ({ isLoaded }) => {
                   ))}
                 </div>
                 <div className="flex flex-col gap-2 items-center text-center w-full">
-                  <p className="font-jetbrains text-[9px] tracking-[0.3em] sm:tracking-[0.6em] text-slate-500 uppercase italic whitespace-normal">Where Ambition Meets Execution</p>
-                  <p className="font-jetbrains text-[8px] tracking-[0.1em] sm:tracking-[0.2em] text-slate-400 uppercase whitespace-normal">© 2026 IAS DCS</p>
+                  <p className="font-jetbrains text-[9px] tracking-[0.3em] sm:tracking-[0.6em] text-slate-500 uppercase whitespace-normal">Practical & Industry-Focused Training</p>
+                  <p className="font-jetbrains text-[8px] tracking-[0.1em] sm:tracking-[0.2em] text-slate-400 uppercase whitespace-normal">© 2026 Data Knowledge</p>
                 </div>
               </div>
             </div>

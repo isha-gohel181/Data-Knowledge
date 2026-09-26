@@ -58,13 +58,13 @@ const Purchases = () => {
           {/* HEADER SECTION */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 purchases-header">
             <div className="space-y-2">
-               <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('archiveLedger') || 'Archive & Ledger'}</p>
-               <h1 className="font-newsreader italic text-5xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
-                  {t('myPurchases')}
+               <p className="font-inter text-xs text-[#3498db] uppercase tracking-[0.3em] font-bold not-">{t('archiveLedger') || 'My Purchases & Enrollments'}</p>
+               <h1 className="font-inter not- text-3xl md:text-5xl text-slate-900 font-extrabold tracking-tight leading-none uppercase">
+                  {t('myPurchases') || 'My Purchases'}
                </h1>
             </div>
-            <p className="max-w-md font-jetbrains text-xs text-slate-600 font-medium leading-relaxed uppercase tracking-[0.15em] text-left md:text-right">
-               {t('purchasesLedgerSub') || 'Persistent record of intellectual acquisitions and institutional investments across the Edrilla network.'}
+            <p className="max-w-md font-inter text-xs text-slate-600 font-medium leading-relaxed uppercase tracking-wider text-left md:text-right not-">
+               {t('purchasesLedgerSub') || 'Persistent record of course enrollments and invoices across Data Knowledge.'}
             </p>
           </div>
 
@@ -106,21 +106,21 @@ const Purchases = () => {
                         <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2v20M17 5H9.5a4.5 4.5 0 000 9h5a4.5 4.5 0 010 9H6" /></svg>
                         </div>
-                        <p className="font-jetbrains text-xs text-slate-600 font-bold uppercase tracking-[0.3em]">No Intellectual Acquisitions Found</p>
+                        <p className="font-jetbrains text-xs text-slate-600 font-bold uppercase tracking-[0.3em]">No Acquisitions Found</p>
                      </div>
                   )}
 
                   {/* Table Rows */}
                   {currentItems.map((item, i) => (
-                     <div key={item._id || i} className="ledger-row grid grid-cols-12 items-center px-8 py-6 bg-white hover:bg-amber-50/40 transition-colors group border-b border-slate-100 last:border-0 relative">
+                     <div key={item._id || i} className="ledger-row grid grid-cols-12 items-center px-8 py-6 bg-white hover:bg-blue-50/40 transition-colors group border-b border-slate-100 last:border-0 relative">
                         {/* Enrollment ID */}
-                        <div className="col-span-2 font-jetbrains text-xs text-slate-500 group-hover:text-amber-700 transition-colors font-bold uppercase tracking-wider">
+                        <div className="col-span-2 font-jetbrains text-xs text-slate-500 group-hover:text-[#3498db] transition-colors font-bold uppercase tracking-wider">
                            #{item._id?.slice(-8).toUpperCase() || 'P-0000'}
                         </div>
 
                         {/* Course Info */}
                         <div className="col-span-5 space-y-1.5">
-                           <h3 className="font-newsreader italic text-xl md:text-2xl text-slate-900 font-bold group-hover:text-amber-600 transition-colors leading-snug">
+                           <h3 className="font-inter not- text-lg md:text-xl text-slate-900 font-bold group-hover:text-[#3498db] transition-colors leading-snug">
                               {item.course?.title || (item.error ? 'Legacy Module (Deleted)' : 'Protocol Error')}
                            </h3>
                            <div className="flex items-center gap-3">

@@ -41,49 +41,49 @@ input, textarea, [contenteditable="true"] {
 @theme {
   --font-inter: "Inter", sans-serif;
   --font-montserrat: "Inter", sans-serif; /* Overriding for global update */
-  --font-newsreader: "Inter", sans-serif;
+  --font-inter: "Inter", sans-serif;
   --font-Montserrat: "Inter", sans-serif;
   --font-anton: "Inter", sans-serif;
   --font-signature: "Mrs Saint Delafield", cursive;
 
-  /* Modern deep blue Bankers Grade Palette */
-  --color-accent: #011753; /* Deep Blue Accent */
-  --color-accent-secondary: #06B6D4; /* Cyan */
-  --color-dark: #f4f6fe; /* Lighter shade of #011753 for main bg */
+  /* Data Knowledge Brand Palette centered on #3498db */
+  --color-accent: #3498db; /* Vivid Brand Blue Accent */
+  --color-accent-secondary: #2980b9; /* Deep Brand Blue */
+  --color-dark: #f5f9fd; /* Crisp light bg with soft blue tint */
   --color-normal: #0F172A; /* Slate 900 High Contrast Text */
   --color-description: #475569; /* Slate 600 Body Description Text */
-  --color-border: rgba(1, 23, 83, 0.08); /* Subtle border matching the new palette */
+  --color-border: rgba(52, 152, 219, 0.12); /* Subtle brand border */
   --color-card: #FFFFFF; /* Pure White Elevated Card */
-  --color-card-border: rgba(1, 23, 83, 0.06); /* Subtle card edge matching the new palette */
+  --color-card-border: rgba(52, 152, 219, 0.1); /* Subtle card edge matching the new palette */
 
-  --shadow-accent-large: 0 10px 30px -10px rgba(1, 23, 83, 0.4);
-  --shadow-accent-soft: 0 4px 20px -2px rgba(1, 23, 83, 0.3);
+  --shadow-accent-large: 0 10px 30px -10px rgba(52, 152, 219, 0.35);
+  --shadow-accent-soft: 0 4px 20px -2px rgba(52, 152, 219, 0.25);
 
   /* Override color palettes dynamically */
-  --color-amber-50: #f4f6fe;
-  --color-amber-100: #e6edff;
-  --color-amber-200: #ccd9ff;
-  --color-amber-300: #99b2ff;
-  --color-amber-400: #011753;
-  --color-amber-500: #011447;
-  --color-amber-600: #01113b;
-  --color-amber-700: #000c2a;
-  --color-amber-800: #00071a;
-  --color-amber-900: #00030d;
+  --color-amber-50: #f0f7fd;
+  --color-amber-100: #e1effb;
+  --color-amber-200: #b9ddf7;
+  --color-amber-300: #7cc1f1;
+  --color-amber-400: #3498db;
+  --color-amber-500: #2980b9;
+  --color-amber-600: #1f6696;
+  --color-amber-700: #1a5276;
+  --color-amber-800: #154360;
+  --color-amber-900: #0f2e42;
 
-  --color-yellow-50: #f4f6fe;
-  --color-yellow-100: #e6edff;
-  --color-yellow-200: #ccd9ff;
-  --color-yellow-300: #99b2ff;
-  --color-yellow-400: #011753;
-  --color-yellow-500: #011447;
-  --color-yellow-600: #01113b;
-  --color-yellow-700: #000c2a;
-  --color-yellow-800: #00071a;
-  --color-yellow-900: #00030d;
+  --color-yellow-50: #f0f7fd;
+  --color-yellow-100: #e1effb;
+  --color-yellow-200: #b9ddf7;
+  --color-yellow-300: #7cc1f1;
+  --color-yellow-400: #3498db;
+  --color-yellow-500: #2980b9;
+  --color-yellow-600: #1f6696;
+  --color-yellow-700: #1a5276;
+  --color-yellow-800: #154360;
+  --color-yellow-900: #0f2e42;
 
-  --color-slate-50: #f4f6fe;
-  --color-slate-100: #eef2ff;
+  --color-slate-50: #f5f9fd;
+  --color-slate-100: #eaf2fa;
 
   --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
 
@@ -101,14 +101,14 @@ input, textarea, [contenteditable="true"] {
 
 /* Explicit weight classes as requested */
 .newsreader-extralight {
-  font-family: var(--font-newsreader);
+  font-family: var(--font-inter);
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
 }
 
 .newsreader-light {
-  font-family: var(--font-newsreader);
+  font-family: var(--font-inter);
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
@@ -348,7 +348,7 @@ button{
 }
 
 .news-content-html h3, .news-content-html h2 {
-  @apply font-newsreader italic text-3xl text-normal mt-12 mb-6;
+  @apply font-inter italic text-3xl text-normal mt-12 mb-6;
 }
 
 .news-content-html hr {
@@ -422,7 +422,34 @@ button{
   color: #ffffff !important;
 }
 
-/* Specific button and input focus outlines to use deep blue */
+/* Specific button and input focus outlines to use brand blue */
 input:focus, textarea:focus, select:focus {
-  border-color: #011753 !important;
+  border-color: #3498db !important;
+}
+
+/* Infinite Marquee Animations */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 58s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 58s linear infinite;
 }

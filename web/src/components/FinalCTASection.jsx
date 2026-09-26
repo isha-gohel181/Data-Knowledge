@@ -48,7 +48,7 @@ const FinalCTASection = () => {
 
            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 space-y-2">
               <p className="font-jetbrains text-[8px] text-accent/40 tracking-[1em] uppercase font-bold">Protocol Initialization</p>
-              <h3 className="font-newsreader italic text-[clamp(2rem,6vw,4rem)] text-normal font-extralight tracking-tighter leading-none text-center">
+              <h3 className="font-inter text-[clamp(2rem,6vw,4rem)] text-normal font-extralight tracking-tighter leading-none text-center">
                  Become the <span className="text-accent">Architect.</span>
               </h3>
            </div>
@@ -57,7 +57,7 @@ const FinalCTASection = () => {
         {/* 3. Action Hub */}
         <div className="p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
            <div className="text-center md:text-left space-y-2">
-              <h4 className="font-newsreader italic text-2xl md:text-3xl text-normal font-extralight tracking-tight leading-none">
+              <h4 className="font-inter text-2xl md:text-3xl text-normal font-extralight tracking-tight leading-none">
                 Claim full archive access.
               </h4>
               <div className="flex items-center justify-center md:justify-start gap-4">
@@ -82,7 +82,7 @@ const FinalCTASection = () => {
         <div className="h-[1px] w-full bg-white/5" />
         <div className="px-6 py-4 flex justify-between items-center opacity-30">
            <span className="font-jetbrains text-[7px] tracking-widest uppercase">Encryption Mode: SECURE</span>
-           <span className="font-jetbrains text-[7px] tracking-widest uppercase italic">Vanguard // Archive</span>
+           <span className="font-jetbrains text-[7px] tracking-widest uppercase">Vanguard // Archive</span>
         </div>
 
       </div>

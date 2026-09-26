@@ -225,7 +225,7 @@ const DashboardLiveClasses = () => {
                             <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
                             <span className="font-jetbrains text-[10px] text-accent tracking-[0.4em] uppercase">{t('liveSignal') || 'LIVE SIGNAL'}</span>
                         </div>
-                        <h1 className="font-newsreader italic text-4xl md:text-6xl text-normal tracking-tighter">
+                        <h1 className="font-inter text-4xl md:text-6xl text-normal tracking-tighter">
                             {t('liveClasses') || 'Live Classes'}
                         </h1>
                     </div>
@@ -249,7 +249,7 @@ const DashboardLiveClasses = () => {
                                         <p className="font-jetbrains text-[10px] text-yellow-400 uppercase tracking-[0.3em] font-bold">
                                             {t('meetingDisconnected') || 'Meeting Disconnected'}
                                         </p>
-                                        <p className="font-newsreader italic text-xl text-normal">
+                                        <p className="font-inter text-xl text-normal">
                                             {disconnectedMeeting.topic}
                                         </p>
                                         <p className="font-jetbrains text-[9px] text-description/50 uppercase tracking-widest">
@@ -291,21 +291,21 @@ const DashboardLiveClasses = () => {
                                 </svg>
                             </div>
                             <div className="space-y-8 relative z-10">
-                                <h2 className="font-newsreader italic text-5xl md:text-6xl text-normal max-w-2xl">{activeMeeting.topic}</h2>
+                                <h2 className="font-inter text-5xl md:text-6xl text-normal max-w-2xl">{activeMeeting.topic}</h2>
                                 <div className="flex gap-10 flex-wrap">
                                     <div className="space-y-1">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Protocol</p>
-                                        <p className="font-newsreader italic text-2xl text-normal">{t('secureBroadcast') || 'SECURE BROADCAST'}</p>
+                                        <p className="font-inter text-2xl text-normal">{t('secureBroadcast') || 'SECURE BROADCAST'}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Schedule</p>
-                                        <p className="font-newsreader italic text-2xl text-normal">
+                                        <p className="font-inter text-2xl text-normal">
                                             {new Date(activeMeeting.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">ID / Passcode</p>
-                                        <p className="font-newsreader italic text-xl text-normal">
+                                        <p className="font-inter text-xl text-normal">
                                             {activeMeeting.id} / <span className="text-accent">{activeMeeting.password || 'N/A'}</span>
                                         </p>
                                     </div>
@@ -320,7 +320,7 @@ const DashboardLiveClasses = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="live-reveal p-20 border border-white/5 bg-white/[0.01] text-center italic text-description/40 font-newsreader text-2xl">
+                        <div className="live-reveal p-20 border border-white/5 bg-white/[0.01] text-center text-description/40 font-inter text-2xl">
                             {t('noClassesActive') || 'No classes currently active.'}
                         </div>
                     )}
@@ -332,7 +332,7 @@ const DashboardLiveClasses = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {meetings.filter(m => m.id !== activeMeeting?.id).map((m, i) => (
                                     <div key={m.id || i} className="live-reveal p-8 border border-white/5 bg-white/[0.01] space-y-4">
-                                        <h3 className="font-newsreader italic text-2xl text-normal">{m.topic}</h3>
+                                        <h3 className="font-inter text-2xl text-normal">{m.topic}</h3>
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">
                                             Scheduled: {new Date(m.start_time).toLocaleString()} | Passcode: <span className="text-accent">{m.password || 'N/A'}</span>
                                         </p>

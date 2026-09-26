@@ -12,25 +12,25 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="privacy-animate text-4xl md:text-5xl font-newsreader font-bold text-amber-600 mb-8">Privacy Policy</h1>
+        <h1 className="privacy-animate text-4xl md:text-5xl font-inter font-bold text-amber-600 mb-8">Privacy Policy</h1>
 
         <div className="privacy-animate space-y-6 text-base leading-relaxed">
           <p><strong>Effective Date:</strong> January 1, 2026</p>
           <p>
-            At Bankers Grade (operated by EdutouchInfinity Pvt. Ltd.), we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your personal information when you use our educational platform.
+            At Data Knowledge, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your personal information when you use our educational training platform.
           </p>
 
-          <h2 className="text-xl font-bold text-amber-600 mt-6">1. Information We Collect</h2>
+          <h2 className="text-xl font-bold text-blue-600 mt-6">1. Information We Collect</h2>
           <p>
-            We may collect personal information such as your name, email address, phone number, and payment details when you register for an account, purchase a course, or interact with our platform.
+            We may collect personal information such as your name, email address, phone number, and payment details when you register for an account, enroll in a course, or interact with our platform.
           </p>
 
-          <h2 className="text-xl font-bold text-amber-600 mt-6">2. How We Use Your Information</h2>
+          <h2 className="text-xl font-bold text-blue-600 mt-6">2. How We Use Your Information</h2>
           <ul className="list-disc pl-6 space-y-2">
-            <li>To provide and maintain our educational services.</li>
-            <li>To process your payments and deliver courses (e.g. IBPS, SBI CBO, JAIIB).</li>
-            <li>To communicate with you regarding updates, offers, and support.</li>
-            <li>To improve the user experience of our website and mobile application.</li>
+            <li>To provide and maintain our practical training programs and learning management services.</li>
+            <li>To process your payments and deliver courses (e.g. SQL, Excel, Power BI, Tableau, Python, Data Science, Machine Learning).</li>
+            <li>To communicate with you regarding batch schedules, project reviews, updates, and support.</li>
+            <li>To improve the user experience of our website and learning portal.</li>
           </ul>
 
           <h2 className="text-xl font-bold text-amber-600 mt-6">3. Data Security</h2>

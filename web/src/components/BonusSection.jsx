@@ -65,7 +65,7 @@ const BonusSection = ({ course }) => {
         <span className="bonus-heading block font-jetbrains text-[9px] text-accent tracking-[0.7em] uppercase font-bold opacity-70">
           Exclusive Bonuses / Zero Cost
         </span>
-        <h2 className="bonus-heading font-newsreader italic text-[clamp(2rem,5vw,4rem)] text-normal font-extralight leading-tight">
+        <h2 className="bonus-heading font-inter text-[clamp(2rem,5vw,4rem)] text-normal font-extralight leading-tight">
           Unlock These For Free —{' '}
           <span className="text-accent underline-lime">No Cost, Just Value!</span>
         </h2>

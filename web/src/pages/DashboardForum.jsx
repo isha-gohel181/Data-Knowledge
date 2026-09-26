@@ -225,7 +225,7 @@ const DashboardForum = () => {
 
           <div className="flex flex-col gap-4">
             <div className="space-y-3">
-              <h2 className="font-newsreader italic text-2xl md:text-3xl leading-snug text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
+              <h2 className="font-inter text-2xl md:text-3xl leading-snug text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
                 {question.title}
               </h2>
               {/* Render All Tags */}
@@ -427,14 +427,14 @@ const DashboardForum = () => {
       <DashboardHeader />
 
       <main className="pt-16 pb-16 px-4">
-        <div className=" mx-auto">
+        <div className="mx-auto">
 
           {/* Top Stats Protocol */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 forum-dash-reveal opacity-0">
             {stats.map((stat, i) => (
               <div key={stat.label} className="bg-white border border-slate-200 p-8 rounded-2xl flex flex-col gap-2 group hover:border-amber-400 shadow-sm transition-all">
                 <span className="font-jetbrains text-[9px] text-slate-500 uppercase tracking-[0.4em] group-hover:text-amber-700 transition-colors">{stat.label}</span>
-                <span className="font-newsreader italic text-4xl text-slate-900 tracking-tighter">{stat.value}</span>
+                <span className="font-inter text-4xl text-slate-900 tracking-tighter">{stat.value}</span>
               </div>
             ))}
           </div>
@@ -444,7 +444,7 @@ const DashboardForum = () => {
             {/* Discussion List Area */}
             <div className="md:col-span-8 lg:col-span-8 flex flex-col gap-2">
               <div className="flex items-center justify-between mb-8 forum-dash-reveal opacity-0">
-                <h1 className="font-newsreader italic text-4xl text-slate-900 font-extralight tracking-tight uppercase">{t('recentDiscourse')}</h1>
+                <h1 className="font-inter text-4xl text-slate-900 font-extralight tracking-tight uppercase">{t('recentDiscourse')}</h1>
                 <div className="hidden md:flex items-center gap-4">
                   <span className="font-jetbrains text-[9px] text-slate-400 tracking-widest uppercase">{t('filterByIntelligence')}</span>
                   <div className="h-[1px] w-12 bg-slate-200" />
@@ -455,7 +455,7 @@ const DashboardForum = () => {
                   <div className="w-16 h-16 rounded-full border border-slate-300 flex items-center justify-center mb-6">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                   </div>
-                  <h3 className="font-newsreader italic text-3xl text-slate-900 mb-2">No Discussions Yet</h3>
+                  <h3 className="font-inter text-3xl text-slate-900 mb-2">No Discussions Yet</h3>
                   <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-widest">Be the first to start a new topic.</p>
                 </div>
               )}
@@ -479,7 +479,7 @@ const DashboardForum = () => {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12h14" /></svg>
                   </div>
                   {t('startNewTopic')}
-                  <span className="text-[8px] font-normal tracking-[0.2em] opacity-60 normal-case italic">{t('contributeCollective')}</span>
+                  <span className="text-[8px] font-normal tracking-[0.2em] opacity-60 normal-case">{t('contributeCollective')}</span>
                 </button>
               </div>
 
@@ -558,7 +558,7 @@ const DashboardForum = () => {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
             <div className="text-center">
-              <h3 className="font-newsreader italic text-2xl">Topic Published</h3>
+              <h3 className="font-inter text-2xl">Topic Published</h3>
               <p className="font-jetbrains text-[9px] uppercase tracking-[0.3em] opacity-70">Discourse added to terminal</p>
             </div>
           </div>

@@ -70,8 +70,8 @@ const ProfileSidebar = ({ compact = false }) => {
 
          <div className="space-y-4">
             <div className="space-y-1">
-               <h2 className="font-newsreader italic text-3xl text-slate-900 font-bold tracking-tight lowercase leading-tight">
-                  {user?.fullName?.split(' ')[0] || 'User'} <span className="text-slate-400 italic font-normal">{user?.fullName?.split(' ').slice(1).join(' ') || ''}</span>
+               <h2 className="font-inter text-3xl text-slate-900 font-bold tracking-tight lowercase leading-tight">
+                  {user?.fullName?.split(' ')[0] || 'User'} <span className="text-slate-400 font-normal">{user?.fullName?.split(' ').slice(1).join(' ') || ''}</span>
                </h2>
                <p className="font-jetbrains text-xs text-amber-800 font-black uppercase tracking-[0.3em]">{user?.role ? (t(user.role.toLowerCase() + 'Role') || user.role) : (t('studentRole') || 'STUDENT')}</p>
             </div>
@@ -93,7 +93,7 @@ const ProfileSidebar = ({ compact = false }) => {
             <div key={i} className="flex justify-between items-center p-4 bg-slate-50 border border-slate-200/80 hover:bg-amber-50/50 hover:border-amber-300/60 rounded-xl transition-all group overflow-hidden relative">
                <div className="space-y-1 relative z-10">
                   <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">{stat.label}</p>
-                  <p className="font-newsreader italic text-3xl text-slate-900 font-bold leading-none">
+                  <p className="font-inter text-3xl text-slate-900 font-bold leading-none">
                      {String(stat.value).padStart(2, '0')}
                   </p>
                </div>

@@ -99,7 +99,7 @@ const NewsDetail = () => {
                 </span>
             </div>
 
-            <h1 className="detail-reveal opacity-0 font-newsreader text-4xl md:text-6xl text-normal leading-[1.1] selection:bg-accent selection:text-dark">
+            <h1 className="detail-reveal opacity-0 font-inter font-extrabold not- text-3xl md:text-5xl text-normal leading-[1.2] selection:bg-accent selection:text-white">
                 {article.title}
             </h1>
 
@@ -146,8 +146,8 @@ const NewsDetail = () => {
         {/* 3. Content Section */}
         <div className="flex flex-col gap-12">
             {/* Intro Block */}
-            <div className="detail-reveal opacity-0 bg-accent/5 border-l-2 border-accent p-8 md:p-10">
-                <p className="font-newsreader italic text-xl md:text-2xl leading-relaxed text-accent/80 selection:bg-accent selection:text-dark">
+            <div className="detail-reveal opacity-0 bg-[#3498db]/5 border-l-4 border-[#3498db] p-6 md:p-8 rounded-r-xl">
+                <p className="font-inter not- text-base md:text-lg leading-relaxed text-slate-800 font-medium">
                     {article.intro}
                 </p>
             </div>
@@ -176,7 +176,7 @@ const NewsDetail = () => {
                             <span className="font-jetbrains text-[9px] font-bold text-accent tracking-[0.2em] uppercase">{c.author}</span>
                             <span className="font-jetbrains text-[8px] text-description/30 tracking-widest uppercase">{c.date}</span>
                         </div>
-                        <p className="font-newsreader italic text-lg text-description/80 leading-relaxed">
+                        <p className="font-inter not- text-sm text-slate-700 leading-relaxed font-normal">
                             {c.text}
                         </p>
                     </div>
@@ -194,7 +194,7 @@ const NewsDetail = () => {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Share your perspective..."
-                    className="w-full bg-transparent border-none outline-none font-newsreader italic text-xl text-normal placeholder:text-description min-h-[120px] resize-none"
+                    className="w-full bg-white border border-slate-200 rounded-xl p-4 outline-none font-inter not- text-sm text-slate-900 placeholder:text-slate-400 min-h-[120px] resize-none focus:border-[#3498db]"
                 />
                 <div className="pt-6 border-t border-white/5 flex justify-end">
                     <button 

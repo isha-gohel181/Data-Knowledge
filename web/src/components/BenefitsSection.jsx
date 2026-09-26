@@ -31,7 +31,7 @@ BenefitsSection = ({ course, section }) => {
     <section ref={containerRef} className="max-w-7xl mx-auto py-20">
       <div className="grid grid-cols-1 min-[1301px]:grid-cols-[1fr_1.8fr] gap-12 min-[1301px]:gap-20 items-start mb-24 px-4 md:px-0">
         <div className="space-y-8 min-[1301px]:sticky min-[1301px]:top-32 transition-all duration-500">
-          <h2 className="font-newsreader italic text-4xl md:text-5xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
+          <h2 className="font-inter text-4xl md:text-5xl lg:text-6xl text-white font-extralight tracking-tight leading-[1.1]">
             {sanitizeDisplay(section?.title || "What You Will Achieve").split(' ').map((word, i, arr) => (
               <React.Fragment key={i}>
                 {i === arr.length - 1 ? (

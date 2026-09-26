@@ -39,7 +39,7 @@ const RecentActivity = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-         <h2 className="font-newsreader italic text-3xl md:text-4xl text-slate-900 font-bold tracking-tight">{t('recentActivity')}</h2>
+         <h2 className="font-inter text-3xl md:text-4xl text-slate-900 font-bold tracking-tight">{t('recentActivity')}</h2>
          <div className="h-[1px] flex-1 bg-slate-200 mx-6 hidden md:block" />
          <button className="font-jetbrains text-xs text-amber-800 font-black uppercase tracking-wider hover:text-amber-900 transition-colors">
             {t('auditTrail')}
@@ -74,9 +74,9 @@ const RecentActivity = () => {
                   </div>
 
                   <div className="space-y-1">
-                     <h4 className="font-newsreader italic text-xl text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
+                     <h4 className="font-inter text-xl text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
                         {item.title.split(':').map((part, i) => (
-                           i === 1 ? <span key={i} className="text-amber-800 ml-1.5 not-italic font-sans text-base font-bold">{part}</span> : <span key={i}>{part}</span>
+                           i === 1 ? <span key={i} className="text-amber-800 ml-1.5 font-sans text-base font-bold">{part}</span> : <span key={i}>{part}</span>
                         ))}
                      </h4>
                      <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">

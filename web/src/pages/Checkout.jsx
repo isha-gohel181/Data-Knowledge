@@ -170,7 +170,7 @@ const Checkout = () => {
             key: rKey,
             amount: rAmount, // amount in paise expected
             currency: razor.currency || 'INR',
-            name: selectedPlan.title || 'Bankers Grade',
+            name: selectedPlan.title || 'Data Knowledge',
             description: course.title || 'Course Purchase',
             order_id: order.id,
             handler: async function (response) {
@@ -361,7 +361,7 @@ const Checkout = () => {
                      </div>
                   )}
 
-                  <h2 className="font-newsreader italic text-[clamp(2.5rem,5vw,4.5rem)] text-normal leading-tight font-extralight tracking-tighter">
+                  <h2 className="font-inter text-[clamp(2.5rem,5vw,4.5rem)] text-normal leading-tight font-extralight tracking-tighter">
                      MVP <br /> Engineering.
                   </h2>
 
@@ -376,7 +376,7 @@ const Checkout = () => {
                   <div className="space-y-4">
                      <p className="font-montserrat text-[14px] text-description uppercase tracking-[0.5em] font-black">Activation Total</p>
                      <div className="flex items-baseline gap-4">
-                        <span className="font-newsreader italic text-[clamp(3rem,8vw,7rem)] text-accent tracking-tighter leading-none drop-shadow-[0_0_20px_rgba(139, 92, 246,0.3)]">
+                        <span className="font-inter text-[clamp(3rem,8vw,7rem)] text-accent tracking-tighter leading-none drop-shadow-[0_0_20px_rgba(139, 92, 246,0.3)]">
                            ₹{displayTotal}
                         </span>
                         <span className="font-jetbrains text-xs text-accent/40 mb-4">INR</span>
@@ -417,7 +417,7 @@ const Checkout = () => {
 
                   {/* Protocol Head */}
                   <div className="space-y-4 protocol-reveal">
-                     <h1 className="font-newsreader italic text-6xl text-normal font-extralight tracking-tighter">Activation Form.</h1>
+                     <h1 className="font-inter text-6xl text-normal font-extralight tracking-tighter">Activation Form.</h1>
                      <div className="w-16 h-[1px] bg-accent" />
                   </div>
 
@@ -427,7 +427,7 @@ const Checkout = () => {
                      <div className="space-y-10 protocol-reveal">
                         <div className="flex items-center gap-6 group">
                            <span className="font-montserrat text-[14px] text-accent font-black border border-accent/30 w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-accent group-hover:text-dark transition-all duration-500">01</span>
-                           <h3 className="font-newsreader italic text-3xl text-normal">Carrier Identity</h3>
+                           <h3 className="font-inter text-3xl text-normal">Carrier Identity</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -478,7 +478,7 @@ const Checkout = () => {
                      <div className="space-y-10 protocol-reveal">
                         <div className="flex items-center gap-6 group">
                            <span className="font-montserrat text-[14px] text-accent font-black border border-accent/30 w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-accent group-hover:text-dark transition-all duration-500">02</span>
-                           <h3 className="font-newsreader italic text-3xl text-normal">Comms & Business</h3>
+                           <h3 className="font-inter text-3xl text-normal">Comms & Business</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -510,7 +510,7 @@ const Checkout = () => {
                      <div className="space-y-10 protocol-reveal">
                         <div className="flex items-center gap-6 group">
                            <span className="font-montserrat text-[14px] text-accent font-black border border-accent/30 w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-accent group-hover:text-dark transition-all duration-500">03</span>
-                           <h3 className="font-newsreader italic text-3xl text-normal">Tax Codes & Coupons</h3>
+                           <h3 className="font-inter text-3xl text-normal">Tax Codes & Coupons</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -585,7 +585,7 @@ const Checkout = () => {
                      />
                      <div className="mt-4 text-center">
                         <div className="text-sm text-normal/70">Quick total</div>
-                        <div className="font-newsreader italic text-2xl text-accent mt-1">{formatCurrency(total)}</div>
+                        <div className="font-inter text-2xl text-accent mt-1">{formatCurrency(total)}</div>
                      </div>
                   </div>
 
@@ -602,7 +602,7 @@ const Checkout = () => {
                      />
                      <div className="mt-6 p-4 text-center">
                         <div className="text-sm text-normal/70">Quick total</div>
-                        <div className="font-newsreader italic text-3xl text-accent mt-2">{formatCurrency(total)}</div>
+                        <div className="font-inter text-3xl text-accent mt-2">{formatCurrency(total)}</div>
                      </div>
                   </div>
                </aside>
@@ -612,7 +612,7 @@ const Checkout = () => {
          {showOTPModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
                <div className="bg-dark p-6 rounded max-w-sm w-full">
-                  <h3 className="font-newsreader text-xl text-normal mb-4">Verify OTP</h3>
+                  <h3 className="font-inter text-xl text-normal mb-4">Verify OTP</h3>
                   <p className="text-sm text-normal/70 mb-2">Enter the OTP sent to {formData.email}</p>
                   <input
                      value={otp}
@@ -651,7 +651,7 @@ const Checkout = () => {
 
                      <div className="space-y-2">
                         <p className="font-jetbrains text-[10px] text-accent uppercase tracking-[0.4em] font-black">Transaction Verified</p>
-                        <h3 className="font-newsreader italic text-3xl md:text-4xl text-normal tracking-tight">Activation Complete.</h3>
+                        <h3 className="font-inter text-3xl md:text-4xl text-normal tracking-tight">Activation Complete.</h3>
                         <p className="font-jetbrains text-[11px] text-normal/60 uppercase tracking-widest mt-2">
                            Your credentials are now securely bound to the system.
                         </p>

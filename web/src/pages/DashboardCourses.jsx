@@ -109,8 +109,8 @@ const DashboardCourses = () => {
         {/* 1. Page Header */}
         <div className="courses-hero max-w-[1600px] mx-auto mb-12 flex flex-col md:flex-row md:items-end justify-between items-start gap-8">
           <div className="space-y-2">
-             <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black italic">{t('curatedCatalog')}</p>
-             <h1 className="font-newsreader italic text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
+             <p className="font-jetbrains text-xs text-amber-800 uppercase tracking-[0.4em] font-black">{t('curatedCatalog')}</p>
+             <h1 className="font-inter text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-none uppercase">
                 {t('ourCoursesTitle')}
              </h1>
           </div>
@@ -118,11 +118,11 @@ const DashboardCourses = () => {
           <div className="flex gap-12 items-center self-end md:self-auto pb-2">
              <div className="text-right group relative">
                 <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('availableStat')}</p>
-                <p className="font-newsreader italic text-4xl text-slate-900 leading-none font-medium tracking-tighter">18</p>
+                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">18</p>
              </div>
              <div className="text-right group relative">
                 <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('newTodayStat')}</p>
-                <p className="font-newsreader italic text-4xl text-slate-900 leading-none font-medium tracking-tighter">02</p>
+                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">02</p>
              </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ const DashboardCourses = () => {
                       <path d="M5 18L5 12M5 12L3 15M5 12L7 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M21 18L21 2M21 2L19 5M21 2L23 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                    </svg>
-                   <h3 className="font-newsreader text-2xl italic text-slate-900 font-bold tracking-tight">Difficulty</h3>
+                   <h3 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">Difficulty</h3>
                 </div>
                 
                 <div className="flex flex-wrap gap-3">
@@ -202,7 +202,7 @@ const DashboardCourses = () => {
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5"/>
                       <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                    </svg>
-                   <h3 className="font-newsreader text-2xl italic text-slate-900 font-bold tracking-tight">Duration</h3>
+                   <h3 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">Duration</h3>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-x-6 gap-y-3">

@@ -59,7 +59,7 @@ const CourseHeroDetail = ({ course, section }) => {
           <span className="reveal-text block font-jetbrains text-accent text-[9px] md:text-xs tracking-[0.6em] md:tracking-[0.2em] font-bold uppercase opacity-60">
             {course.category?.name || 'COURSE'} / {course.level?.[0] || 'GENERAL'}
           </span>
-          <h1 className="reveal-text font-newsreader text-[clamp(2.1rem,5.1vw,3.3rem)] leading-[0.85] font-light  text-normal max-w-3xl break-words">
+          <h1 className="reveal-text font-inter text-[clamp(2.1rem,5.1vw,3.3rem)] leading-[0.85] font-light text-normal max-w-3xl break-words">
             {displayTitle.split(' ').map((word, i, arr) => (
                <React.Fragment key={i}>
                   {i === arr.length - 1 ? (
@@ -71,12 +71,12 @@ const CourseHeroDetail = ({ course, section }) => {
                </React.Fragment>
             ))}
           </h1>
-          {/* <h2 className="reveal-text font-newsreader  text-2xl text-normal/70 font-extralight tracking-tight pt-2">
+          {/* <h2 className="reveal-text font-inter text-2xl text-normal/70 font-extralight tracking-tight pt-2">
             {displaySubtitle}
           </h2> */}
         </div>
 
-        <p className="reveal-text font-newsreader text-[9px] md:text-xs text-white/70 max-w-xl leading-[1.7] tracking-widest break-words">
+        <p className="reveal-text font-inter text-[9px] md:text-xs text-white/70 max-w-xl leading-[1.7] tracking-widest break-words">
           {course.shortDescription || course.description}
         </p>
 
@@ -120,7 +120,7 @@ const CourseHeroDetail = ({ course, section }) => {
             
             <div className="space-y-8 relative z-20">
                <div className="space-y-3">
-                  <h3 className="font-newsreader italic text-3xl text-normal leading-tight font-extralight group-hover:underline-lime decoration-accent/20 transition-all">
+                  <h3 className="font-inter text-3xl text-normal leading-tight font-extralight group-hover:underline-lime decoration-accent/20 transition-all">
                      Ready to <br /> <span className="text-accent underline-lime">Transform?</span>
                   </h3>
                   <p className="font-jetbrains text-[8px] text-description tracking-[0.4em] uppercase">Join {course.enrolledStudentsCount || 0}+ students today.</p>

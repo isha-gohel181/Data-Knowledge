@@ -34,7 +34,7 @@ const JobPostCard = ({ job }) => {
             </div>
             <div className="flex flex-col">
               <span className="font-jetbrains text-[9px] text-accent tracking-widest uppercase">{job.category?.replace('-', ' ')}</span>
-              <span className="font-newsreader italic text-normal text-sm">{job.createdBy?.fullName || 'Anonymous'}</span>
+              <span className="font-inter text-normal text-sm">{job.createdBy?.fullName || 'Anonymous'}</span>
             </div>
           </div>
           <div className={`px-3 py-1 border text-[8px] text-normal font-jetbrains uppercase tracking-widest ${job.isAdminApproved ? 'border-accent/40 text-accent bg-accent/5' : 'border-white/10 text-description/80 bg-white/5'}`}>

@@ -121,7 +121,7 @@ const StackingBanners = () => {
               </span>
             </div>
 
-            <h2 className="font-newsreader text-4xl md:text-6xl italic text-slate-900 leading-tight tracking-tight">
+            <h2 className="font-inter text-4xl md:text-6xl text-slate-900 leading-tight tracking-tight">
               {t('selectionTitle')}
             </h2>
 
@@ -217,7 +217,7 @@ const StackingBanners = () => {
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 flex flex-col md:flex-row md:items-end justify-between gap-6 z-20">
                 <div className="space-y-2 max-w-lg">
                   {banner.title && (
-                    <h3 className="font-newsreader italic text-2xl md:text-4xl text-white font-extralight tracking-tight leading-tight group-hover:text-amber-300 transition-colors">
+                    <h3 className="font-inter text-2xl md:text-4xl text-white font-extralight tracking-tight leading-tight group-hover:text-amber-300 transition-colors">
                       {banner.title}
                     </h3>
                   )}

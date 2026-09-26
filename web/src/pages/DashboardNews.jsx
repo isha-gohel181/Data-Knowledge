@@ -31,7 +31,7 @@ const NewsCard = ({ article, variant = 'standard' }) => {
           <span className="font-jetbrains text-[9px] font-black text-accent tracking-[0.4em] uppercase mb-4 inline-block">
             {article.category}
           </span>
-          <h2 className="font-newsreader text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.85] font-extralight transition-colors group-hover:text-accent mb-8 max-w-[90%] uppercase">
+          <h2 className="font-inter text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.85] font-extralight transition-colors group-hover:text-accent mb-8 max-w-[90%] uppercase">
             {article.title}
           </h2>
           <div className="flex items-center gap-8 pt-8 border-t border-white/5 mt-8">
@@ -61,7 +61,7 @@ const NewsCard = ({ article, variant = 'standard' }) => {
           <span className="font-jetbrains text-[9px] font-black text-accent tracking-[0.3em] uppercase">
             {article.category}
           </span>
-          <h3 className="font-newsreader text-[22px] leading-tight text-normal transition-colors group-hover:text-accent uppercase">
+          <h3 className="font-inter text-[22px] leading-tight text-normal transition-colors group-hover:text-accent uppercase">
             {article.title}
           </h3>
           <p className="font-montserrat text-[14px] leading-relaxed text-description/80 tracking-wide line-clamp-3">
@@ -153,7 +153,7 @@ const DashboardNews = () => {
              <span className="font-jetbrains text-[9px] font-black text-accent/50 tracking-[0.8em] uppercase mb-4 block">
                Dispatch Hub
              </span>
-             <h1 className="font-newsreader italic text-[clamp(3rem,8vw,6.5rem)] leading-[0.75] font-extralight uppercase select-none">
+             <h1 className="font-inter text-[clamp(3rem,8vw,6.5rem)] leading-[0.75] font-extralight uppercase select-none">
                 {t('news')}
              </h1>
           </div>
@@ -170,7 +170,7 @@ const DashboardNews = () => {
                 </div>
                 <div className="bg-white/[0.01] border border-white/5 p-10 h-full flex flex-col justify-end news-dash-reveal opacity-0">
                    <span className="font-jetbrains text-[9px] font-black text-description/20 tracking-[0.4em] uppercase mb-4">Tactical Feed</span>
-                   <p className="font-newsreader italic text-3xl text-normal leading-tight">Decentralized protocols and the future of creative labor.</p>
+                   <p className="font-inter text-3xl text-normal leading-tight">Decentralized protocols and the future of creative labor.</p>
                 </div>
              </div>
           </div>

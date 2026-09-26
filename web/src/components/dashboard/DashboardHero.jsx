@@ -44,8 +44,8 @@ const DashboardHero = () => {
 
       {/* Main Content */}
       <div className="space-y-3 my-6 z-10 relative">
-         <h1 className="font-newsreader italic text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-tight">
-            {t('welcomeHello')}, <span className="not-italic font-black text-amber-800">{displayName}</span>
+         <h1 className="font-inter text-4xl md:text-6xl text-slate-900 font-bold tracking-tight leading-tight">
+            {t('welcomeHello')}, <span className="font-black text-amber-800">{displayName}</span>
          </h1>
          <p className="font-montserrat text-xs md:text-sm text-slate-600 max-w-md font-medium leading-relaxed">
             {t('onTrack')}

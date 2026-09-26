@@ -26,13 +26,13 @@ const NewsCard = ({ article, variant = 'standard' }) => {
         </div>
         
         <div className="relative z-10 h-full p-8 md:p-12 flex flex-col justify-end">
-          <span className="font-jetbrains text-xs font-black text-slate-950 bg-amber-400 tracking-wider uppercase mb-4 px-3.5 py-1 rounded-full w-fit shadow-sm">
+          <span className="font-inter text-xs font-bold text-white bg-[#3498db] tracking-wider uppercase mb-4 px-3.5 py-1 rounded-full w-fit shadow-sm not-">
             {article.category}
           </span>
-          <h2 className="font-newsreader italic text-3xl md:text-5xl font-bold leading-tight text-white transition-colors group-hover:text-amber-300 mb-4 max-w-3xl">
+          <h2 className="font-inter not- text-2xl md:text-4xl font-extrabold leading-tight text-white transition-colors group-hover:text-blue-200 mb-4 max-w-3xl">
             {article.title}
           </h2>
-          <p className="font-jetbrains text-xs leading-relaxed text-slate-200 tracking-wide max-w-2xl font-medium line-clamp-2 mb-6">
+          <p className="font-inter text-xs leading-relaxed text-slate-200 tracking-wide max-w-2xl font-normal line-clamp-2 mb-6 not-">
             {article.description}
           </p>
           <div className="flex items-center gap-6 pt-4 border-t border-white/20">
@@ -61,10 +61,10 @@ const NewsCard = ({ article, variant = 'standard' }) => {
           />
         </div>
         <div className="flex flex-col gap-4">
-          <span className="font-jetbrains text-[10px] font-black text-amber-900 bg-amber-100 border border-amber-300 tracking-wider uppercase px-3 py-1 rounded-full w-fit">
+          <span className="font-inter text-[11px] font-bold text-[#3498db] bg-[#3498db]/10 border border-[#3498db]/30 tracking-wider uppercase px-3 py-1 rounded-full w-fit not-">
             {article.category}
           </span>
-          <h2 className="font-newsreader italic text-2xl md:text-3xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-amber-600">
+          <h2 className="font-inter not- text-xl md:text-2xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-[#3498db]">
             {article.title}
           </h2>
           <div className="flex items-center gap-4 pt-4 border-t border-slate-100">
@@ -91,13 +91,13 @@ const NewsCard = ({ article, variant = 'standard' }) => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <span className="font-jetbrains text-[10px] font-black text-amber-900 bg-amber-100 border border-amber-300 tracking-wider uppercase px-3 py-1 rounded-full w-fit">
+          <span className="font-inter text-[11px] font-bold text-[#3498db] bg-[#3498db]/10 border border-[#3498db]/30 tracking-wider uppercase px-3 py-1 rounded-full w-fit not-">
             {article.category}
           </span>
-          <h3 className="font-newsreader italic text-xl md:text-2xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-amber-600 line-clamp-2">
+          <h3 className="font-inter not- text-lg md:text-xl leading-snug text-slate-900 font-bold transition-colors group-hover:text-[#3498db] line-clamp-2">
             {article.title}
           </h3>
-          <p className="font-jetbrains text-xs leading-relaxed text-slate-600 font-medium line-clamp-2">
+          <p className="font-inter text-xs leading-relaxed text-slate-600 font-normal line-clamp-2 not-">
             {article.description}
           </p>
           <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-2">
@@ -182,28 +182,28 @@ const News = () => {
         
         {/* News Header - Restored Interlocking Editorial Style */}
         <div className="mb-16">
-            <span className="font-jetbrains text-xs font-black text-amber-800 tracking-[0.4em] uppercase mb-4 block">
-              {t('archive2024')}
+            <span className="font-inter text-xs font-bold text-[#3498db] tracking-[0.3em] uppercase mb-3 block not-">
+              {t('archive2024') || 'LATEST UPDATES'}
             </span>
             
             <div className="relative">
-              <h1 className="font-newsreader text-4xl md:text-6xl font-bold italic text-slate-900 tracking-tight">
-                <span className="block">{t('latestTitle')}</span>
+              <h1 className="font-inter text-3xl md:text-5xl font-extrabold not- text-slate-900 tracking-tight">
+                <span className="block">{t('latestTitle') || 'Data Knowledge'}</span>
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-0 mt-2">
                   <div className="relative">
-                    <span className="whitespace-nowrap block">{t('dispatchesTitle')}</span>
+                    <span className="whitespace-nowrap block text-[#3498db]">{t('dispatchesTitle') || 'Articles & News'}</span>
                   </div>
                   
                   {/* Search: Repositioned to bottom-right baseline */}
                   <div className="w-full md:w-[420px] group relative md:mb-2">
                     <input 
                       type="text" 
-                      placeholder={t('searchNewsPlaceholder')}
+                      placeholder={t('searchNewsPlaceholder') || 'Search articles...'}
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-full bg-white border border-slate-200/80 rounded-full py-3 px-6 pr-12 font-jetbrains text-xs text-slate-900 focus:outline-none focus:border-amber-500 shadow-sm transition-all duration-300 placeholder:text-slate-400"
+                      className="w-full bg-white border border-slate-200 rounded-full py-3 px-6 pr-12 font-inter text-xs text-slate-900 focus:outline-none focus:border-[#3498db] shadow-sm transition-all duration-300 placeholder:text-slate-400 not-"
                     />
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-amber-600 transition-colors">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#3498db] transition-colors">
                       <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
                     </svg>
                   </div>

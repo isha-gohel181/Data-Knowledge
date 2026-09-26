@@ -118,7 +118,7 @@ const DashboardPersonality = () => {
                 <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
               </svg>
            </div>
-           <h2 className="font-newsreader text-5xl italic text-normal font-extralight mb-6 tracking-tighter">{t('noNeuralData')}</h2>
+           <h2 className="font-inter text-5xl text-normal font-extralight mb-6 tracking-tighter">{t('noNeuralData')}</h2>
            <p className="font-jetbrains text-[9px] text-description/80 tracking-[0.4em] uppercase mb-12 max-w-sm leading-relaxed">{t('cognitiveNotCalibrated')}</p>
            <Link 
             to="/personality-test"
@@ -198,8 +198,8 @@ const DashboardPersonality = () => {
                    </div>
                 </div>
                 <div className="text-center md:text-left pt-4">
-                   <p className="font-jetbrains text-[8px] text-accent font-black tracking-[0.6em] uppercase mb-4 italic">Analysis Synchronized</p>
-                   <h1 className="font-newsreader text-4xl md:text-6xl italic text-normal font-extralight mb-6 tracking-tighter leading-none">
+                   <p className="font-jetbrains text-[8px] text-accent font-black tracking-[0.6em] uppercase mb-4">Analysis Synchronized</p>
+                   <h1 className="font-inter text-4xl md:text-6xl text-normal font-extralight mb-6 tracking-tighter leading-none">
                      Type: <span className="text-accent underline-lime">{displayData.name}</span>
                    </h1>
                    <p className="font-montserrat text-[14px] md:text-xs text-description/80 max-w-2xl leading-relaxed uppercase tracking-[0.3em] mb-10">
@@ -236,8 +236,8 @@ const DashboardPersonality = () => {
                             />
                         </div>
                         <div className="mt-3 flex justify-between">
-                            <span className="font-jetbrains text-[7px] italic text-description/80 tracking-[0.4em] uppercase">SYSTEM THRESHOLD 99.8%</span>
-                            <span className="font-jetbrains text-[9px] font-bold text-accent italic tracking-widest">{trait.score}% {trait.activeSide === 'right' ? trait.right : trait.left}</span>
+                            <span className="font-jetbrains text-[7px] text-description/80 tracking-[0.4em] uppercase">SYSTEM THRESHOLD 99.8%</span>
+                            <span className="font-jetbrains text-[9px] font-bold text-accent tracking-widest">{trait.score}% {trait.activeSide === 'right' ? trait.right : trait.left}</span>
                         </div>
                       </div>
                    ))}
@@ -264,7 +264,7 @@ const DashboardPersonality = () => {
                         <div className="absolute top-0 right-0 p-10 opacity-5">
                             <span className="font-jetbrains text-[90px] font-black tracking-tighter text-white leading-none">0{Object.keys(displayData.tabs).indexOf(activeTab) + 1}</span>
                         </div>
-                        <h4 className="font-newsreader italic text-4xl text-normal mb-10 font-extralight tracking-tight underline-lime decoration-accent/30">{displayData.tabs[activeTab].title}</h4>
+                        <h4 className="font-inter text-4xl text-normal mb-10 font-extralight tracking-tight underline-lime decoration-accent/30">{displayData.tabs[activeTab].title}</h4>
                         <div className="space-y-8">
                             {displayData.tabs[activeTab].content.map((p, i) => (
                                 <p key={i} className="font-montserrat text-[14px] text-description/80 leading-[2.2] tracking-widest uppercase">
@@ -280,8 +280,8 @@ const DashboardPersonality = () => {
             <div className="result-reveal pt-12 border-t border-white/5 opacity-0 invisible">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-20">
                     <div>
-                        <h2 className="font-newsreader italic text-5xl md:text-6xl text-normal font-extralight mb-4 tracking-tighter">Recommended Architecture</h2>
-                        <p className="font-jetbrains text-[9px] text-description/80 tracking-[0.5em] uppercase italic">Accelerated learning paths tailored to your frequency.</p>
+                        <h2 className="font-inter text-5xl md:text-6xl text-normal font-extralight mb-4 tracking-tighter">Recommended Architecture</h2>
+                        <p className="font-jetbrains text-[9px] text-description/80 tracking-[0.5em] uppercase">Accelerated learning paths tailored to your frequency.</p>
                     </div>
                     <Link 
                       to="/dashboard/courses"

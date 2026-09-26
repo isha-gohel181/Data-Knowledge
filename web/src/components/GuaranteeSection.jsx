@@ -65,7 +65,7 @@ const GuaranteeSection = () => {
                    Verified / Security Protocol
                  </span>
               </div>
-              <h2 className="g-reveal font-newsreader italic text-[clamp(2.8rem,9vw,6rem)] text-normal leading-[1] font-extralight tracking-tight">
+              <h2 className="g-reveal font-inter text-[clamp(2.8rem,9vw,6rem)] text-normal leading-[1] font-extralight tracking-tight">
                 The 30-Day <br /> <span className="text-accent underline-lime decoration-accent/40">Integrity</span> Protocol.
               </h2>
             </div>
@@ -77,13 +77,13 @@ const GuaranteeSection = () => {
             <div className="g-reveal pt-12 border-t border-white/10 space-y-8">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-4">
-                     <p className="font-jetbrains text-[9px] text-accent font-black tracking-[0.5em] uppercase italic">System Refund Path</p>
+                     <p className="font-jetbrains text-[9px] text-accent font-black tracking-[0.5em] uppercase">System Refund Path</p>
                      <p className="font-jetbrains text-[9px] text-description/80 leading-relaxed uppercase tracking-widest">
                         Initiate a total refund via <span className="text-normal underline decoration-accent/20">lapaasindia@gmail.com</span> with implementation logs.
                      </p>
                   </div>
                   <div className="space-y-4">
-                     <p className="font-jetbrains text-[9px] text-accent font-black tracking-[0.5em] uppercase italic">Response Speed</p>
+                     <p className="font-jetbrains text-[9px] text-accent font-black tracking-[0.5em] uppercase">Response Speed</p>
                      <p className="font-jetbrains text-[9px] text-description/80 leading-relaxed uppercase tracking-widest">
                         Total protocol reversion within <span className="text-normal">48 Hours</span> of verified log ingestion.
                      </p>
@@ -106,7 +106,7 @@ const GuaranteeSection = () => {
                    <div className="absolute inset-8 border border-white/5 rounded-full" />
                    
                    <div className="text-center space-y-2 relative z-10">
-                      <span className="font-newsreader italic text-7xl md:text-8xl text-accent drop-shadow-[0_0_20px_rgba(139, 92, 246,0.3)]">100</span>
+                      <span className="font-inter text-7xl md:text-8xl text-accent drop-shadow-[0_0_20px_rgba(139, 92, 246,0.3)]">100</span>
                       <p className="font-montserrat text-[14px] tracking-[0.8em] text-description uppercase font-black">Guarantee</p>
                    </div>
                 </div>

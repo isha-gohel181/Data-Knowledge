@@ -133,7 +133,7 @@ const DashboardAssignment = () => {
                     <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     </div>
-                    <h2 className="font-newsreader text-4xl italic">Assignment Briefing Not Found</h2>
+                    <h2 className="font-inter text-4xl">Assignment Briefing Not Found</h2>
                     <p className="text-description/60 font-jetbrains uppercase tracking-widest text-[10px]">Security Clearance Failure or Invalid Mission ID</p>
                     <Link to="/dashboard/my-courses" className="inline-block px-12 py-4 bg-accent text-dark font-jetbrains font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all">Return to Command</Link>
                 </div>
@@ -156,7 +156,7 @@ const DashboardAssignment = () => {
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div className="space-y-4">
                                 <p className="font-jetbrains text-[10px] text-orange-400 uppercase tracking-[0.4em] font-black">Mission Objective: Assignment</p>
-                                <h1 className="font-newsreader italic text-5xl text-normal font-extralight tracking-tight leading-none uppercase">
+                                <h1 className="font-inter text-5xl text-normal font-extralight tracking-tight leading-none uppercase">
                                     {sanitizeDisplay(assignment.title || lessonTitle)}
                                 </h1>
                             </div>
@@ -194,7 +194,7 @@ const DashboardAssignment = () => {
                                             <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(139, 92, 246,0.5)]" />
                                             <h3 className="font-jetbrains text-[12px] text-accent uppercase tracking-widest font-black">Assignment Instructions</h3>
                                         </div>
-                                        <div className="p-8 bg-white/[0.02] border border-white/5 font-newsreader italic text-md md:text-md text-normal/70 leading-relaxed space-y-6 break-all">
+                                        <div className="p-8 bg-white/[0.02] border border-white/5 font-inter text-md md:text-md text-normal/70 leading-relaxed space-y-6 break-all">
                                             {assignment.description.split('\n').map((para, i) => (
                                                 <p key={i}>{para}</p>
                                             ))}
@@ -285,7 +285,7 @@ const DashboardAssignment = () => {
                                                     value={writtenResponse}
                                                     onChange={(e) => setWrittenResponse(e.target.value)}
                                                     placeholder="Type your response here..."
-                                                    className="w-full h-64 bg-white/[0.02] border border-white/5 p-6 font-newsreader italic text-lg text-normal/80 focus:border-accent/40 focus:bg-white/[0.04] transition-all outline-none resize-none"
+                                                    className="w-full h-64 bg-white/[0.02] border border-white/5 p-6 font-inter text-lg text-normal/80 focus:border-accent/40 focus:bg-white/[0.04] transition-all outline-none resize-none"
                                                 />
                                             </div>
 
@@ -365,7 +365,7 @@ const DashboardAssignment = () => {
                                         </div>
                                     ) : submissions.length === 0 ? (
                                         <div className="py-20 text-center">
-                                            <p className="font-newsreader italic text-normal/40 text-xl">No submissions yet.</p>
+                                            <p className="font-inter text-normal/40 text-xl">No submissions yet.</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-4">
@@ -392,7 +392,7 @@ const DashboardAssignment = () => {
                                                     {sub.feedback && (
                                                         <div className="pt-6 border-t border-white/5 space-y-3">
                                                             <p className="font-jetbrains text-[10px] text-accent uppercase tracking-widest font-black">Feedback</p>
-                                                            <p className="font-newsreader italic text-md text-normal/80">{sub.feedback}</p>
+                                                            <p className="font-inter text-md text-normal/80">{sub.feedback}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -448,7 +448,7 @@ const DashboardAssignment = () => {
                             </div>
                             
                             <div className="space-y-2">
-                                <h2 className="font-newsreader text-3xl italic text-normal">Mission Success</h2>
+                                <h2 className="font-inter text-3xl text-normal">Mission Success</h2>
                                 <p className="font-jetbrains text-[10px] text-normal/40 uppercase tracking-[0.3em]">Objective Secured & Transmitted</p>
                             </div>
 

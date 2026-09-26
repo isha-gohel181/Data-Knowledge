@@ -25,18 +25,18 @@ const GrowthSection = () => {
     return () => ctx.revert()
   }, [])
 
-  const awards = [
+  const highlights = [
     {
-      title: "Late Padmashree Prof. R.H. Singh Travel Grant",
-      desc: "Financial assistance and travel sponsorship for young researchers presenting statistical papers at national & global conferences."
+      title: "Real-Time Business Projects",
+      desc: "Work on authentic business datasets in SQL, Power BI, Python & Excel to build an impressive portfolio."
     },
     {
-      title: "Late Shri Ram Krishna Pandey Memorial Award",
-      desc: "Recognizing outstanding annual contributions in empirical research, capacity building, and innovative statistical methodology."
+      title: "Resume & Mock Interviews",
+      desc: "One-on-one resume reviews, technical mock interviews, and scenario-based questions to crack top hiring rounds."
     },
     {
-      title: "Aseema National AYUSH Award",
-      desc: "Prestigious honors conferred upon researchers demonstrating high-impact evidence-based innovations in AYUSH & traditional medicine."
+      title: "Live Interactive Classes",
+      desc: "Engage with experienced industry mentors in live sessions with active Q&A, continuous support & doubt clearing."
     }
   ]
 
@@ -45,54 +45,57 @@ const GrowthSection = () => {
       
       <div className="grants-card max-w-7xl mx-auto bg-white border border-slate-200/90 rounded-3xl p-8 md:p-14 shadow-md flex flex-col lg:flex-row items-center justify-between gap-10">
         
-        {/* Left Side: Awards & Grants Info */}
+        {/* Left Side: Ecosystem Info */}
         <div className="flex-1 space-y-6 min-w-0">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-bold uppercase tracking-widest font-jetbrains">
-            Awards, Grants & Institutional MoUs
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3498db]/10 border border-[#3498db]/30 text-[#1a5276] text-[11px] font-bold uppercase tracking-widest font-jetbrains">
+            Accelerate Your Data Career
           </div>
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-            Fostering Academic Excellence & <br className="hidden sm:block" />
-            <span className="text-blue-700">Research Travel Grants</span>
+            Complete Career Support & <br className="hidden sm:block" />
+            <span className="text-[#3498db]">Hands-on Mentorship</span>
           </h2>
 
           <p className="text-slate-600 text-sm md:text-base leading-relaxed max-w-2xl font-normal">
-            IAS actively supports students, scholars, and faculty members through structured research travel grants, memorial excellence awards, and institutional MoUs to establish Joint Training Centers nationwide.
+            At Data Knowledge, we provide comprehensive end-to-end guidance from foundation to job-readiness with real-world problem solving, step-by-step guidance, and continuous project assistance.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            {awards.map((award, i) => (
+            {highlights.map((item, i) => (
               <div key={i} className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5 min-w-0">
                 <h4 className="font-bold text-slate-900 text-xs sm:text-sm leading-snug line-clamp-2">
-                  {award.title}
+                  {item.title}
                 </h4>
                 <p className="text-[11px] text-slate-500 leading-relaxed line-clamp-3">
-                  {award.desc}
+                  {item.desc}
                 </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right Side: Partnership Action Box */}
+        {/* Right Side: Career Guidance Card */}
         <div className="w-full lg:w-auto flex flex-col items-center lg:items-end gap-4 flex-shrink-0">
-          <div className="p-6 rounded-2xl bg-[#011753] text-white text-center lg:text-left space-y-4 max-w-sm shadow-xl">
-            <h3 className="font-bold text-lg text-white font-inter">Institutional MoU & Collaboration</h3>
-            <p className="text-xs text-blue-200 leading-relaxed">
-              Partner your university, medical college, or hospital with IAS to establish an accredited Joint Training Center and R&D cell.
+          <div className="p-6 rounded-2xl bg-[#154360] border border-[#3498db]/30 text-white text-center lg:text-left space-y-4 max-w-sm shadow-xl">
+            <h3 className="font-bold text-lg text-white font-inter">Career Guidance & Mentorship</h3>
+            <p className="text-xs text-sky-100 leading-relaxed">
+              Connect directly with our seasoned industry mentors to evaluate your career profile and choose the right learning path.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Link
                 to="/contact"
-                className="px-5 py-3 rounded-full bg-blue-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:bg-blue-400 transition-all text-center shadow-md"
+                className="px-5 py-3 rounded-full bg-[#3498db] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#2980b9] transition-all text-center shadow-md shadow-[#3498db]/30 flex items-center justify-center gap-1.5 hover:scale-105 active:scale-95"
               >
-                Sign MoU / Partner
+                <span>Talk to Mentors</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </Link>
               <Link
-                to="/about-us"
+                to="/courses"
                 className="px-5 py-3 rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/20 transition-all text-center"
               >
-                Learn More
+                Explore Courses
               </Link>
             </div>
           </div>

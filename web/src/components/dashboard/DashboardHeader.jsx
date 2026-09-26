@@ -147,7 +147,7 @@ const DashboardHeader = () => {
 
         <div className="dash-menu-item absolute top-0 left-0 w-full p-6 flex items-center justify-between z-20">
           <div className="flex items-center gap-2.5">
-            <img src="/logo/iasdcs-logo.png" alt="IAS DCS Logo" className="h-8 w-auto object-contain rounded-lg" />
+            <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-8 w-auto object-contain rounded-lg" />
           </div>
           <button
             onClick={toggleMenu}
@@ -171,8 +171,8 @@ const DashboardHeader = () => {
                     onClick={item.path === '#' ? undefined : toggleMenu}
                     className="flex items-center gap-6 group/link py-4 border-b border-slate-100 hover:border-accent/40 transition-all duration-500"
                   >
-                    <span className="font-jetbrains text-[10px] text-accent group-hover/link:text-amber-600 tracking-widest transition-colors italic">0{i + 1}</span>
-                    <span className={`font-newsreader text-2xl md:text-3xl lg:text-4xl font-extralight tracking-tighter leading-none transition-all duration-500 ${isActive ? 'text-accent italic font-normal' : 'text-slate-800 group-hover/link:text-amber-600 group-hover/link:translate-x-2'}`}>
+                    <span className="font-jetbrains text-[10px] text-accent group-hover/link:text-amber-600 tracking-widest transition-colors">0{i + 1}</span>
+                    <span className={`font-inter text-2xl md:text-3xl lg:text-4xl font-extralight tracking-tighter leading-none transition-all duration-500 ${isActive ? 'text-accent italic font-normal' : 'text-slate-800 group-hover/link:text-amber-600 group-hover/link:translate-x-2'}`}>
                       {item.name}
                     </span>
                   </Link>
@@ -199,7 +199,7 @@ const DashboardHeader = () => {
 
           <div className="dash-menu-item w-full max-w-4xl mt-20 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left pb-20">
             <div className="space-y-1">
-              <p className="font-jetbrains text-[9px] tracking-[0.6em] text-slate-600 uppercase italic">Where Ambition Meets Execution</p>
+              <p className="font-jetbrains text-[9px] tracking-[0.6em] text-slate-600 uppercase">Where Ambition Meets Execution</p>
             </div>
             <button
               onClick={() => setShowLogoutConfirm(true)}
@@ -230,7 +230,7 @@ const DashboardHeader = () => {
       <div className="flex items-center gap-6">
         {/* DASHBOARD LOGO */}
         <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity text-slate-900">
-          <img src="/logo/iasdcs-logo.png" alt="IAS DCS Logo" className="h-8 w-auto object-contain rounded-lg" />
+          <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-8 w-auto object-contain rounded-lg" />
         </Link>
 
         <nav className="hidden [@media(min-width:1300px)]:flex items-center gap-6">
@@ -324,7 +324,7 @@ const DashboardHeader = () => {
               {notifications?.length > 0 ? notifications.slice(0, 5).map((item, i) => (
                 <div key={i} className={`group cursor-pointer p-3 rounded-lg hover:bg-slate-50 transition-colors border-l-2 ${item.status === 1 ? 'border-amber-400 bg-amber-50/30' : 'border-transparent hover:border-accent'}`}>
                   <div className="flex justify-between items-start mb-1">
-                    <h5 className="font-newsreader italic text-sm text-slate-900 group-hover:text-amber-600 transition-colors">{item.data?.title || 'Notification'}</h5>
+                    <h5 className="font-inter text-sm text-slate-900 group-hover:text-amber-600 transition-colors">{item.data?.title || 'Notification'}</h5>
                     <span className="font-jetbrains text-[6px] text-amber-700 bg-amber-50 border border-amber-200 px-1 rounded">{item.status === 1 ? 'NEW' : 'READ'}</span>
                   </div>
                   <p className="font-jetbrains text-[9px] text-slate-600 leading-tight line-clamp-2">{item.data?.description || item.data?.body || ''}</p>
@@ -352,7 +352,7 @@ const DashboardHeader = () => {
           <div className={`absolute top-14 right-0 w-56 bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl transition-all duration-300 origin-top
               ${showProfileMenu ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'}`}>
             <div className="mb-4 pb-3 border-b border-slate-100">
-              <p className="font-newsreader italic text-lg text-slate-900 leading-none mb-1">{user?.fullName || user?.name || 'Protocol User'}</p>
+              <p className="font-inter text-lg text-slate-900 leading-none mb-1">{user?.fullName || user?.name || 'Protocol User'}</p>
               <p className="font-jetbrains text-[8px] text-amber-600 tracking-[0.2em] font-black uppercase">RANK {user?.rank || '#--'} {t('rankCarrier')}</p>
             </div>
             <div className="space-y-1">

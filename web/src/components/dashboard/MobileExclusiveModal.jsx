@@ -54,7 +54,7 @@ const MobileExclusiveModal = ({ isOpen, onClose }) => {
 
                 {/* Text Content */}
                 <div className="space-y-4">
-                    <h2 className="font-newsreader italic text-3xl md:text-4xl text-normal font-extralight tracking-tight">
+                    <h2 className="font-inter text-3xl md:text-4xl text-normal font-extralight tracking-tight">
                         Mobile Exclusive <span className="text-accent">Content</span>
                     </h2>
                     <p className="font-jetbrains text-[11px] text-description/80 uppercase tracking-widest leading-[2]">
