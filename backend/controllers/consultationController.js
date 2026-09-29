@@ -181,15 +181,11 @@ export const createConsultationOrder = async (req, res) => {
 // Book a consultation slot
 export const bookConsultation = async (req, res) => {
     try {
-        const { slotId, fullName, designation, department, institute, query, paymentId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        const userId = req.user?._id;
+        const { slotId, fullName, email, phone, designation, department, institute, query, paymentId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const userId = req.user?._id || null;
 
-        if (!userId) {
-            return res.status(401).json({ success: false, message: 'User authentication required' });
-        }
-
-        if (!slotId || !fullName?.trim() || !designation?.trim() || !department?.trim() || !institute?.trim() || !query?.trim()) {
-            return res.status(400).json({ success: false, message: 'All required consultation fields must be provided' });
+        if (!slotId || !fullName?.trim() || !designation?.trim() || !department?.trim()) {
+            return res.status(400).json({ success: false, message: 'Required consultation booking fields must be provided' });
         }
 
         // Check if slot exists and is available
@@ -271,10 +267,12 @@ export const bookConsultation = async (req, res) => {
             userId,
             slotId,
             fullName: fullName.trim(),
+            email: (email || req.user?.email || '').trim(),
+            phone: (phone || req.user?.phone || '').trim(),
             designation: designation.trim(),
             department: department.trim(),
-            institute: institute.trim(),
-            query: query.trim(),
+            institute: (institute || designation || '').trim(),
+            query: (query || '').trim(),
             fileUpload: fileUploadPath,
             paymentStatus,
             paymentProvider: 'razorpay',

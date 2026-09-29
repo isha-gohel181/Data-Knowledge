@@ -39,6 +39,7 @@ import consultationReducer from "./slices/consultationSlice";
 import placementStoryReducer from "./slices/placementStory";
 import provenResultReducer from "./slices/provenResult";
 import testimonialReducer from "./slices/testimonial";
+import programOfferReducer from "./slices/programOffer";
 
 export const store = configureStore({
   reducer: {
@@ -81,6 +82,7 @@ export const store = configureStore({
     consultation: consultationReducer,
     placementStory: placementStoryReducer,
     provenResult: provenResultReducer,
+    programOffer: programOfferReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

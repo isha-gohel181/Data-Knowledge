@@ -19,6 +19,7 @@ import consultationReducer from './slices/consultationSlice';
 import placementStoryReducer from './slices/placementStorySlice';
 import provenResultReducer from './slices/provenResultSlice';
 import testimonialReducer from './slices/testimonialSlice';
+import programOfferReducer from './slices/programOfferSlice';
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     placementStories: placementStoryReducer,
     provenResults: provenResultReducer,
     testimonials: testimonialReducer,
+    programOffers: programOfferReducer,
   },
 });
 

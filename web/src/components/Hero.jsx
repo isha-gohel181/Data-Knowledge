@@ -12,26 +12,26 @@ const Hero = ({ isLoaded }) => {
    const { t } = useLanguage()
 
    useEffect(() => {
-      if (!isLoaded) return;
-
       const ctx = gsap.context(() => {
-         const tl = gsap.timeline({
-            defaults: { ease: 'expo.out', duration: 1.5 }
-         })
-
-         gsap.to(containerRef.current, { opacity: 1, pointerEvents: 'auto', duration: 0.1 })
-         gsap.set('.reveal-up', { y: 40, opacity: 0 })
-         gsap.set(imageRef.current, { scale: 1.05, opacity: 0 })
-
-         tl.to(imageRef.current, { scale: 1, opacity: 1, duration: 2.0 })
-            .to('.reveal-up', { y: 0, opacity: 1, filter: 'blur(0px)', stagger: 0.12 }, '-=1.8')
+         gsap.fromTo(
+            '.hero-reveal',
+            { y: 25, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out' }
+         )
+         if (imageRef.current) {
+            gsap.fromTo(
+               imageRef.current,
+               { scale: 1.05, opacity: 0 },
+               { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' }
+            )
+         }
       }, containerRef)
 
       return () => ctx.revert()
-   }, [isLoaded])
+   }, [])
 
    return (
-      <section ref={containerRef} className="relative min-h-[90vh] md:min-h-[95vh] bg-slate-50 flex items-center justify-center overflow-hidden opacity-0 pointer-events-none transition-opacity duration-300 pt-36 md:pt-44 pb-16">
+      <section ref={containerRef} className="relative min-h-[90vh] md:min-h-[95vh] bg-slate-50 flex items-center justify-center overflow-hidden opacity-100 pt-36 md:pt-44 pb-16">
 
          {/* Subtle Light Mesh Background */}
          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -45,15 +45,8 @@ const Hero = ({ isLoaded }) => {
 
             {/* Left Side: Typography & Core Messaging (7 cols) */}
             <div ref={contentRef} className="lg:col-span-7 flex flex-col items-start space-y-5 pt-2 min-w-0">
-               <div className="reveal-up flex items-center gap-2.5 border border-[#3498db]/30 bg-[#3498db]/10 px-4 py-2 rounded-full shadow-xs">
-                  <span className="w-2 h-2 bg-[#3498db] rounded-full animate-pulse" />
-                  <span className="font-jetbrains text-[10px] md:text-xs text-[#1a5276] uppercase tracking-wider font-bold">
-                     Data Knowledge • Practical & Industry-Focused Training
-                  </span>
-               </div>
-
                <div className="flex flex-col w-full min-w-0">
-                  <h1 className="reveal-up font-inter text-3xl sm:text-4xl lg:text-[2.75rem] text-slate-900 font-extrabold leading-[1.18] tracking-tight">
+                  <h1 className="hero-reveal font-inter text-3xl sm:text-4xl lg:text-[2.75rem] text-slate-900 font-extrabold leading-[1.18] tracking-tight">
                      Master Practical Data Analytics, <br className="hidden sm:block" />
                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3498db] via-blue-600 to-[#1a5276]">
                         Data Science, ML & AI
@@ -61,11 +54,11 @@ const Hero = ({ isLoaded }) => {
                   </h1>
                </div>
 
-               <p className="reveal-up font-inter text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed font-normal">
+               <p className="hero-reveal font-inter text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed font-normal">
                   At Data Knowledge, our mission is to provide practical and industry-focused training in tools like SQL, Excel, Power BI, Tableau, Python, and Business Analysis. Gain real-world skills that companies actually look for in data analyst and data science roles.
                </p>
 
-               <div className="reveal-up pt-3 flex gap-3.5 w-full flex-col sm:flex-row flex-wrap">
+               <div className="hero-reveal pt-3 flex gap-3.5 w-full flex-col sm:flex-row flex-wrap">
                   <Link 
                      to="/courses"
                      className="bg-[#3498db] text-white font-bold px-7 py-3.5 rounded-full font-inter text-xs uppercase tracking-wider hover:bg-[#2980b9] transition-all shadow-lg shadow-[#3498db]/30 flex items-center justify-center gap-2 group hover:scale-[1.02] active:scale-98"

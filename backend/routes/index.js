@@ -70,6 +70,7 @@ import adminActivityLogRouter from "./adminActivityLogRoutes.js";
 import consultationRouter from "./consultationRoutes.js";
 import placementStoryRouter from "./placementStoryRoutes.js";
 import provenResultRouter from "./provenResultRoutes.js";
+import programOfferRouter from "./programOfferRoutes.js";
 import { Route } from "express";
 
 router.get("/", (req, res) => {
@@ -143,6 +144,7 @@ router.use("/admin-activity-logs", adminActivityLogRouter);
 router.use("/consultations", consultationRouter);
 router.use("/placement-stories", placementStoryRouter);
 router.use("/proven-results", provenResultRouter);
+router.use("/programs-offer", programOfferRouter);
 
 // Frontend Activity Logger endpoints
 router.post("/activity-logs", (req, res) => res.status(200).json({ success: true }));

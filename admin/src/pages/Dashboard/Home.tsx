@@ -216,17 +216,17 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-brand-gradient rounded-2xl shadow-theme-lg p-6 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#1b6294] via-[#16517a] to-[#103a58] rounded-2xl shadow-theme-lg p-6 text-white relative overflow-hidden border border-white/10">
             <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 blur-2xl" />
             <div className="relative flex sm:flex-row items-center sm:items-center justify-between gap-4 mb-4">
               <h3 className="text-lg font-semibold">Platform Revenue</h3>
-              <IndianRupee className="w-5 h-5" />
+              <IndianRupee className="w-5 h-5 text-cyan-200" />
             </div>
             <div className="relative text-center">
               <p className="text-3xl font-bold">
                 {formatCurrency(counts?.platformIncome)}
               </p>
-              <p className="text-blue-100 text-sm mt-1">
+              <p className="text-cyan-100/80 text-sm mt-1">
                 Total Revenue Generated
               </p>
             </div>

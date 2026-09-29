@@ -220,7 +220,7 @@ const ConsultationBanner = () => {
                   </button>
 
                   <a
-                    href="https://wa.me/919876543210?text=Hi%20Data%20Knowledge,%20I%20would%20like%20to%20know%20more%20about%20your%20courses%20and%20book%20a%20free%20demo%20class."
+                    href="https://wa.me/917483741501?text=Hi%20Data%20Knowledge,%20I%20would%20like%20to%20know%20more%20about%20your%20courses%20and%20book%20a%20free%20demo%20class."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-2.5 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-inter text-xs font-semibold flex items-center justify-center gap-2 transition-colors"

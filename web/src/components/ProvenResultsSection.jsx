@@ -4,14 +4,14 @@ import { fetchProvenResults } from '../redux/slices/provenResultSlice'
 
 const ProvenResultsSection = () => {
   const dispatch = useDispatch()
-  const { results, loading } = useSelector((state) => state.provenResults)
+  const { results } = useSelector((state) => state.provenResults)
   const marqueeRef = useRef(null)
 
   useEffect(() => {
     dispatch(fetchProvenResults())
   }, [dispatch])
 
-  // Fallback items in case API is loading or empty
+  // Fallback items in case API is loading or empty (matches exact Admin schema)
   const fallbackResults = [
     {
       _id: 'fb-1',
@@ -19,7 +19,7 @@ const ProvenResultsSection = () => {
       company: 'ITC INFOTECH',
       salary: 'Salary: 12 LPA',
       transitionTag: 'PLACED IN 83 DAYS',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -28,7 +28,7 @@ const ProvenResultsSection = () => {
       company: 'IPG MEDIABRANDS',
       salary: 'Salary: 10 LPA',
       transitionTag: 'NON-TECH TO TECH TRANSITION',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -37,7 +37,7 @@ const ProvenResultsSection = () => {
       company: 'L&T',
       salary: 'Placed in 90 Days',
       transitionTag: 'MECHANICAL TO DATA ANALYST',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -46,7 +46,7 @@ const ProvenResultsSection = () => {
       company: 'TCS & CGI',
       salary: 'Salary: 15 LPA',
       transitionTag: 'NON-TECH TO TECH TRANSITION',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -55,7 +55,7 @@ const ProvenResultsSection = () => {
       company: 'JP MORGAN',
       salary: 'Salary: 4 LPA',
       transitionTag: 'CS TO DATA ANALYST',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -64,7 +64,7 @@ const ProvenResultsSection = () => {
       company: 'ACCENTURE',
       salary: 'Salary: 13.5 LPA',
       transitionTag: 'NON-IT TO DATA ENGINEER',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -73,7 +73,7 @@ const ProvenResultsSection = () => {
       company: 'GOOGLE PARTNER',
       salary: 'Salary: 18 LPA',
       transitionTag: 'PLACED IN 60 DAYS',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?q=80&w=688&auto=format&fit=crop',
     },
     {
@@ -82,13 +82,13 @@ const ProvenResultsSection = () => {
       company: 'PWC',
       salary: 'Salary: 11 LPA',
       transitionTag: 'BCOM TO DATA ANALYST',
-      badge: '★ SUCCESS STORY',
+      badge: 'Success Story',
       image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=688&auto=format&fit=crop',
     },
   ]
 
   const activeResults = results && results.length > 0 ? results : fallbackResults
-  // Duplicate list 3 times for a perfectly seamless infinite loop
+  // Duplicate list 3 times for a seamless infinite marquee
   const displayResults = [...activeResults, ...activeResults, ...activeResults]
 
   const getImageSrc = (img) => {
@@ -98,17 +98,28 @@ const ProvenResultsSection = () => {
     return `${baseUrl}/uploads/${img}`
   }
 
+  const cleanBadgeText = (badge) => {
+    if (!badge) return ''
+    return badge.replace(/★\s*/g, '').trim()
+  }
+
   return (
-    <section className="relative w-full bg-white text-slate-900 py-20 sm:py-24 overflow-hidden border-y border-slate-100">
-      {/* Subtle Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-blue-50/60 blur-[120px] rounded-full pointer-events-none" />
+    <section className="relative w-full bg-white text-slate-900 py-16 sm:py-20 overflow-hidden border-y border-slate-100">
+      {/* Ambient background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[350px] bg-blue-50/50 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       {/* Header Container */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center relative z-10 mb-12 sm:mb-14">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 mb-10 sm:mb-12 space-y-2.5">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3498db]/10 border border-[#3498db]/20 text-[#1b6294] text-[11px] font-bold font-jetbrains tracking-wider uppercase">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3498db]" />
+          Student Placements
+        </div>
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight font-inter">
           Our Proven Results
         </h2>
-        <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+
+        <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed font-inter">
           Join 300+ students who have successfully transitioned into high-paying data roles at top companies like Accenture, Google, and PwC.
         </p>
       </div>
@@ -122,52 +133,60 @@ const ProvenResultsSection = () => {
         {/* Marquee Animated Strip */}
         <div
           ref={marqueeRef}
-          className="flex gap-6 w-max py-4 group-hover:[animation-play-state:paused]"
+          className="flex gap-6 w-max py-3 group-hover:[animation-play-state:paused]"
           style={{
             animation: 'marquee-left 45s linear infinite',
           }}
         >
-          {displayResults.map((item, index) => (
-            <div
-              key={`${item._id}-${index}`}
-              className="w-[260px] sm:w-[280px] shrink-0 rounded-[28px] bg-white border border-slate-200 p-2.5 shadow-md hover:shadow-xl hover:border-blue-400/60 hover:-translate-y-2 transition-all duration-300 group/card cursor-pointer flex flex-col justify-between"
-            >
-              {/* Photo Area */}
-              <div className="relative h-56 sm:h-60 rounded-[20px] overflow-hidden bg-slate-100">
-                <img
-                  src={getImageSrc(item.image)}
-                  alt={item.studentName}
-                  className="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
+          {displayResults.map((item, index) => {
+            const badgeText = cleanBadgeText(item.badge)
 
-                {/* Badge Overlay */}
-                {item.badge && (
-                  <span className="absolute top-2.5 left-2.5 bg-emerald-600 text-white font-extrabold text-[10px] tracking-wider px-2.5 py-1 rounded-full uppercase shadow-sm">
-                    {item.badge}
-                  </span>
-                )}
-              </div>
+            return (
+              <div
+                key={`${item._id}-${index}`}
+                className="w-[260px] sm:w-[280px] shrink-0 rounded-2xl bg-white border border-slate-200 p-2.5 shadow-sm hover:shadow-md hover:border-[#3498db] hover:-translate-y-1 transition-all duration-300 group/card flex flex-col justify-between"
+              >
+                {/* Photo Area */}
+                <div className="relative h-56 sm:h-60 rounded-xl overflow-hidden bg-slate-100">
+                  <img
+                    src={getImageSrc(item.image)}
+                    alt={item.studentName}
+                    className="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
 
-              {/* Bottom Box */}
-              <div className="bg-slate-50/90 rounded-2xl p-4 mt-2.5 text-center flex flex-col items-center justify-between border border-slate-100">
-                <h4 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight line-clamp-1">
-                  {item.studentName}
-                </h4>
-                <p className="text-xs font-bold text-blue-600 tracking-wider uppercase mt-0.5 line-clamp-1">
-                  {item.company}
-                </p>
-
-                <div className="mt-3 w-full py-1.5 px-3 rounded-lg border border-blue-200 bg-blue-50/90 text-blue-700 font-extrabold text-xs tracking-wide">
-                  {item.salary}
+                  {/* Clean Badge without Emoji */}
+                  {badgeText && (
+                    <span className="absolute top-2.5 left-2.5 bg-emerald-600 text-white font-bold text-[10px] tracking-wider px-2.5 py-0.5 rounded-full uppercase shadow-xs">
+                      {badgeText}
+                    </span>
+                  )}
                 </div>
 
-                <div className="mt-1.5 w-full py-1 px-2 rounded-md bg-white border border-slate-200/60 text-slate-700 font-bold text-[10px] uppercase tracking-wider line-clamp-1">
-                  {item.transitionTag}
+                {/* Bottom Box: Exactly Matches Admin Panel Data */}
+                <div className="bg-slate-50/90 rounded-xl p-3.5 mt-2.5 text-center flex flex-col items-center justify-between border border-slate-100">
+                  <h4 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight font-inter line-clamp-1">
+                    {item.studentName}
+                  </h4>
+                  <p className="text-xs font-bold text-[#1b6294] font-inter tracking-wider uppercase mt-0.5 line-clamp-1">
+                    {item.company}
+                  </p>
+
+                  {item.salary && (
+                    <div className="mt-2.5 w-full py-1.5 px-3 rounded-lg border border-blue-200 bg-blue-50/90 text-[#1b6294] font-extrabold text-xs tracking-wide">
+                      {item.salary}
+                    </div>
+                  )}
+
+                  {item.transitionTag && (
+                    <div className="mt-1.5 w-full py-1 px-2 rounded-md bg-white border border-slate-200 text-slate-700 font-bold text-[10px] uppercase tracking-wider line-clamp-1">
+                      {item.transitionTag}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
@@ -175,3 +194,4 @@ const ProvenResultsSection = () => {
 }
 
 export default ProvenResultsSection
+

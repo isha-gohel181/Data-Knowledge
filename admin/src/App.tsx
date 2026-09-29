@@ -79,6 +79,7 @@ import AddResource from "./pages/Resources/AddResource";
 import EditResource from "./pages/Resources/EditResource";
 import PlacementStoriesPage from "./pages/PlacementStories/PlacementStories";
 import ProvenResultsPage from "./pages/ProvenResults/ProvenResults";
+import ProgramsOfferPage from "./pages/ProgramsOffer/ProgramsOffer";
 
 // Lazy load pages
 const SignIn = lazy(() => import("./pages/AuthPages/SignIn"));
@@ -300,6 +301,7 @@ export default function App() {
                 <Route path="/resources/edit/:id" element={<EditResource />} />
                 <Route path="/placement-stories" element={<PlacementStoriesPage />} />
                 <Route path="/proven-results" element={<ProvenResultsPage />} />
+                <Route path="/programs-offer" element={<ProgramsOfferPage />} />
               </Route>
             </Route>
 

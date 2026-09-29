@@ -283,11 +283,6 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, isGrid = false }) => {
             </p>
           </div>
         </div>
-
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 shrink-0 ml-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Verified
-        </span>
       </div>
     </div>
   )
@@ -448,9 +443,9 @@ const TestimonialsSection = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-2xl text-left">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-600 font-extrabold text-xs uppercase tracking-wider mb-3 shadow-xs">
-              <SparklesIcon className="w-3.5 h-3.5" />
-              Dynamic Student Reviews & Stories
+            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3498db]/10 border border-[#3498db]/20 text-[#1b6294] text-[11px] font-bold font-jetbrains tracking-wider uppercase mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3498db]" />
+              Student Reviews & Stories
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
               Loved by Thousands of <span className="text-[#3498db]">Learners</span>

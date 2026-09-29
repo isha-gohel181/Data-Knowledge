@@ -23,6 +23,12 @@ const adminAccounts = [
     password: "Admin@123",
     fullName: "Data Knowledge Admin",
     role: "super_admin",
+  },
+  {
+    email: "student@dataknowledge.in",
+    password: "Student@123",
+    fullName: "Demo Student",
+    role: "student",
   }
 ];
 

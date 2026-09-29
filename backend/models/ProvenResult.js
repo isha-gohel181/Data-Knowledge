@@ -24,7 +24,7 @@ const provenResultSchema = new mongoose.Schema(
     },
     badge: {
       type: String,
-      default: '★ SUCCESS STORY',
+      default: 'SUCCESS STORY',
       trim: true,
     },
     image: {

@@ -1,9 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
 const consultationBookingSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: false, default: null },
     slotId: { type: Schema.Types.ObjectId, ref: 'ConsultationSlot', required: true },
     fullName: { type: String, required: true, trim: true },
+    email: { type: String, trim: true, default: '' },
+    phone: { type: String, trim: true, default: '' },
     designation: { type: String, required: true, trim: true },
     department: { type: String, required: true, trim: true },
     institute: { type: String, required: true, trim: true },

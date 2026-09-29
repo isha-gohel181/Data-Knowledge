@@ -216,7 +216,7 @@ const PlacementStoriesSection = () => {
             <div className="stories-header-reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200/80 mb-4 shadow-sm">
               <div className="w-2 h-2 rounded-full bg-gradient-to-tr from-yellow-400 via-rose-500 to-purple-500 animate-pulse" />
               <span className="text-[11px] font-jetbrains uppercase tracking-[0.25em] font-bold text-pink-700">
-                Verified Transitions • Instagram Reels
+                Alumni Stories • Instagram Reels
               </span>
             </div>
 
@@ -374,7 +374,7 @@ const PlacementStoriesSection = () => {
                         </span>
                       </div>
                       <h4 className="text-sm font-black text-white leading-tight">
-                        🎉 Congratulations {story.studentName}
+                        Congratulations {story.studentName}
                       </h4>
                       {story.caption && (
                         <p className="text-[11px] text-gray-200 mt-1 line-clamp-2 font-jetbrains">
@@ -544,7 +544,7 @@ const PlacementStoriesSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-black text-white">
-                    🎉 {activeStory.studentName} • {activeStory.company}
+                    {activeStory.studentName} • {activeStory.company}
                   </h4>
                   <p className="text-xs text-gray-300">{activeStory.role}</p>
                 </div>

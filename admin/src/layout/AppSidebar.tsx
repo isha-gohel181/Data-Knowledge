@@ -16,7 +16,7 @@ import {
   VideoIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy } from "lucide-react";
+import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy, Layers } from "lucide-react";
 
 type NavSubItem = {
   name: string;
@@ -138,10 +138,15 @@ const navItems: NavItem[] = [
     path: "/proven-results",
   },
   {
+    icon: <Layers className="w-5 h-5" />,
+    name: "Programs We Offer",
+    path: "/programs-offer",
+  },
+  /* {
     icon: <Bot />,
     name: "AI Tool",
     path: "/ai-tool",
-  },
+  }, */
   {
     icon: <PieChartIcon />,
     name: "Leaderboard Settings",

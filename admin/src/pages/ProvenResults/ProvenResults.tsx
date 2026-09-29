@@ -48,7 +48,7 @@ const ProvenResults: React.FC = () => {
   const [company, setCompany] = useState("");
   const [salary, setSalary] = useState("Salary: 12 LPA");
   const [transitionTag, setTransitionTag] = useState("NON-TECH TO TECH TRANSITION");
-  const [badge, setBadge] = useState("★ SUCCESS STORY");
+  const [badge, setBadge] = useState("SUCCESS STORY");
   const [order, setOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [imageUrl, setImageUrl] = useState("");
@@ -74,7 +74,7 @@ const ProvenResults: React.FC = () => {
     setCompany("");
     setSalary("Salary: 12 LPA");
     setTransitionTag("NON-TECH TO TECH TRANSITION");
-    setBadge("★ SUCCESS STORY");
+    setBadge("SUCCESS STORY");
     setOrder(0);
     setIsActive(true);
     setImageUrl("");

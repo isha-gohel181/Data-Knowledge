@@ -3,6 +3,7 @@ import passport from 'passport';
 import { isAdmin } from '../middlewares/isAdmin.js';
 import accessTokenAutoRefresh from '../middlewares/accessTokenAutoRefresh.js';
 import { upload } from '../middlewares/upload-middleware.js';
+import optionalAuthenticate from '../middlewares/optionalAuthenticate.js';
 import {
     createSlots,
     getAdminSlots,
@@ -28,7 +29,7 @@ router.post('/create-order', accessTokenAutoRefresh, passport.authenticate('jwt'
 // `upload.fields` handles multiple file uploads, here we expect 'fileUpload'
 router.post('/book', 
     accessTokenAutoRefresh, 
-    passport.authenticate('jwt', { session: false }), 
+    optionalAuthenticate, 
     upload.fields([{ name: 'fileUpload', maxCount: 1 }]), 
     bookConsultation
 );
