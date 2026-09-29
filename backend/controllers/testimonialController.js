@@ -38,11 +38,14 @@ export const listTestimonialsAdmin = async (req, res) => {
 export const updateTestimonialAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-    const { message, status, rating } = req.body;
+    const { name, role, message, status, rating, courseId } = req.body;
     const update = {};
+    if (name) update.name = name;
+    if (role !== undefined) update.role = role;
     if (message) update.message = message;
     if (status) update.status = status;
     if (rating) update.rating = rating;
+    if (courseId !== undefined) update.courseId = courseId || null;
 
     if (req.files?.image?.[0]) {
       update.image = req.files.image[0].path.replace(/\\/g, '/');

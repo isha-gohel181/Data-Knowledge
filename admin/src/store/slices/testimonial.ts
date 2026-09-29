@@ -36,7 +36,6 @@ export const addTestimonial = createAsyncThunk<
             testimonial,
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`,
                 },
             }
@@ -76,12 +75,11 @@ export const updateTestimonial = createAsyncThunk<
     { rejectValue: string }
 >('testimonial/updateTestimonial', async ({ testimonialId, data, token }, { rejectWithValue }) => {
     try {
-        await axiosInstance.patch(
+        await axiosInstance.put(
             `/admin/testimonials/${testimonialId}`,
             data,
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`,
                 },
             }

@@ -68,6 +68,8 @@ import personalityRouter from "./personalityRoutes.js";
 import zoomRouter from "./zoomRoutes.js"; // Zoom router
 import adminActivityLogRouter from "./adminActivityLogRoutes.js";
 import consultationRouter from "./consultationRoutes.js";
+import placementStoryRouter from "./placementStoryRoutes.js";
+import provenResultRouter from "./provenResultRoutes.js";
 import { Route } from "express";
 
 router.get("/", (req, res) => {
@@ -139,6 +141,8 @@ router.use("/personality", personalityRouter); // Add personality test routes
 router.use("/zoom", zoomRouter); // Zoom routes
 router.use("/admin-activity-logs", adminActivityLogRouter);
 router.use("/consultations", consultationRouter);
+router.use("/placement-stories", placementStoryRouter);
+router.use("/proven-results", provenResultRouter);
 
 // Frontend Activity Logger endpoints
 router.post("/activity-logs", (req, res) => res.status(200).json({ success: true }));

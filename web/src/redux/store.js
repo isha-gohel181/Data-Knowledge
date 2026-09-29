@@ -16,6 +16,9 @@ import dashboardReducer from './slices/dashboardSlice';
 import eventReducer from './slices/eventSlice';
 import notificationReducer from './slices/notificationSlice';
 import consultationReducer from './slices/consultationSlice';
+import placementStoryReducer from './slices/placementStorySlice';
+import provenResultReducer from './slices/provenResultSlice';
+import testimonialReducer from './slices/testimonialSlice';
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +39,9 @@ export const store = configureStore({
     events: eventReducer,
     notifications: notificationReducer,
     consultation: consultationReducer,
+    placementStories: placementStoryReducer,
+    provenResults: provenResultReducer,
+    testimonials: testimonialReducer,
   },
 });
 

@@ -17,6 +17,11 @@ axiosInstance.interceptors.request.use(
   (config: import('axios').InternalAxiosRequestConfig): import('axios').InternalAxiosRequestConfig => {
     const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
 
+    // If data is FormData, remove Content-Type so browser/axios sets multipart boundary automatically
+    if (config.data instanceof FormData && config.headers) {
+      delete config.headers['Content-Type'];
+    }
+
     // Only attach real JWTs — skip the sentinel used for cookie-based sessions
     if (token && token !== 'cookie-session' && config.headers) {
       config.headers['Authorization'] = `Bearer ${token}`;

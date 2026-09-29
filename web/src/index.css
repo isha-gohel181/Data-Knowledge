@@ -3,10 +3,6 @@
 html, body {
   margin: 0;
   padding: 0;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 /* Enable selection in forms for usability */
@@ -447,9 +443,18 @@ input:focus, textarea:focus, select:focus {
 }
 
 .animate-marquee-left {
-  animation: marquee-left 58s linear infinite;
+  animation: marquee-left 38s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee-right {
-  animation: marquee-right 58s linear infinite;
+  animation: marquee-right 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover,
+.group:hover .animate-marquee-left,
+.group:hover .animate-marquee-right {
+  animation-play-state: paused;
 }

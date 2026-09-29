@@ -65,6 +65,8 @@ const Footer = () => {
   const exploreLinks = [
     { name: t('home') || 'Home', path: '/' },
     { name: t('ourCourses') || 'Courses', path: '/courses' },
+    { name: 'Download Brochure (PDF)', path: '/pdf/data_knowlege.pdf', isDownload: true },
+    { name: 'Student Reviews', path: '/#testimonials' },
     { name: 'Live Classes Portal', path: 'https://classes.dataknowledge.in/', isExternal: true },
     { name: 'Counseling & Mentorship', path: '/contact' },
     { name: t('forum') || 'Forum', path: '/forum' },
@@ -99,7 +101,7 @@ const Footer = () => {
       {/* Main Footer Content Grid */}
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 relative z-10 pb-14">
 
-        {/* Column 1: Brand & Socials (4 cols) */}
+        {/* Column 1: Brand, Brochure & Socials (4 cols) */}
         <div className="footer-reveal lg:col-span-4 flex flex-col items-start text-left">
           <Link to="/" className="flex items-center gap-3.5 group mb-4">
             <img
@@ -113,9 +115,43 @@ const Footer = () => {
             </div>
           </Link>
 
-          <p className="text-sm text-slate-400 leading-relaxed max-w-sm mb-6 font-normal">
+          <p className="text-sm text-slate-400 leading-relaxed max-w-sm mb-5 font-normal">
             Practical and industry-focused training in SQL, Excel, Power BI, Tableau, Python, Data Science, ML & AI to help you build real-world job skills.
           </p>
+
+          {/* Download Brochure CTA Button */}
+          <div className="mb-6">
+            <a
+              href="/pdf/data_knowlege.pdf"
+              download="Data_Knowledge_Brochure.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              id="footer-download-brochure-btn"
+              className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#3498db] to-[#2573a7] hover:from-[#2980b9] hover:to-[#1a5276] text-white font-semibold text-xs tracking-wide shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 border border-white/15 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 group"
+            >
+              <span className="p-1 rounded-lg bg-white/20 text-white group-hover:bg-white/30 transition-colors">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="group-hover:translate-y-0.5 transition-transform duration-200"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </span>
+              <span>Download Brochure</span>
+              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-black/30 text-white/90">
+                PDF
+              </span>
+            </a>
+          </div>
 
           <div className="flex items-center gap-3">
             {socialLinks.map((social) => (
@@ -162,7 +198,22 @@ const Footer = () => {
           <ul className="space-y-2.5">
             {exploreLinks.map((link, idx) => (
               <li key={idx}>
-                {link.isExternal ? (
+                {link.isDownload ? (
+                  <a
+                    href={link.path}
+                    download="Data_Knowledge_Brochure.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[#3498db] hover:text-[#5dade2] font-medium transition-colors duration-200 flex items-center gap-1.5"
+                  >
+                    <span>{link.name}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                  </a>
+                ) : link.isExternal ? (
                   <a
                     href={link.path}
                     target="_blank"

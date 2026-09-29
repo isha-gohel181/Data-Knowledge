@@ -45,6 +45,14 @@ router.patch(
   testimonialUpload,
   updateTestimonialAdmin
 );
+router.put(
+  '/admin/testimonials/:id',
+  accessTokenAutoRefresh,
+  passport.authenticate('jwt', { session: false }),
+  isAdmin,
+  testimonialUpload,
+  updateTestimonialAdmin
+);
 router.delete(
   '/admin/testimonials/:id',
   accessTokenAutoRefresh,
@@ -53,11 +61,25 @@ router.delete(
   deleteTestimonialAdmin
 );
 
+// Optional auth middleware: extracts user if token provided, but allows public submission
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    passport.authenticate('jwt', { session: false }, (err, user) => {
+      if (user) {
+        req.user = user;
+      }
+      return next();
+    })(req, res, next);
+  } else {
+    next();
+  }
+};
+
 // User routes
 router.post(
   '/testimonials',
-  accessTokenAutoRefresh,
-  passport.authenticate('jwt', { session: false }),
+  optionalAuth,
   testimonialUpload,
   submitTestimonial
 );

@@ -213,48 +213,7 @@ const AppContent = () => {
     return () => clearTimeout(timer)
   }, [location.pathname])
 
-  // 4. Global Zoom & DevTools Protection Protocol
-  useEffect(() => {
-    const handleKeydown = (e) => {
-      // Disable Ctrl + (+, -, 0)
-      if (e.ctrlKey && (e.key === '=' || e.key === '-' || e.key === '+' || e.key === '0')) {
-        e.preventDefault()
-      }
-      
-      // Disable DevTools shortcuts globally
-      if (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
-        (e.ctrlKey && ['U', 'u'].includes(e.key)) ||
-        (e.metaKey && e.altKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key))
-      ) {
-        e.preventDefault();
-        return false;
-      }
-    }
 
-    const handleWheel = (e) => {
-      // Disable Ctrl + MouseWheel
-      if (e.ctrlKey) {
-        e.preventDefault()
-      }
-    }
-    
-    const handleContextMenu = (e) => {
-      e.preventDefault();
-      return false;
-    }
-
-    window.addEventListener('keydown', handleKeydown)
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    document.addEventListener('contextmenu', handleContextMenu)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeydown)
-      window.removeEventListener('wheel', handleWheel)
-      document.removeEventListener('contextmenu', handleContextMenu)
-    }
-  }, [])
 
   // 5. Global Site Reveal Logic (Prevents Refresh Flicker)
   useEffect(() => {

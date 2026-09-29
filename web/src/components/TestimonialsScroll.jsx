@@ -43,23 +43,28 @@ const TestimonialsScroll = ({ reviews = [] }) => {
 
   // Memoize the dynamic testimonials
   const displayTestimonials = React.useMemo(() => {
-    const reviewsArray = Array.isArray(reviews) ? reviews : [];
+    const reviewsArray = Array.isArray(reviews) && reviews.length > 0 ? reviews : staticTestimonials;
     
     // Filter out nulls/undefined and invalid objects
-    const validReviews = reviewsArray.filter(r => r !== null && typeof r === 'object' && (r.reviewText || r.text));
+    const validReviews = reviewsArray.filter(r => r !== null && typeof r === 'object' && (r.message || r.reviewText || r.text));
 
     return validReviews.map(r => {
       let avatar = null;
       if (r.image) {
-        const rawBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE || 'https://api.edrilla.com';
-        const baseUrl = rawBase.replace(/\/api\/v1\/?$/, '');
-        avatar = `${baseUrl}${r.image.startsWith('/') ? '' : '/'}${r.image}`;
+        if (r.image.startsWith('http')) {
+          avatar = r.image;
+        } else {
+          const rawBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_BASE_URL || 'http://localhost:5000';
+          const baseUrl = rawBase.replace(/\/+$/, '');
+          const cleanPath = r.image.replace(/\\/g, '/').replace(/^\/+/, '');
+          avatar = `${baseUrl}/${cleanPath}`;
+        }
       }
       return {
-        name: r.name || "Student",
-        role: r.designation || r.role || "Enrolled Student",
-        text: r.reviewText || r.text || "",
-        rating: r.rating || 5,
+        name: r.name || (r.userId && r.userId.fullName) || "Student",
+        role: r.designation || r.role || "Data Analytics Alum",
+        text: r.message || r.reviewText || r.text || "",
+        rating: Number(r.rating) || 5,
         image: avatar
       };
     });

@@ -16,7 +16,7 @@ import {
   VideoIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot } from "lucide-react";
+import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy } from "lucide-react";
 
 type NavSubItem = {
   name: string;
@@ -126,6 +126,16 @@ const navItems: NavItem[] = [
     icon: <MessageCircle />,
     name: "Testimonials",
     path: "/testimonials",
+  },
+  {
+    icon: <Instagram />,
+    name: "Placement Stories",
+    path: "/placement-stories",
+  },
+  {
+    icon: <Trophy className="w-5 h-5" />,
+    name: "Proven Results",
+    path: "/proven-results",
   },
   {
     icon: <Bot />,

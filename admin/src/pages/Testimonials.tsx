@@ -36,8 +36,8 @@ const ConfirmDialog = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-white/50 backdrop-blur-md flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[99999] p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-700">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{title}</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">{message}</p>
                 <div className="flex justify-end gap-2">
@@ -74,8 +74,8 @@ const Popup = ({
     if (!isVisible) return null;
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-[200]">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-100">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[99999] p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-100 border border-gray-100 dark:border-gray-700">
                 <div className="text-center">
                     <div
                         className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${type === "success" ? "bg-green-100" : "bg-red-100"
@@ -155,14 +155,12 @@ const TestimonialsPage: React.FC = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
-    const BASE_URL = import.meta.env.VITE_BASE_URL || 'https://api.edrilla.com';
+    const BASE_URL = (import.meta.env.VITE_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
     const getMediaUrl = (path: string) => {
         if (!path) return '';
         if (path.startsWith('http')) return path;
-        // Trim trailing slash from BASE_URL and leading slash from path to avoid issues
-        const baseUrl = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
         const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-        return `${baseUrl}/${normalizedPath}`;
+        return `${BASE_URL}/${normalizedPath}`;
     };
 
     // Fetch all testimonials
@@ -692,15 +690,15 @@ const TestimonialsPage: React.FC = () => {
             {/* Add Testimonial Modal */}
             {showAddForm && (
                 <div
-                    className="fixed inset-0 bg-white/50 backdrop-blur-md flex items-center justify-center z-50 p-4 pt-20"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[99999] p-3 sm:p-5 overflow-y-auto"
                     onClick={() => setShowAddForm(false)}
                 >
                     <div
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
+                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-6 sm:p-7 max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-700 my-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 {isEditMode ? 'Edit Testimonial' : 'Add Testimonial'}
                             </h3>
                             <button

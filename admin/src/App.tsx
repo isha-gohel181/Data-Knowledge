@@ -77,6 +77,8 @@ import { AdminTrackerProvider } from "./components/AdminActivityTracker";
 import ResourceList from "./pages/Resources/ResourceList";
 import AddResource from "./pages/Resources/AddResource";
 import EditResource from "./pages/Resources/EditResource";
+import PlacementStoriesPage from "./pages/PlacementStories/PlacementStories";
+import ProvenResultsPage from "./pages/ProvenResults/ProvenResults";
 
 // Lazy load pages
 const SignIn = lazy(() => import("./pages/AuthPages/SignIn"));
@@ -296,6 +298,8 @@ export default function App() {
                 <Route path="/resources" element={<ResourceList />} />
                 <Route path="/resources/add" element={<AddResource />} />
                 <Route path="/resources/edit/:id" element={<EditResource />} />
+                <Route path="/placement-stories" element={<PlacementStoriesPage />} />
+                <Route path="/proven-results" element={<ProvenResultsPage />} />
               </Route>
             </Route>
 

@@ -55,6 +55,7 @@ const corsOptions = {
     callback(new Error('Origin not allowed by CORS'));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
   optionsSuccessStatus: 200,
   allowedHeaders: [
     "Content-Type",
@@ -62,6 +63,7 @@ const corsOptions = {
     "x-access-token",
     "x-refresh-token",
     "X-Requested-With",
+    "Accept",
   ],
   exposedHeaders: ["x-access-token", "x-refresh-token"],
 };

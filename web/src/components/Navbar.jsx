@@ -266,8 +266,16 @@ const Navbar = ({ isLoaded }) => {
           className="flex items-center justify-between bg-white/90 rounded-[2rem] md:rounded-full px-4 md:px-6 !py-3 border border-slate-200/80 shadow-sm backdrop-blur-2xl relative z-20 overflow-hidden will-change-[padding,background-color]"
         >
 
-          <Link to="/" ref={logoRef} className="flex items-center hover:opacity-80 transition-opacity gap-2.5 text-slate-900">
-            <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
+          <Link to="/" ref={logoRef} className="flex items-center hover:opacity-90 transition-opacity gap-2.5 sm:gap-3 text-slate-900 group">
+            <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-9 md:h-11 w-auto object-contain rounded-full shadow-xs shrink-0" />
+            <div className="flex flex-col text-left">
+              <span className="font-outfit font-black text-sm sm:text-base md:text-lg tracking-tight text-slate-900 leading-none group-hover:text-[#3498db] transition-colors whitespace-nowrap">
+                DATA <span className="text-[#3498db]">KNOWLEDGE</span>
+              </span>
+              <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-tight whitespace-nowrap">
+                Classes & Training
+              </span>
+            </div>
           </Link>
 
           <div
@@ -331,7 +339,15 @@ const Navbar = ({ isLoaded }) => {
           {/* Internal Menu Header */}
           <header className="menu-header absolute top-0 left-0 w-full px-8 md:px-12 py-8 md:py-10 flex items-center justify-between z-50">
             <Link to="/" onClick={toggleMenu} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-10 md:h-12 w-auto object-contain rounded-lg" />
+              <img src="/data_knowlege/logo/logo.png" alt="Data Knowledge Logo" className="h-10 md:h-12 w-auto object-contain rounded-full shadow-xs" />
+              <div className="flex flex-col text-left">
+                <span className="font-outfit font-black text-lg text-slate-900 leading-none">
+                  DATA <span className="text-[#3498db]">KNOWLEDGE</span>
+                </span>
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                  Classes & Training
+                </span>
+              </div>
             </Link>
 
             <button

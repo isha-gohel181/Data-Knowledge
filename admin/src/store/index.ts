@@ -36,6 +36,9 @@ import securityReducer from "./slices/securitySlice";
 import zoomReducer from "./slices/zoomSlice";
 import resourceReducer from "./slices/resource";
 import consultationReducer from "./slices/consultationSlice";
+import placementStoryReducer from "./slices/placementStory";
+import provenResultReducer from "./slices/provenResult";
+import testimonialReducer from "./slices/testimonial";
 
 export const store = configureStore({
   reducer: {
@@ -43,6 +46,7 @@ export const store = configureStore({
     courseCategory: courseCategoryReducer,
     filter: filter,
     course: course,
+    testimonial: testimonialReducer,
     lesson: lesson,
     module: module,
     assignment: assignment,
@@ -75,6 +79,8 @@ export const store = configureStore({
     zoom: zoomReducer,
     resource: resourceReducer,
     consultation: consultationReducer,
+    placementStory: placementStoryReducer,
+    provenResult: provenResultReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
