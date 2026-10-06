@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "seed:users": "node scripts/manage-users.mjs",
+    "reset-admin": "node scripts/manage-users.mjs"
   },
   "type": "module",
   "keywords": [],

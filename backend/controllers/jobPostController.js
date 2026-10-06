@@ -27,15 +27,15 @@ export const createJobPost = async (req, res) => {
     // Handle location object
     const location = {
       type: req.body.location?.type || req.body.locationType || 'remote',
-      address: typeof req.body.location?.address === 'string' 
+      address: typeof req.body.location?.address === 'string'
         ? { street: req.body.location.address }
         : req.body.location?.address || {
-            street: req.body['address.street'],
-            city: req.body['address.city'],
-            state: req.body['address.state'],
-            country: req.body['address.country'],
-            zipCode: req.body['address.zipCode']
-          }
+          street: req.body['address.street'],
+          city: req.body['address.city'],
+          state: req.body['address.state'],
+          country: req.body['address.country'],
+          zipCode: req.body['address.zipCode']
+        }
     };
 
     const parseNumber = (val) => {
@@ -124,9 +124,9 @@ export const createJobPost = async (req, res) => {
 // Helper function to validate job post data
 function validateJobPostData(data) {
   const errors = [];
-  
+
   const requiredFields = [
-    'title', 'description', 'budget', 'category', 
+    'title', 'description', 'budget', 'category',
     'experienceLevel', 'estimatedDuration', 'mode'
   ];
 
@@ -156,12 +156,12 @@ function validateJobPostData(data) {
 
 export const getAllJobPosts = async (req, res) => {
   try {
-    const { 
-      page, 
-      limit, 
-      sortBy, 
-      sortOrder, 
-      search, 
+    const {
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      search,
       status,
       category,
       minBudget,
@@ -209,7 +209,7 @@ export const getAllJobPosts = async (req, res) => {
       page: parseInt(page) || 1,
       limit: parseInt(limit) || 10,
       sort: {
-      [sortBy || 'createdAt']: -1 // Always sort by descending order
+        [sortBy || 'createdAt']: -1 // Always sort by descending order
       }
     });
 
@@ -276,7 +276,7 @@ export const submitProposal = async (req, res) => {
     // --- Send email and notification to job creator ---
     if (updatedJob && updatedJob.createdBy) {
       const jobCreator = updatedJob.createdBy;
-      const jobCreatorEmail=await User.findById(jobCreator);
+      const jobCreatorEmail = await User.findById(jobCreator);
       //console.log("Job Creator:", jobCreatorEmail);
       const applicant = {
         name: req.user.fullName || req.user.name || "Applicant",
@@ -300,7 +300,7 @@ export const submitProposal = async (req, res) => {
       } else {
         console.error("Job creator email is missing, cannot send proposal email.");
       }
-    
+
     }
 
     // Invalidate job cache for this job and all jobposts lists
@@ -328,15 +328,15 @@ export const submitProposal = async (req, res) => {
 export const updateJobPost = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Handle skillsRequired parsing
     let skillsRequired;
     try {
       if (req.body.skillsRequired) {
-        skillsRequired = typeof req.body.skillsRequired === 'string' 
+        skillsRequired = typeof req.body.skillsRequired === 'string'
           ? JSON.parse(req.body.skillsRequired)
-          : Array.isArray(req.body.skillsRequired) 
-            ? req.body.skillsRequired 
+          : Array.isArray(req.body.skillsRequired)
+            ? req.body.skillsRequired
             : undefined;
       }
     } catch (error) {
@@ -504,12 +504,12 @@ export const getMyJobPosts = async (req, res) => {
       });
     }
 
-    const { 
-      page, 
-      limit, 
-      sortBy, 
-      sortOrder, 
-      search, 
+    const {
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      search,
       status,
       category,
       minBudget,
@@ -519,7 +519,7 @@ export const getMyJobPosts = async (req, res) => {
       locationType,
       city,
       state,
-      country 
+      country
     } = req.query;
 
     // Filter job posts by the authenticated user's ID from the JWT token

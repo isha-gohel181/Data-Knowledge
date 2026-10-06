@@ -319,7 +319,7 @@ const JobList: React.FC = () => {
           </h2>
           <Link
             to="/jobs/add"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-xl text-white bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95"
           >
             Add New Job
           </Link>

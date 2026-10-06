@@ -31,7 +31,7 @@ export const login = createAsyncThunk<
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post<ApiResponse<AuthResponse>>(
-      `${API_BASE_URL}/login`,
+      `/login`,
       {
         email: credentials.email,
         password: credentials.password,
@@ -68,8 +68,9 @@ export const login = createAsyncThunk<
     if (data.data?.user) {
       localStorage.setItem("user", JSON.stringify(data.data.user));
       // Persist role separately so /me (which may omit role) can still read it
-      if (data.data.user.role) {
-        localStorage.setItem("role", String(data.data.user.role));
+      const detectedRole = data.data.user.role || (Array.isArray((data.data.user as any).roles) ? (data.data.user as any).roles[0] : (data.data.user as any).roles);
+      if (detectedRole) {
+        localStorage.setItem("role", String(detectedRole));
       }
     }
 
@@ -90,7 +91,7 @@ export const signup = createAsyncThunk<
 >("auth/signup", async (userData, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post<ApiResponse<AuthResponse>>(
-      `${API_BASE_URL}/signup`,
+      `/signup`,
       {
         email: userData.email,
         password: userData.password,
@@ -187,7 +188,7 @@ export const checkAuthStatus = createAsyncThunk<
         }
 
         const response = await axiosInstance.get<ApiResponse<{ user: User }>>(
-          `${API_BASE_URL}/me`,
+          `/me`,
           { headers, withCredentials: true }
         );
 

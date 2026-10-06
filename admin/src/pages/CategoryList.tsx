@@ -355,7 +355,7 @@ const CategoryList: React.FC = () => {
   </h1>
   <div className="flex items-center gap-4">
     <button
-      className="inline-flex items-center bg-blue-600 text-white gap-2 px-4 py-2 border rounded-md hover:bg-blue-700 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95 font-medium cursor-pointer"
       onClick={() => navigate("/add-category")}
     >
       <Plus className="h-4 w-4" />

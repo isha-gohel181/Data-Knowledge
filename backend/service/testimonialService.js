@@ -103,7 +103,13 @@ const getTestimonials = async (filter = {}, options = {}) => {
       console.error('Error seeding default testimonials:', e);
     }
   }
-  return await Testimonial.find(filter, null, options)
+  let query = Testimonial.find(filter);
+  if (options.sort) {
+    query = query.sort(options.sort);
+  } else {
+    query = query.sort({ createdAt: -1 });
+  }
+  return await query
     .populate('userId', 'fullName email profilePicture')
     .lean();
 };

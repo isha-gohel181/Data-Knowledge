@@ -10,6 +10,8 @@ interface Testimonial {
     rating: number;
     courseId: string;
     image?: string;
+    screenshot?: string;
+    reviewImages?: string[];
     video?: string;
 }
 

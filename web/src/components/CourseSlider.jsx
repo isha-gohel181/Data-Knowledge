@@ -141,10 +141,8 @@ const CourseSlider = () => {
   ]
 
   useEffect(() => {
-    if (!apiCourses || apiCourses.length === 0) {
-      dispatch(fetchCourses())
-    }
-  }, [dispatch, apiCourses])
+    dispatch(fetchCourses())
+  }, [dispatch])
 
   // Group courses by category
   const categoriesMap = baseCourses.reduce((acc, course) => {

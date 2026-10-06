@@ -10,9 +10,25 @@ export const addTestimonialAdmin = async (req, res) => {
     }
 
     const image = req.files?.image?.[0]?.path?.replace(/\\/g, '/');
+    const reviewImageFiles = [
+      ...(req.files?.reviewImages || []),
+      ...(req.files?.screenshot || [])
+    ];
+    const reviewImages = reviewImageFiles.map(f => f.path.replace(/\\/g, '/'));
+    const screenshot = reviewImages[0] || req.files?.screenshot?.[0]?.path?.replace(/\\/g, '/') || null;
     const video = req.files?.video?.[0]?.path?.replace(/\\/g, '/');
 
-    const testimonial = await testimonialService.createTestimonial({ name, role, message, rating, courseId, image, video }, true);
+    const testimonial = await testimonialService.createTestimonial({ 
+      name, 
+      role, 
+      message, 
+      rating, 
+      courseId, 
+      image, 
+      screenshot, 
+      reviewImages, 
+      video 
+    }, true);
     res.json({ success: true, message: 'Testimonial added and approved.', data: testimonial });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -38,7 +54,7 @@ export const listTestimonialsAdmin = async (req, res) => {
 export const updateTestimonialAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, role, message, status, rating, courseId } = req.body;
+    const { name, role, message, status, rating, courseId, existingReviewImages } = req.body;
     const update = {};
     if (name) update.name = name;
     if (role !== undefined) update.role = role;
@@ -50,6 +66,31 @@ export const updateTestimonialAdmin = async (req, res) => {
     if (req.files?.image?.[0]) {
       update.image = req.files.image[0].path.replace(/\\/g, '/');
     }
+
+    const newFiles = [
+      ...(req.files?.reviewImages || []),
+      ...(req.files?.screenshot || [])
+    ].map(f => f.path.replace(/\\/g, '/'));
+
+    let keptExisting = [];
+    if (existingReviewImages !== undefined) {
+      try {
+        keptExisting = typeof existingReviewImages === 'string' ? JSON.parse(existingReviewImages) : existingReviewImages;
+        if (!Array.isArray(keptExisting)) keptExisting = [keptExisting];
+      } catch {
+        keptExisting = [existingReviewImages];
+      }
+    }
+
+    if (newFiles.length > 0 || existingReviewImages !== undefined) {
+      const combined = [...keptExisting, ...newFiles];
+      update.reviewImages = combined;
+      update.screenshot = combined[0] || null;
+    } else if (req.files?.screenshot?.[0]) {
+      update.screenshot = req.files.screenshot[0].path.replace(/\\/g, '/');
+      update.reviewImages = [update.screenshot];
+    }
+
     if (req.files?.video?.[0]) {
       update.video = req.files.video[0].path.replace(/\\/g, '/');
     }
@@ -118,10 +159,16 @@ export const submitTestimonial = async (req, res) => {
     }
 
     const image = req.files?.image?.[0]?.path?.replace(/\\/g, '/');
+    const reviewImageFiles = [
+      ...(req.files?.reviewImages || []),
+      ...(req.files?.screenshot || [])
+    ];
+    const reviewImages = reviewImageFiles.map(f => f.path.replace(/\\/g, '/'));
+    const screenshot = reviewImages[0] || req.files?.screenshot?.[0]?.path?.replace(/\\/g, '/') || null;
     const video = req.files?.video?.[0]?.path?.replace(/\\/g, '/');
 
     // Include name and userId in testimonial data if provided
-    const testimonialData = { message, rating, role, courseId, image, video };
+    const testimonialData = { message, rating, role, courseId, image, screenshot, reviewImages, video };
     if (finalUserId) {
       testimonialData.userId = finalUserId;
     }

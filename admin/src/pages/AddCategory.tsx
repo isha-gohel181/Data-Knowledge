@@ -263,8 +263,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             {/* Submit Button */}
             <button
               type="submit"
-            
-              className="rounded bg-blue-600 px-6 py-2 text-white font-semibold hover:bg-blue-700 transition"
+              className="rounded-xl bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] px-6 py-2.5 text-white font-semibold shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95 disabled:opacity-50 cursor-pointer"
               disabled={loading}
             >
               {loading ? "Adding..." : "Add Category"}

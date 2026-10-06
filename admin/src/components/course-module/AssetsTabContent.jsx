@@ -109,7 +109,7 @@ const AssetsTabContent = ({ courseID }) => {
       files: { text: "View File", color: "bg-green-600 hover:bg-green-700" },
       assignments: {
         text: "View Assignment",
-        color: "bg-purple-600 hover:bg-purple-700",
+        color: "bg-[#1b6294] hover:bg-[#16517a]",
       },
       videos: {
         text: "View Video Lesson",

@@ -156,7 +156,7 @@ const UsageDetailsModal: React.FC<{
                       className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[#1b6294] to-[#16517a] rounded-full flex items-center justify-center text-white font-semibold">
                           {usage.userId?.fullName?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div>
@@ -480,8 +480,8 @@ const Coupons: React.FC = () => {
                Total: {data?.data?.total ?? 0}
             </span>
             <button
-             onClick={() => navigate("/coupons/add")}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded-md shadow transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              onClick={() => navigate("/coupons/add")}
+              className="bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
             >
               + Add Coupon
             </button>

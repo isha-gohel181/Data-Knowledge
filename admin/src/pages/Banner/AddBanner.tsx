@@ -254,7 +254,7 @@ const AddBanner: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white px-6 py-2.5 rounded-xl font-medium shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
         >
           Add Banner
         </button>

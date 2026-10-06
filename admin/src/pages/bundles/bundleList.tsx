@@ -156,7 +156,7 @@ const BundleList: React.FC = () => {
             </span>
             <button
               onClick={() => navigate("/bundles/create")}
-              className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+              className="px-5 py-2.5 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 active:scale-95 font-medium cursor-pointer"
             >
               Add Bundle
             </button>

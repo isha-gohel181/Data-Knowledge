@@ -288,7 +288,7 @@ const PlacementStoriesPage: React.FC = () => {
 
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium text-sm shadow-md shadow-pink-600/25 transition-all active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white font-medium text-sm shadow-md shadow-[#1b6294]/25 hover:shadow-lg transition-all active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Add Instagram Story
@@ -352,7 +352,7 @@ const PlacementStoriesPage: React.FC = () => {
           {!search && (
             <button
               onClick={openCreateModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white text-xs font-medium shadow-md shadow-[#1b6294]/20 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Story
@@ -830,7 +830,7 @@ const PlacementStoriesPage: React.FC = () => {
                 type="submit"
                 form="placementStoryForm"
                 disabled={actionLoading}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium text-sm shadow-md shadow-pink-600/25 transition-all flex items-center gap-2 disabled:opacity-50 active:scale-95"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white font-medium text-sm shadow-md shadow-[#1b6294]/25 hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 active:scale-95 cursor-pointer"
               >
                 {actionLoading ? (
                   <>

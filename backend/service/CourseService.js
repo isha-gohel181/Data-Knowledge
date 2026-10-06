@@ -195,8 +195,6 @@ class CourseService {
 
   async getAll(options = {}) {
     try {
-
-      console?.log("ghjk", options)
       // If caller provided a top-level courseposition flag, forward into filter
       if (options.courseposition === true || options.courseposition === 'true') {
         options.filter = options.filter || {};

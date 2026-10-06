@@ -20,6 +20,9 @@ import placementStoryReducer from './slices/placementStorySlice';
 import provenResultReducer from './slices/provenResultSlice';
 import testimonialReducer from './slices/testimonialSlice';
 import programOfferReducer from './slices/programOfferSlice';
+import heroReducer from './slices/heroSlice';
+import whyChooseUsReducer from './slices/whyChooseUsSlice';
+import aboutSnapshotReducer from './slices/aboutSnapshotSlice';
 
 export const store = configureStore({
   reducer: {
@@ -44,6 +47,9 @@ export const store = configureStore({
     provenResults: provenResultReducer,
     testimonials: testimonialReducer,
     programOffers: programOfferReducer,
+    hero: heroReducer,
+    whyChooseUs: whyChooseUsReducer,
+    aboutSnapshot: aboutSnapshotReducer,
   },
 });
 

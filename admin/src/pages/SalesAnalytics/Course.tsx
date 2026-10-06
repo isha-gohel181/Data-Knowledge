@@ -173,7 +173,7 @@ const Course: React.FC = () => {
           </p>
           <button
             onClick={() => token && dispatch(fetchCourseSalesAnalytics({ token }))}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="mt-4 px-5 py-2.5 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 transition-all font-medium cursor-pointer"
           >
             Retry
           </button>

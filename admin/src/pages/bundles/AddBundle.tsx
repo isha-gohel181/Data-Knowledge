@@ -769,10 +769,10 @@ const AddBundleForm = () => {
             type="button"
             onClick={handleSubmit}
             disabled={bundleLoading || selectedCourses.length === 0}
-            className={`px-6 py-3 rounded-md font-medium ${
+            className={`px-6 py-3 rounded-xl font-medium ${
               bundleLoading || selectedCourses.length === 0
                 ? "bg-gray-400 dark:bg-white/90 dark:text-black cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] shadow-md shadow-[#1b6294]/20 hover:shadow-lg active:scale-95 cursor-pointer"
             } text-white  transition duration-200`}
           >
             {bundleLoading ? "Creating Bundle..." : "Create Bundle"}

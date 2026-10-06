@@ -110,7 +110,7 @@ export default function LeaderboardSetting() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#1b6294] to-[#16517a] bg-clip-text text-transparent mb-2">
             Leaderboard Configuration
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
@@ -121,12 +121,12 @@ export default function LeaderboardSetting() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* XP per Action Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-4">
+            <div className="bg-gradient-to-r from-[#1b6294] to-[#16517a] px-6 py-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <span className="text-2xl">⚡</span>
                 XP Per Action
               </h2>
-              <p className="text-indigo-100 text-sm mt-1">Set experience points for user activities</p>
+              <p className="text-cyan-100 text-sm mt-1">Set experience points for user activities</p>
             </div>
             
             <div className="p-6">
@@ -258,7 +258,7 @@ export default function LeaderboardSetting() {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+              className="px-8 py-4 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] disabled:from-gray-400 disabled:to-gray-500 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 cursor-pointer"
             >
               {loading ? (
                 <span className="flex items-center gap-2">

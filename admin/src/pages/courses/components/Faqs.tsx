@@ -246,7 +246,7 @@ function Faqs({ courseId }) {
               <div
                 onClick={() => handelAddPlan()}
                 // disabled={selectedFaq ? false : !faqData.question}
-                className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white py-3 px-6 rounded-xl font-semibold shadow-md shadow-[#1b6294]/20 hover:shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               >
                 <Save className="w-5 h-5" />
                 {selectedFaq ? "Update FAQ" : "Create FAQ"}

@@ -202,40 +202,16 @@ const PlacementStoriesSection = () => {
   return (
     <section
       ref={containerRef}
-      className="relative py-20 md:py-28 overflow-hidden bg-white border-t border-b border-gray-100"
+      className="relative py-12 md:py-16 overflow-hidden bg-white border-t border-b border-gray-100"
     >
       {/* Subtle clean background ambient accents on white */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-pink-100/50 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-100/40 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl">
-            {/* Pill Eyebrow */}
-            <div className="stories-header-reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200/80 mb-4 shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-tr from-yellow-400 via-rose-500 to-purple-500 animate-pulse" />
-              <span className="text-[11px] font-jetbrains uppercase tracking-[0.25em] font-bold text-pink-700">
-                Alumni Stories • Instagram Reels
-              </span>
-            </div>
-
-            {/* Title */}
-            <h2 className="stories-header-reveal font-inter text-3xl sm:text-4xl md:text-5xl font-extralight text-gray-900 leading-tight">
-              Placement Stories on{' '}
-              <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-600 to-amber-500">
-                Instagram
-              </span>
-            </h2>
-
-            {/* Subtitle */}
-            <p className="stories-header-reveal mt-3 text-sm sm:text-base text-gray-600 font-jetbrains tracking-wide">
-              Reels from learners who transitioned into high-growth data roles at top companies. Click any video to play directly.
-            </p>
-          </div>
-
-          {/* Slider Navigation Buttons */}
-          <div className="stories-header-reveal flex items-center gap-3 self-end md:self-auto">
+        {/* Slider Navigation Buttons */}
+        <div className="flex justify-end items-center mb-6">
+          <div className="stories-header-reveal flex items-center gap-3">
             <button
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}

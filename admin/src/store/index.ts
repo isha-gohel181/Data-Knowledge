@@ -40,6 +40,7 @@ import placementStoryReducer from "./slices/placementStory";
 import provenResultReducer from "./slices/provenResult";
 import testimonialReducer from "./slices/testimonial";
 import programOfferReducer from "./slices/programOffer";
+import heroSectionReducer from "./slices/heroSection";
 
 export const store = configureStore({
   reducer: {
@@ -83,6 +84,7 @@ export const store = configureStore({
     placementStory: placementStoryReducer,
     provenResult: provenResultReducer,
     programOffer: programOfferReducer,
+    heroSection: heroSectionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

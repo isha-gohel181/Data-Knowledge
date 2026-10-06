@@ -380,7 +380,7 @@ const CourseList: React.FC = () => {
             </div>
             
             <button
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl transition-all duration-200 shadow-md shadow-[#1b6294]/25 hover:shadow-lg hover:shadow-[#1b6294]/35 font-medium active:scale-95 cursor-pointer"
               onClick={() => window.location.href = "/courses/add"}
             >
               <Plus className="w-5 h-5" />
@@ -802,16 +802,16 @@ const CourseList: React.FC = () => {
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
+                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-600 rounded-lg">
+                        <div className="p-2 bg-[#1b6294] rounded-lg">
                           <Award className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                          <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                          <p className="text-2xl font-bold text-blue-950 dark:text-blue-100">
                             {enrollmentsModal.enrollments.filter(e => e.status === 'completed').length}
                           </p>
-                          <p className="text-sm text-purple-600 dark:text-purple-400">Completed</p>
+                          <p className="text-sm text-[#1b6294] dark:text-blue-300">Completed</p>
                         </div>
                       </div>
                     </div>
@@ -857,7 +857,7 @@ const CourseList: React.FC = () => {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                                  <div className="w-8 h-8 bg-gradient-to-br from-[#1b6294] to-[#16517a] rounded-full flex items-center justify-center">
                                     <span className="text-white text-sm font-semibold">
                                       {enroll.userId?.fullName ? enroll.userId.fullName.charAt(0).toUpperCase() : 'U'}
                                     </span>

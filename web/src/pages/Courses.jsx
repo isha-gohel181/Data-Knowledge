@@ -138,11 +138,11 @@ const Courses = () => {
       const matchesDifficulty = (() => {
         if (selectedDifficulty === 'All') return true
         const filterDiff = selectedDifficulty.toLowerCase()
-        
+
         if (item.level && Array.isArray(item.level) && item.level.length > 0) {
           return item.level.some(l => l.toLowerCase() === filterDiff)
         }
-        
+
         const courseDiff = (item.difficulty || '').toLowerCase()
         if (filterDiff === 'intermediate' && courseDiff === 'medium') return true
         return courseDiff === filterDiff
@@ -151,7 +151,7 @@ const Courses = () => {
       // 3. Duration Filter
       const matchesDuration = (() => {
         if (selectedDuration === 'All hours') return true
-        
+
         const getCourseDurationInHours = (c) => {
           if (!c.duration) return 0
           const val = parseFloat(c.duration)
@@ -270,9 +270,9 @@ const Courses = () => {
 
             {/* Section 2: Info & More (Cols 9-12) */}
             <div className="col-span-4 flex flex-col items-end gap-4 course-filter-reveal opacity-0">
-               <span className="font-inter text-xs text-slate-500 uppercase tracking-wider font-bold">
-                 {filteredCourses.length} COURSE{filteredCourses.length === 1 ? '' : 'S'} AVAILABLE
-               </span>
+              <span className="font-inter text-xs text-slate-500 uppercase tracking-wider font-bold">
+                {filteredCourses.length} COURSE{filteredCourses.length === 1 ? '' : 'S'} AVAILABLE
+              </span>
 
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}

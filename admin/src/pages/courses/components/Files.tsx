@@ -735,7 +735,7 @@ export default function FileUploadForm({
     <>
       <div className="bg-white lg:w-[800px]  rounded-2xl max-w-4xl w-full mx-auto shadow-2xl max-h-[700px] overflow-scroll">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-[#1b6294] to-[#16517a] p-6 text-white">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -1037,7 +1037,7 @@ export default function FileUploadForm({
                 (!isEditMode && selectedFiles.length === 0) ||
                 selectedFileType === "Select file type"
                   ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
+                  : "bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white shadow-md shadow-[#1b6294]/20 hover:shadow-lg cursor-pointer active:scale-95"
               }`}
             >
               {uploading || uploadProgress.isVisible ? (

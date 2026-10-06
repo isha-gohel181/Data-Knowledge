@@ -418,7 +418,7 @@ const CourseAccordion = ({ courseId }) => {
                     {/* Add Drip Button */}
                     <button
                       type="button" // <-- Add this line!
-                      className="px-3 py-1.5 bg-purple-600 text-white rounded-md text-xs font-medium hover:bg-purple-700 transition-colors"
+                      className="px-3 py-1.5 bg-[#1b6294] text-white rounded-md text-xs font-medium hover:bg-[#16517a] transition-colors shadow-xs"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleAddDrip(module);
@@ -508,7 +508,7 @@ const CourseAccordion = ({ courseId }) => {
                                 module.id || module._id
                               );
                             }}
-                            className="flex items-center space-x-1 px-3 py-1.5 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors duration-200 text-sm font-medium shadow-sm"
+                            className="flex items-center space-x-1 px-3 py-1.5 bg-[#1b6294] text-white rounded-md hover:bg-[#16517a] transition-colors duration-200 text-sm font-medium shadow-xs"
                           >
                             <Zap className="w-4 h-4" />
                             <span>Drip</span>

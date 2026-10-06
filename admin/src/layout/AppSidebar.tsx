@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { Link, useLocation } from "react-router";
+import { useSidebar } from "../context/SidebarContext";
 
 // Assume these icons are imported from an icon library
 import {
@@ -15,8 +16,7 @@ import {
   UserCircleIcon,
   VideoIcon,
 } from "../icons";
-import { useSidebar } from "../context/SidebarContext";
-import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy, Layers } from "lucide-react";
+import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy, Layers, Sparkles, Search, X } from "lucide-react";
 
 type NavSubItem = {
   name: string;
@@ -24,6 +24,7 @@ type NavSubItem = {
   pro?: boolean;
   new?: boolean;
   subItems?: NavSubItem[];
+  keywords?: string[];
 };
 
 type NavItem = {
@@ -31,6 +32,7 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: NavSubItem[];
+  keywords?: string[];
 };
 
 const navItems: NavItem[] = [
@@ -38,66 +40,79 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/",
+    keywords: ["home", "analytics", "overview", "metrics", "stats"],
   },
   {
     icon: <ListIcon />,
     name: "Courses",
     path: "/courses/all/courses",
+    keywords: ["class", "classes", "lessons", "curriculum", "python", "sql", "power bi"],
   },
   {
     icon: <BoxCubeIcon />,
     name: "Categories",
     path: "/categories",
+    keywords: ["tracks", "subjects"],
   },
   {
     icon: <PageIcon />,
     name: "Banner",
     path: "/banner",
+    keywords: ["announcement", "promo", "alert"],
   },
   {
     icon: <CalenderIcon />,
     name: "Events",
     path: "/events",
+    keywords: ["webinar", "webinars", "workshop", "masterclass"],
   },
   {
     icon: <UserCircleIcon />,
     name: "Jobs",
     path: "/jobs",
+    keywords: ["hiring", "careers", "vacancies", "referral"],
   },
   {
     icon: <PageIcon />,
     name: "News",
     path: "/news",
+    keywords: ["articles", "press", "blog"],
   },
   {
     icon: <PageIcon />,
     name: "Forums",
     path: "/forum",
+    keywords: ["community", "discussion", "threads"],
   },
   {
     icon: <UserCircleIcon />,
     name: "Students",
     path: "/students/all",
+    keywords: ["users", "learners", "enrolled"],
   },
   {
     icon: <UserCircleIcon />,
     name: "Add Reporter",
     path: "/reporters/add",
+    keywords: ["reporter", "journalist", "author"],
   },
   {
     icon: <TableIcon />,
     name: "Assignment Submissions",
     path: "/assignments/submissions",
+    keywords: ["homework", "tasks", "projects", "grades"],
   },
   {
     icon: <UserCircle2Icon />,
     name: "Student Queries",
     path: "/queries/all",
+    keywords: ["doubts", "questions", "ask", "help"],
   },
   {
     icon: <TableIcon />,
     name: "Support Requests",
     path: "/requests",
+    keywords: ["helpdesk", "tickets", "issues"],
   },
   {
     icon: <CalenderIcon />,
@@ -106,47 +121,56 @@ const navItems: NavItem[] = [
       { name: "Manage Slots", path: "/consultations/slots" },
       { name: "Bookings", path: "/consultations/bookings" },
     ],
+    keywords: ["mentorship", "bookings", "slots", "guidance"],
   },
   {
     icon: <MessageCircle />,
     name: "Chat",
     path: "/chat",
+    keywords: ["messages", "inbox", "conversation"],
   },
   {
     icon: <Tag />,
     name: "Coupons",
     path: "/coupons/all",
+    keywords: ["discount", "discounts", "promo", "voucher", "code"],
   },
   {
     icon: <TableIcon />,
     name: "Device Approvals",
     path: "/device-approvals",
+    keywords: ["security", "logins", "devices"],
   },
   {
     icon: <MessageCircle />,
     name: "Testimonials",
     path: "/testimonials",
+    keywords: ["reviews", "review", "proof", "screenshot", "screenshots", "rating", "feedback"],
   },
   {
     icon: <Instagram />,
     name: "Placement Stories",
     path: "/placement-stories",
+    keywords: ["reels", "reel", "stories", "story", "instagram", "video", "alumni", "hiring"],
   },
   {
     icon: <Trophy className="w-5 h-5" />,
     name: "Proven Results",
     path: "/proven-results",
+    keywords: ["salary", "package", "hike", "packages", "ctc", "records"],
   },
   {
     icon: <Layers className="w-5 h-5" />,
     name: "Programs We Offer",
     path: "/programs-offer",
+    keywords: ["programs", "program", "tracks", "curriculum", "syllabus"],
   },
-  /* {
-    icon: <Bot />,
-    name: "AI Tool",
-    path: "/ai-tool",
-  }, */
+  {
+    icon: <Sparkles className="w-5 h-5" />,
+    name: "Hero Section",
+    path: "/hero-section",
+    keywords: ["hero", "headline", "title", "banner", "landing", "home"],
+  },
   {
     icon: <PieChartIcon />,
     name: "Leaderboard Settings",
@@ -167,6 +191,7 @@ const navItems: NavItem[] = [
       { name: "Course", path: "/sales/course" },
       { name: "Bundle", path: "/sales/bundle" },
     ],
+    keywords: ["revenue", "sales", "analytics", "reports"],
   },
   {
     icon: <Bell />,
@@ -191,6 +216,7 @@ const navItems: NavItem[] = [
     icon: <VideoIcon />,
     name: "Live Classes",
     path: "/live-classes",
+    keywords: ["zoom", "live", "meetings", "class"],
   },
 ];
 
@@ -221,6 +247,27 @@ const AppSidebar: React.FC = () => {
   const [openSubmenu, setOpenSubmenu] = useState<string[]>([]);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const [sidebarSearch, setSidebarSearch] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcut listener (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        if (!isExpanded && !isHovered) {
+          setIsHovered(true);
+        }
+        setTimeout(() => searchInputRef.current?.focus(), 120);
+      } else if (e.key === "Escape" && sidebarSearch) {
+        setSidebarSearch("");
+        searchInputRef.current?.blur();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isExpanded, isHovered, sidebarSearch, setIsHovered]);
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
@@ -465,10 +512,59 @@ const AppSidebar: React.FC = () => {
     </ul>
   );
 
-  const filteredNavItems =
-    userRole === "news_editor"
-      ? navItems.filter((nav) => nav.name === "News")
-      : navItems;
+  // Memoized search filtering for navItems
+  const searchedNavItems = useMemo(() => {
+    const baseItems =
+      userRole === "news_editor"
+        ? navItems.filter((nav) => nav.name === "News")
+        : navItems;
+
+    const term = sidebarSearch.trim().toLowerCase();
+    if (!term) return baseItems;
+
+    return baseItems
+      .map((item) => {
+        const matchesName = item.name.toLowerCase().includes(term);
+        const matchesKeywords = item.keywords?.some((k) =>
+          k.toLowerCase().includes(term)
+        );
+
+        if (item.subItems && item.subItems.length > 0) {
+          const matchingSubItems = item.subItems.filter(
+            (sub) =>
+              sub.name.toLowerCase().includes(term) ||
+              sub.keywords?.some((k) => k.toLowerCase().includes(term))
+          );
+
+          if (matchingSubItems.length > 0) {
+            return {
+              ...item,
+              subItems: matchingSubItems,
+            };
+          }
+        }
+
+        if (matchesName || matchesKeywords) {
+          return item;
+        }
+
+        return null;
+      })
+      .filter((item): item is NavItem => item !== null);
+  }, [userRole, sidebarSearch]);
+
+  // Automatically expand submenus when search is active
+  useEffect(() => {
+    if (sidebarSearch.trim()) {
+      const keysToOpen: string[] = [];
+      searchedNavItems.forEach((item, index) => {
+        if (item.subItems && item.subItems.length > 0) {
+          keysToOpen.push(`main-${index}`);
+        }
+      });
+      setOpenSubmenu(keysToOpen);
+    }
+  }, [sidebarSearch, searchedNavItems]);
 
   return (
     <aside
@@ -518,25 +614,106 @@ const AppSidebar: React.FC = () => {
         </Link>
       </div>
 
+      {/* Sidebar Search Bar */}
+      <div className="mb-3 px-0.5">
+        {isExpanded || isHovered || isMobileOpen ? (
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/50 group-focus-within:text-cyan-300 transition-colors">
+              <Search className="w-3.5 h-3.5" />
+            </div>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={sidebarSearch}
+              onChange={(e) => setSidebarSearch(e.target.value)}
+              placeholder="Search menus & pages..."
+              className="w-full h-9 pl-9 pr-8 text-xs rounded-xl bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/15 focus:border-cyan-300/60 text-white placeholder:text-white/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-300/20 transition-all duration-200"
+            />
+            {sidebarSearch ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSidebarSearch("");
+                  searchInputRef.current?.focus();
+                }}
+                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-white/50 hover:text-white transition-colors cursor-pointer"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <span className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+                <kbd className="text-[9px] font-mono text-white/40 bg-white/10 px-1 py-0.5 rounded border border-white/10">
+                  ⌘K
+                </kbd>
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsHovered(true);
+                setTimeout(() => searchInputRef.current?.focus(), 150);
+              }}
+              className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-all border border-white/10 cursor-pointer shadow-xs"
+              title="Search menu (⌘K)"
+            >
+              <Search className="w-4 h-4 text-cyan-200" />
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Navigation Scrollable Area */}
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar pb-8">
         <nav className="mb-6 space-y-4">
           <div>
-            <h2
-              className={`mb-3 text-[11px] font-bold uppercase tracking-wider text-white/60 font-mono flex items-center ${
-                !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-              }`}
-            >
-              {isExpanded || isHovered || isMobileOpen ? (
-                "Main Navigation"
-              ) : (
-                <HorizontaLDots className="size-5 text-white/60" />
-              )}
-            </h2>
-            {renderMenuItems(filteredNavItems, "main")}
+            <div className="flex items-center justify-between mb-3">
+              <h2
+                className={`text-[11px] font-bold uppercase tracking-wider text-white/60 font-mono flex items-center ${
+                  !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  sidebarSearch.trim() ? (
+                    <span className="flex items-center gap-1.5 text-cyan-200">
+                      <span>Search Results</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-400/20 text-cyan-200 font-sans">
+                        {searchedNavItems.length}
+                      </span>
+                    </span>
+                  ) : (
+                    "Main Navigation"
+                  )
+                ) : (
+                  <HorizontaLDots className="size-5 text-white/60" />
+                )}
+              </h2>
+            </div>
+
+            {searchedNavItems.length > 0 ? (
+              renderMenuItems(searchedNavItems, "main")
+            ) : (
+              <div className="py-8 px-2 text-center rounded-2xl bg-white/5 border border-white/10">
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-2 text-white/50">
+                  <Search className="w-4 h-4 text-cyan-200" />
+                </div>
+                <p className="text-xs font-semibold text-white">No menus found</p>
+                <p className="text-[10px] text-white/50 mt-1">No items match "{sidebarSearch}"</p>
+                <button
+                  type="button"
+                  onClick={() => setSidebarSearch("")}
+                  className="mt-3 px-3 py-1 text-[11px] font-semibold text-cyan-200 bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border border-white/10"
+                >
+                  Clear search
+                </button>
+              </div>
+            )}
           </div>
 
-          {userRole !== "news_editor" && othersItems.length > 0 && (
+          {!sidebarSearch && userRole !== "news_editor" && othersItems.length > 0 && (
             <div>
               <h2
                 className={`mb-3 text-[11px] font-bold uppercase tracking-wider text-white/60 font-mono flex items-center ${

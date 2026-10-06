@@ -200,13 +200,40 @@ const ChevronUpIcon = ({ className = 'w-4 h-4' }) => (
   </svg>
 )
 
+const ChevronLeftIcon = ({ className = 'w-5 h-5' }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+)
+
+const ChevronRightIcon = ({ className = 'w-5 h-5' }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+)
+
 // Single Testimonial Card Component
-const ReviewCard = ({ item, getImageSrc, onOpenVideo, isGrid = false }) => {
+const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid = false }) => {
   const avatar = getImageSrc(item.image)
   const studentName = item.name || item.userId?.fullName || 'Verified Student'
   const studentRole = item.role || 'Data Analytics Alum'
   const ratingCount = Number(item.rating) || 5
   const hasVideo = Boolean(item.video)
+
+  const reviewImages = useMemo(() => {
+    const list = []
+    if (Array.isArray(item.reviewImages) && item.reviewImages.length > 0) {
+      item.reviewImages.forEach(img => {
+        const src = getImageSrc(img)
+        if (src && !list.includes(src)) list.push(src)
+      })
+    }
+    if (item.screenshot) {
+      const src = getImageSrc(item.screenshot)
+      if (src && !list.includes(src)) list.unshift(src)
+    }
+    return list
+  }, [item.reviewImages, item.screenshot, getImageSrc])
 
   const cardClasses = isGrid
     ? 'w-full h-full bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(52,152,219,0.08)] hover:shadow-xl hover:border-blue-300 transition-all duration-300 flex flex-col justify-between select-none group text-left'
@@ -254,6 +281,103 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, isGrid = false }) => {
         <p className="text-slate-700 text-sm sm:text-[14.5px] leading-relaxed line-clamp-4 font-normal">
           "{item.message}"
         </p>
+
+        {/* Attached Review Screenshot Proof */}
+        {reviewImages.length > 0 && (
+          <div className="mt-4 pt-3.5 border-t border-slate-100">
+            {reviewImages.length === 1 ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (onOpenScreenshot) {
+                    onOpenScreenshot({
+                      images: reviewImages,
+                      currentIndex: 0,
+                      url: reviewImages[0],
+                      name: studentName,
+                      role: studentRole,
+                      message: item.message,
+                    })
+                  }
+                }}
+                className="w-full flex items-center gap-3 p-2 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-slate-50 hover:from-emerald-100/70 hover:to-emerald-50/50 border border-emerald-200/60 hover:border-emerald-400/80 transition-all duration-200 cursor-pointer text-left group/shot"
+              >
+                <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-200/80 shrink-0 shadow-xs relative">
+                  <img
+                    src={reviewImages[0]}
+                    alt="Review Screenshot"
+                    className="w-full h-full object-cover group-hover/shot:scale-110 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-extrabold text-slate-800 group-hover/shot:text-emerald-700 transition-colors">
+                      Review Screenshot
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-extrabold tracking-wide uppercase">
+                      Proof
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                    Click to view full review image
+                  </p>
+                </div>
+              </button>
+            ) : (
+              <div className="p-2.5 rounded-2xl bg-gradient-to-r from-emerald-50/50 to-slate-50 border border-emerald-200/60">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-extrabold text-slate-800">
+                      Review Proofs
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold tracking-wide uppercase">
+                      {reviewImages.length} Images
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    Click to view gallery
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {reviewImages.slice(0, 3).map((rSrc, rIdx) => (
+                    <div
+                      key={rIdx}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (onOpenScreenshot) {
+                          onOpenScreenshot({
+                            images: reviewImages,
+                            currentIndex: rIdx,
+                            url: rSrc,
+                            name: studentName,
+                            role: studentRole,
+                            message: item.message,
+                          })
+                        }
+                      }}
+                      className="relative w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-200/80 shrink-0 cursor-pointer group/thumb hover:border-emerald-400 shadow-xs"
+                    >
+                      <img
+                        src={rSrc}
+                        alt={`Proof ${rIdx + 1}`}
+                        className="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-300"
+                      />
+                      {rIdx === 2 && reviewImages.length > 3 && (
+                        <div className="absolute inset-0 bg-slate-950/70 flex items-center justify-center text-white text-[11px] font-extrabold">
+                          +{reviewImages.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Student Profile Info */}
@@ -297,6 +421,7 @@ const TestimonialsSection = () => {
   const [viewMode, setViewMode] = useState('marquee') // 'marquee' | 'grid'
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeVideoItem, setActiveVideoItem] = useState(null)
+  const [activeScreenshotModal, setActiveScreenshotModal] = useState(null) // Screenshot Lightbox Modal
   const [showAllGrid, setShowAllGrid] = useState(false) // Show More in Grid View
   const gridSectionRef = useRef(null)
 
@@ -307,6 +432,8 @@ const TestimonialsSection = () => {
   const [hoverRating, setHoverRating] = useState(0)
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
+  const [screenshotFile, setScreenshotFile] = useState(null)
+  const [screenshotPreview, setScreenshotPreview] = useState('')
 
   // 2 rows in standard 3-column grid = 6 items
   const INITIAL_GRID_ITEMS = 6
@@ -325,6 +452,8 @@ const TestimonialsSection = () => {
         setRating(5)
         setImageFile(null)
         setImagePreview('')
+        setScreenshotFile(null)
+        setScreenshotPreview('')
         dispatch(resetSubmitStatus())
         dispatch(fetchTestimonials())
       }, 2000)
@@ -332,11 +461,54 @@ const TestimonialsSection = () => {
     }
   }, [submitSuccess, dispatch])
 
+  useEffect(() => {
+    if (!activeScreenshotModal) return
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveScreenshotModal(null)
+      } else if (e.key === 'ArrowLeft') {
+        const imgs = activeScreenshotModal.images || (activeScreenshotModal.url ? [activeScreenshotModal.url] : [])
+        if (imgs.length > 1) {
+          const cur = activeScreenshotModal.currentIndex || 0
+          const prevIdx = (cur - 1 + imgs.length) % imgs.length
+          setActiveScreenshotModal((prev) => ({
+            ...prev,
+            currentIndex: prevIdx,
+            url: imgs[prevIdx],
+          }))
+        }
+      } else if (e.key === 'ArrowRight') {
+        const imgs = activeScreenshotModal.images || (activeScreenshotModal.url ? [activeScreenshotModal.url] : [])
+        if (imgs.length > 1) {
+          const cur = activeScreenshotModal.currentIndex || 0
+          const nextIdx = (cur + 1) % imgs.length
+          setActiveScreenshotModal((prev) => ({
+            ...prev,
+            currentIndex: nextIdx,
+            url: imgs[nextIdx],
+          }))
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeScreenshotModal])
+
+
+
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
       setImageFile(file)
       setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleScreenshotChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      setScreenshotFile(file)
+      setScreenshotPreview(URL.createObjectURL(file))
     }
   }
 
@@ -354,6 +526,9 @@ const TestimonialsSection = () => {
     formData.append('rating', String(rating))
     if (imageFile) {
       formData.append('image', imageFile)
+    }
+    if (screenshotFile) {
+      formData.append('screenshot', screenshotFile)
     }
 
     dispatch(submitTestimonial(formData))
@@ -481,18 +656,6 @@ const TestimonialsSection = () => {
                 Grid View
               </button>
             </div>
-
-            {/* Write a Review Button */}
-            <button
-              onClick={() => {
-                dispatch(resetSubmitStatus())
-                setIsModalOpen(true)
-              }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#3498db] hover:bg-[#2980b9] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
-            >
-              <MessagePlusIcon className="w-4 h-4" />
-              Write a Review
-            </button>
           </div>
         </div>
       </div>
@@ -513,6 +676,7 @@ const TestimonialsSection = () => {
                   item={item}
                   getImageSrc={getImageSrc}
                   onOpenVideo={(vItem) => setActiveVideoItem(vItem)}
+                  onOpenScreenshot={(sItem) => setActiveScreenshotModal(sItem)}
                 />
               ))}
             </div>
@@ -527,6 +691,7 @@ const TestimonialsSection = () => {
                   item={item}
                   getImageSrc={getImageSrc}
                   onOpenVideo={(vItem) => setActiveVideoItem(vItem)}
+                  onOpenScreenshot={(sItem) => setActiveScreenshotModal(sItem)}
                 />
               ))}
             </div>
@@ -547,6 +712,7 @@ const TestimonialsSection = () => {
                   item={item}
                   getImageSrc={getImageSrc}
                   onOpenVideo={(vItem) => setActiveVideoItem(vItem)}
+                  onOpenScreenshot={(sItem) => setActiveScreenshotModal(sItem)}
                   isGrid={true}
                 />
               </div>
@@ -613,6 +779,154 @@ const TestimonialsSection = () => {
           </div>
         </div>
       )}
+
+      {/* REVIEW SCREENSHOT LIGHTBOX MODAL */}
+      {activeScreenshotModal && (() => {
+        const modalImages = Array.isArray(activeScreenshotModal.images) && activeScreenshotModal.images.length > 0
+          ? activeScreenshotModal.images
+          : (activeScreenshotModal.url ? [activeScreenshotModal.url] : [])
+        const currentIndex = typeof activeScreenshotModal.currentIndex === 'number'
+          ? Math.max(0, Math.min(activeScreenshotModal.currentIndex, modalImages.length - 1))
+          : 0
+        const currentUrl = modalImages[currentIndex] || activeScreenshotModal.url
+
+        const handlePrev = (e) => {
+          e?.stopPropagation?.()
+          if (modalImages.length <= 1) return
+          const newIdx = (currentIndex - 1 + modalImages.length) % modalImages.length
+          setActiveScreenshotModal({
+            ...activeScreenshotModal,
+            currentIndex: newIdx,
+            url: modalImages[newIdx],
+          })
+        }
+
+        const handleNext = (e) => {
+          e?.stopPropagation?.()
+          if (modalImages.length <= 1) return
+          const newIdx = (currentIndex + 1) % modalImages.length
+          setActiveScreenshotModal({
+            ...activeScreenshotModal,
+            currentIndex: newIdx,
+            url: modalImages[newIdx],
+          })
+        }
+
+        const handleSelectThumb = (idx, e) => {
+          e?.stopPropagation?.()
+          setActiveScreenshotModal({
+            ...activeScreenshotModal,
+            currentIndex: idx,
+            url: modalImages[idx],
+          })
+        }
+
+        return (
+          <div
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200"
+            onClick={() => setActiveScreenshotModal(null)}
+          >
+            <div
+              className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200/80 flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/90">
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-extrabold text-slate-900">
+                      {activeScreenshotModal.name || 'Student Review'}
+                    </h3>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold tracking-wide uppercase">
+                      Verified Proof
+                    </span>
+                    {modalImages.length > 1 && (
+                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-blue-100 text-[#2980b9] font-bold">
+                        {currentIndex + 1} / {modalImages.length}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium">
+                    {activeScreenshotModal.role || 'Student'}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveScreenshotModal(null)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-all cursor-pointer"
+                  title="Close"
+                >
+                  <CloseIcon className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Image viewer with Prev / Next overlay arrows */}
+              <div className="relative p-3 sm:p-4 bg-slate-950 flex items-center justify-center overflow-hidden min-h-[300px] max-h-[62vh] flex-1">
+                {modalImages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+                    title="Previous proof image"
+                  >
+                    <ChevronLeftIcon className="w-5 h-5" />
+                  </button>
+                )}
+
+                <img
+                  src={currentUrl}
+                  alt={`Review Proof ${currentIndex + 1}`}
+                  className="max-h-[58vh] w-auto max-w-full rounded-xl object-contain shadow-md"
+                />
+
+                {modalImages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+                    title="Next proof image"
+                  >
+                    <ChevronRightIcon className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Thumbnail Strip (if multiple images) */}
+              {modalImages.length > 1 && (
+                <div className="px-6 py-2.5 bg-slate-900 border-t border-slate-800 flex items-center gap-2 overflow-x-auto justify-center">
+                  {modalImages.map((imgSrc, tIdx) => (
+                    <button
+                      key={tIdx}
+                      type="button"
+                      onClick={(e) => handleSelectThumb(tIdx, e)}
+                      className={`relative w-12 h-12 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                        tIdx === currentIndex
+                          ? 'border-[#3498db] scale-105 shadow-md shadow-blue-500/30'
+                          : 'border-slate-700 opacity-60 hover:opacity-100 hover:border-slate-500'
+                      }`}
+                    >
+                      <img
+                        src={imgSrc}
+                        alt={`Thumb ${tIdx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Footer with quote */}
+              {activeScreenshotModal.message && (
+                <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 text-left">
+                  <p className="text-xs sm:text-sm text-slate-700 font-normal italic line-clamp-2">
+                    "{activeScreenshotModal.message}"
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* STUDENT TESTIMONIAL SUBMISSION MODAL */}
       {isModalOpen && (
@@ -757,6 +1071,40 @@ const TestimonialsSection = () => {
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  {/* Review Screenshot Upload */}
+                  <div>
+                    <label className="block text-xs font-bold text-emerald-700 mb-1.5">
+                      Review Screenshot / Chat Proof (Optional)
+                    </label>
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 cursor-pointer transition-all">
+                      {screenshotPreview ? (
+                        <img
+                          src={screenshotPreview}
+                          alt="Screenshot Preview"
+                          className="w-10 h-10 rounded-lg object-cover shrink-0 border border-emerald-400"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                          <UploadIcon className="w-4 h-4" />
+                        </div>
+                      )}
+                      <div className="overflow-hidden">
+                        <span className="text-xs font-bold text-slate-700 block truncate">
+                          {screenshotFile ? screenshotFile.name : 'Upload review screenshot'}
+                        </span>
+                        <span className="text-[10px] text-emerald-600 font-medium">
+                          WhatsApp, LinkedIn, Google Review, etc.
+                        </span>
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleScreenshotChange}
                         className="hidden"
                       />
                     </label>

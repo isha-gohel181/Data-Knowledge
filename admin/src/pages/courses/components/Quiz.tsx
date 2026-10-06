@@ -735,7 +735,7 @@ const Quiz = ({
                         e.stopPropagation();
                         setShowSectionBuilder(true);
                       }}
-                      className="bg-blue-500 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-200"
+                      className="bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white px-6 py-3 rounded-xl inline-flex items-center gap-2 shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 font-medium"
                     >
                       <FolderPlus className="w-4 h-4" />
                       Add First Section
@@ -812,7 +812,7 @@ const Quiz = ({
                     !quizData.quizTitle.trim() ||
                     getTotalQuestions() === 0
                       ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-500 hover:from-indigo-700 hover:to-purple-700"
+                      : "bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white shadow-md shadow-[#1b6294]/20 hover:shadow-lg cursor-pointer active:scale-95"
                   }`}
                 >
                   {loading ? (

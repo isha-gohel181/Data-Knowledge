@@ -758,7 +758,7 @@ function StudentDetail() {
                 </div>
                 <button
                   onClick={() => setEnrollPopupOpen(true)}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all active:scale-95 cursor-pointer font-medium"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Enroll in New Course
@@ -957,7 +957,7 @@ function StudentDetail() {
                 </p>
                 <button
                   onClick={() => setEnrollPopupOpen(true)}
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all active:scale-95 cursor-pointer font-medium"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Enroll in Course

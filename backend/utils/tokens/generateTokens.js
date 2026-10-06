@@ -156,7 +156,13 @@ const generateTokens = async (user, platform = "web", deviceId = null) => {
 
     // Blacklist previous tokens (if not admin) ONLY for the current platform
     // This allows web + one app device to coexist
-    const isAdmin = user?.role === "admin" || (Array.isArray(user?.roles) && user?.roles.includes("admin")) || user?.roles === "admin";
+    const isAdmin =
+      user?.role === "admin" ||
+      user?.role === "super_admin" ||
+      (Array.isArray(user?.roles) &&
+        (user?.roles.includes("admin") || user?.roles.includes("super_admin"))) ||
+      user?.roles === "admin" ||
+      user?.roles === "super_admin";
     if (!isAdmin) {
       await cleanupExpiredAccessTokensForUser(user._id, platform);
       const previousTokens = await getAllAccessTokensForUser(user._id, platform);

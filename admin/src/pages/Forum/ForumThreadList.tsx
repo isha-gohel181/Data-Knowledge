@@ -147,7 +147,7 @@ const ForumThreadList: React.FC = () => {
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white/90">Forum Threads</h1>
             <button
               onClick={() => navigate("/forum/create")}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all active:scale-95 font-medium cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Create Thread</span>

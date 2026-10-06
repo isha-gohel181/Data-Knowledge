@@ -316,7 +316,7 @@ const TextLessonEditor = ({
       <div className="w-full max-w-7xl mx-auto max-h-[600px]">
         {/* Enhanced Header - Responsive */}
         <div className="bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-white">
+          <div className="bg-gradient-to-r from-[#1b6294] to-[#16517a] p-4 sm:p-6 text-white">
             <div className="flex sm:flex-row items-center sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -575,7 +575,7 @@ const TextLessonEditor = ({
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 border border-transparent rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm font-semibold text-white bg-gradient-to-r from-[#1b6294] to-[#16517a] border border-transparent rounded-lg sm:rounded-xl hover:from-[#16517a] hover:to-[#103a58] focus:outline-none focus:ring-2 focus:ring-[#1b6294]/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95"
                 >
                   {loading ? (
                     <>

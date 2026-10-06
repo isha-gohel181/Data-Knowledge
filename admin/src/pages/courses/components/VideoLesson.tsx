@@ -924,7 +924,7 @@ const VideoLesson: React.FC<VideoLessonProps> = ({
     <>
       <div className="bg-white lg:w-[800px] rounded-2xl max-w-4xl w-full mx-auto shadow-2xl max-h-[700px] overflow-scroll">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-[#1b6294] to-[#16517a] p-6 text-white">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -1070,7 +1070,7 @@ const VideoLesson: React.FC<VideoLessonProps> = ({
               className={`px-6 py-2 rounded-xl font-semibold flex items-center gap-2 transition-all duration-200 ${
                 loading || uploadProgress.isVisible
                   ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
+                  : "bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white shadow-md shadow-[#1b6294]/20 hover:shadow-lg active:scale-95 cursor-pointer"
               }`}
             >
               {loading || uploadProgress.isVisible ? (

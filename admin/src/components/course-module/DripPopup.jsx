@@ -469,7 +469,7 @@ const DripPopup = ({
                   onClick={() => setActiveCategory(category.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     activeCategory === category.value
-                      ? "bg-purple-600 text-white shadow-lg"
+                      ? "bg-[#1b6294] text-white shadow-md"
                       : "bg-gray-100 dark:bg-white/[0.06] dark:text-white/70 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -492,8 +492,8 @@ const DripPopup = ({
                     key={type.value}
                     className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
                       form.dripType === type.value
-                        ? "border-purple-500 bg-purple-50 dark:bg-white/[0.1] shadow-lg"
-                        : "border-gray-200 hover:border-purple-300"
+                        ? "border-[#1b6294] bg-blue-50/50 dark:bg-white/[0.1] shadow-md"
+                        : "border-gray-200 hover:border-blue-300"
                     }`}
                     onClick={() =>
                       setForm((prev) => ({ ...prev, dripType: type.value }))
@@ -503,7 +503,7 @@ const DripPopup = ({
                       <div
                         className={`p-2 rounded-lg ${
                           form.dripType === type.value
-                            ? "bg-purple-600 text-white"
+                            ? "bg-[#1b6294] text-white"
                             : "bg-gray-100 text-gray-600"
                         }`}
                       >
@@ -539,7 +539,7 @@ const DripPopup = ({
                 <div
                   className={`p-2 rounded-lg mr-3 ${
                     selectedDripType
-                      ? "bg-purple-600 text-white"
+                      ? "bg-[#1b6294] text-white"
                       : "bg-gray-400 text-white"
                   }`}
                 >
@@ -873,7 +873,7 @@ const DripPopup = ({
               type="button"
               onClick={handleSubmit}
               disabled={!form.dripType}
-              className="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="px-8 py-3 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium active:scale-95 cursor-pointer"
             >
               Save Drip Settings for {targetType}
             </button>

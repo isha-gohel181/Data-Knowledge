@@ -292,7 +292,7 @@ export const likeThread = async (req, res) => {
     const userId = req.user._id;
 
     const result = await forumService.likeThread(id, userId);
-    
+
     // Notify thread creator about the like
     const thread = await ForumThread.findById(id).populate("createdBy", "fullName email");
     // //console.log("📦 Thread:", thread);
@@ -614,7 +614,7 @@ export const getAllThreadsWithReplies = async (req, res) => {
       const openSourceThreads = threadsResult.threads.filter(
         t => t.Is_openSource === true
       );
-      
+
       const requestedLimit = parseInt(req.query.limit) || 10;
       const limitedThreads = stripSensitiveData(openSourceThreads.slice(0, requestedLimit), null);
 
@@ -630,7 +630,7 @@ export const getAllThreadsWithReplies = async (req, res) => {
     if (req?.user?.role === "admin") {
       const requestedLimit = parseInt(req.query.limit) || 10;
       const limitedThreads = stripSensitiveData(threadsResult.threads.slice(0, requestedLimit), loggedInUserIdStr);
-      
+
       return res.status(200).json({
         success: true,
         message: "All forum threads with replies fetched",
@@ -666,10 +666,10 @@ export const getAllThreadsWithReplies = async (req, res) => {
         );
         thread.likeCount = thread.likes.length;
       }
-      
+
       if (thread.replies) {
         //console.log(`Processing replies for thread ID: ${thread._id}`);
-        
+
         // FIXED: Filter replies - hide shadowbanned users' replies EXCEPT if it's the logged-in user's own reply
         thread.replies = thread.replies.filter(r => {
           const replyUserId = r.repliedBy?._id?.toString();
@@ -682,7 +682,7 @@ export const getAllThreadsWithReplies = async (req, res) => {
           // 1. It's NOT by a shadowbanned user, OR
           // 2. It's by a shadowbanned user but it's the logged-in user's own reply
           const shouldShow = !isReplyByShadowUser || isOwnReply;
-          
+
           if (!shouldShow) {
             //console.log(`Excluding reply ID: ${r._id} by shadow-banned user.`);
           }
@@ -701,11 +701,11 @@ export const getAllThreadsWithReplies = async (req, res) => {
             );
             reply.likeCount = reply.likes.length;
           }
-          
+
           // Filter nested replies
           if (reply.nestedReplies) {
             //console.log(`Processing nested replies for reply ID: ${reply._id}`);
-            
+
             reply.nestedReplies = reply.nestedReplies.filter(nr => {
               const nestedReplyUserId = nr.repliedBy?._id?.toString();
               const isNestedReplyByShadowUser = shadowIds.includes(nestedReplyUserId);
@@ -829,7 +829,7 @@ export const filterThreadsByTags = async (req, res) => {
     if (courseId) query.course = courseId;
 
 
-    
+
 
 
     query.isApproved = true; // Only approved threads
@@ -859,21 +859,21 @@ export const filterThreadsByTags = async (req, res) => {
       threads.map(async (thread) => {
         thread.likeCount = thread.likes ? thread.likes.length : 0;
 
-        const replyCount = await ForumReply.countDocuments({ 
+        const replyCount = await ForumReply.countDocuments({
           threadId: thread._id,
           parentReplyId: null
         });
         thread.replyCount = replyCount;
 
-        const replies = await ForumReply.find({ 
-          threadId: thread._id, 
-          parentReplyId: null 
+        const replies = await ForumReply.find({
+          threadId: thread._id,
+          parentReplyId: null
         })
           .sort({ createdAt: 1 })
           .populate('repliedBy', 'fullName profilePicture')
           .lean();
 
-        const filteredReplies = replies.filter(reply => 
+        const filteredReplies = replies.filter(reply =>
           !shadowIds.includes(reply.repliedBy?._id?.toString())
         ).map(r => sanitizeReply(r, userIdStr));
 
@@ -952,7 +952,7 @@ export const approveThread = async (req, res) => {
         await notificationDoc.save();
       }
     }
-    
+
     // If approved, send notification to all users
     // if (isApproved) {
     //   const allUsersNotification = {

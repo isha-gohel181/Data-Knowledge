@@ -167,7 +167,7 @@ export default function NewsList() {
             <div className="mt-4 sm:mt-0 flex gap-2">
               <button
                 onClick={() => navigate("/news/add")}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
+                className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white font-medium rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg transition-all active:scale-95 cursor-pointer"
                 title="Add News"
               >
                 <Plus className="w-4 h-4 mr-2" />

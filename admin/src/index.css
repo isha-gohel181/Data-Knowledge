@@ -41,18 +41,18 @@ layer(base);
   --color-white: #ffffff;
   --color-black: #101828;
 
-  --color-brand-25: #f2f7ff;
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
-  --color-brand-950: #161950;
+  --color-brand-25: #f4f8fb;
+  --color-brand-50: #e8f2f8;
+  --color-brand-100: #d0e5f2;
+  --color-brand-200: #a7cde4;
+  --color-brand-300: #72afd3;
+  --color-brand-400: #398fc0;
+  --color-brand-500: #1b6294;
+  --color-brand-600: #16517a;
+  --color-brand-700: #103a58;
+  --color-brand-800: #0c2c43;
+  --color-brand-900: #081e2e;
+  --color-brand-950: #05131e;
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
@@ -147,7 +147,7 @@ layer(base);
   --shadow-theme-xl: 0px 20px 24px -4px rgba(16, 24, 40, 0.08),
     0px 8px 8px -4px rgba(16, 24, 40, 0.03);
   --shadow-datepicker: -5px 0 0 #262d3c, 5px 0 0 #262d3c;
-  --shadow-focus-ring: 0px 0px 0px 4px rgba(70, 95, 255, 0.12);
+  --shadow-focus-ring: 0px 0px 0px 4px rgba(27, 98, 148, 0.18);
   --shadow-slider-navigation: 0px 1px 2px 0px rgba(16, 24, 40, 0.1),
     0px 1px 3px 0px rgba(16, 24, 40, 0.1);
   --shadow-tooltip: 0px 4px 6px -2px rgba(16, 24, 40, 0.05),
@@ -269,11 +269,15 @@ layer(base);
 }
 
 @utility bg-brand-gradient {
-  background-image: linear-gradient(135deg, #7592ff 0%, #465fff 55%, #3641f5 100%);
+  background-image: linear-gradient(135deg, #227cb9 0%, #1b6294 55%, #16517a 100%);
+}
+
+@utility btn-brand {
+  @apply inline-flex items-center justify-center gap-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] shadow-md shadow-[#1b6294]/20 hover:shadow-lg hover:shadow-[#1b6294]/30 transition-all duration-200 active:scale-95;
 }
 
 @utility bg-brand-soft-gradient {
-  background-image: linear-gradient(180deg, #f5f9ff 0%, #ffffff 100%);
+  background-image: linear-gradient(180deg, #f0f7fb 0%, #ffffff 100%);
 }
 .dark .bg-brand-soft-gradient {
   background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);

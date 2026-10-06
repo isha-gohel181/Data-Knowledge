@@ -204,14 +204,14 @@ const AssignmentSubmissionReview = () => {
         )}
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-purple-600 text-white p-6 rounded-t-lg">
+        <div className="bg-gradient-to-r from-[#1b6294] to-[#16517a] text-white p-6 rounded-t-2xl shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">Assignment Review</h1>
-              <p className="text-purple-100">Grade & Provide Feedback</p>
+              <p className="text-cyan-100 text-sm">Grade & Provide Feedback</p>
             </div>
           </div>
         </div>
@@ -224,13 +224,13 @@ const AssignmentSubmissionReview = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white/90 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-purple-600" />
+                    <BookOpen className="w-5 h-5 text-[#1b6294]" />
                     Assignment Details
                   </h3>
                   {submission?.assignmentId?._id && (
                     <button
                       onClick={handleViewAssignment}
-                      className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+                      className="flex items-center gap-2 px-3 py-2 bg-[#1b6294] hover:bg-[#16517a] text-white rounded-xl shadow-xs transition-colors text-sm font-medium"
                     >
                       <ExternalLink className="w-4 h-4" />
                       View Assignment
@@ -522,7 +522,7 @@ const AssignmentSubmissionReview = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className={`px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all font-medium flex items-center gap-2 ${
+                  className={`px-8 py-3 bg-gradient-to-r from-[#1b6294] to-[#16517a] hover:from-[#16517a] hover:to-[#103a58] text-white rounded-xl shadow-md shadow-[#1b6294]/20 hover:shadow-lg focus:ring-2 focus:ring-[#1b6294]/30 transition-all font-medium flex items-center gap-2 cursor-pointer ${
                     loading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >

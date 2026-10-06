@@ -331,7 +331,8 @@ export const getMyProfile = async (req, res) => {
           email: user.email,
           fullName: user.fullName,
           is_verify: user.is_verify,
-          roles: user.roles,
+          roles: user.roles || (user.role ? [user.role] : []),
+          role: user.role || (Array.isArray(user.roles) ? user.roles[0] : user.roles),
           profilePicture: user.profilePicture,
           enrolledCourses: user.enrolledCourses,
           teachingCourses: user.teachingCourses,
@@ -973,33 +974,37 @@ export const login = async (req, res) => {
 
       await redis.set(`accessToken:${accessToken}`, "valid", { EX: accessTTL });
       await redis.set(`refreshToken:${refreshToken}`, userId, { EX: refreshTTL });
-    }
 
-    // Cache user data in Redis (expires in 1 hour)
-    await redis.setEx(
-      `user:${userId}`,
-      3600,
-      JSON.stringify({
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        roles: user.roles,
-        profilePicture: user.profilePicture,
-        bio: user.bio,
-        phone: user.phone,
-        address: user.address,
-        company: user.company,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      })
-    );
+      // Cache user data in Redis (expires in 1 hour)
+      await redis.setEx(
+        `user:${userId}`,
+        3600,
+        JSON.stringify({
+          _id: user._id,
+          email: user.email,
+          fullName: user.fullName,
+          roles: user.roles,
+          profilePicture: user.profilePicture,
+          bio: user.bio,
+          phone: user.phone,
+          address: user.address,
+          company: user.company,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })
+      );
+    }
 
     // Set tokens as HTTP-only cookies (no maxAge)
     Token.setTokensCookies(res, accessToken, refreshToken);
 
-    // Create successful login log
-    const sessionId = jwt.decode(accessToken)?.jti || accessToken.substring(0, 10);
-    await createLoginLog(userId, deviceId || "unknown", deviceInfo, "success", sessionId);
+    // Create successful login log (non-blocking)
+    try {
+      const sessionId = jwt.decode(accessToken)?.jti || accessToken.substring(0, 10);
+      await createLoginLog(userId, deviceId || "unknown", deviceInfo, "success", sessionId);
+    } catch (logErr) {
+      console.warn("⚠️ Warning creating login log:", logErr?.message);
+    }
 
     // SECURITY: never return credential material. The user object was fetched with
     // includeSensitive (needed for the bcrypt comparison), so strip the password
@@ -1011,11 +1016,14 @@ export const login = async (req, res) => {
       ...safeUser
     } = loginResult.userObj;
 
-    // Modified response structure
-    // SECURITY: web clients authenticate exclusively via the httpOnly cookies set
-    // above — echoing the raw JWTs in the JSON body lets any XSS read/exfiltrate
-    // them, defeating the httpOnly protection. Only mobile/app clients (which use
-    // the Authorization header and cannot read cookies) get body tokens.
+    // Ensure role and roles exist on user object
+    if (!safeUser.role && safeUser.roles) {
+      safeUser.role = Array.isArray(safeUser.roles) ? safeUser.roles[0] : safeUser.roles;
+    }
+    if (!safeUser.roles && safeUser.role) {
+      safeUser.roles = [safeUser.role];
+    }
+
     return res.status(200).json({
       success: true,
       message: "✅ Successfully logged in",
@@ -1028,16 +1036,18 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Login Error:", err?.message);
-    const deviceInfo = {
-      platform: req.body.platform || "web",
-      userAgent: req.headers["user-agent"] || "",
-      ipAddress: req.ip || req.connection.remoteAddress || "",
-      deviceName: req.body.deviceName || "",
-      ...parseUserAgent(req.headers["user-agent"] || ""),
-    };
-    await createLoginLog(null, req.body.deviceId || "unknown", deviceInfo, "failed");
+    try {
+      const deviceInfo = {
+        platform: req.body.platform || "web",
+        userAgent: req.headers["user-agent"] || "",
+        ipAddress: req.ip || req.connection.remoteAddress || "",
+        deviceName: req.body.deviceName || "",
+        ...parseUserAgent(req.headers["user-agent"] || ""),
+      };
+      await createLoginLog(null, req.body.deviceId || "unknown", deviceInfo, "failed");
+    } catch (_) {}
     return res.status(500).json({
-      message: "An error occurred during login",
+      message: err.message || "An error occurred during login",
       data: {},
       success: false,
       err: err.message,
