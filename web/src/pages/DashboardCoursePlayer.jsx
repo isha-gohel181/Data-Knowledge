@@ -478,7 +478,7 @@ const DashboardCoursePlayer = () => {
                             {currentCourse.modules?.map((module, i) => (
                                 <div 
                                     key={module._id || i}
-                                    className={`group border transition-all duration-700 overflow-hidden bg-white
+                                    className={`group border rounded-2xl transition-all duration-700 overflow-hidden bg-white
                                         ${activeAccordion === (module._id || i) ? 'border-amber-400 shadow-md' : 'border-slate-200 hover:border-slate-300'}`}
                                 >
                                     <button 

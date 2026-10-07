@@ -3,7 +3,7 @@ import EmojiPicker from 'emoji-picker-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchThreads, createThread } from '../redux/slices/forumSlice'
+import { fetchThreads, createThread, fetchForumTags, likeThread, postReply } from '../redux/slices/forumSlice'
 import CreateTopicModal from '../components/dashboard/CreateTopicModal'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -16,7 +16,7 @@ const Forum = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullImageUrl, setFullImageUrl] = useState(null)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
-  const { threads, loading, total, currentPage, totalPages } = useSelector((state) => state.forum)
+  const { threads, loading, total, currentPage, totalPages, tags: forumTags } = useSelector((state) => state.forum)
   const user = useSelector((state) => state.auth?.user)
   const loaderRef = useRef(null)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
@@ -24,6 +24,7 @@ const Forum = () => {
 
   useEffect(() => {
     dispatch(fetchThreads({ page: 1, limit: 10 }))
+    dispatch(fetchForumTags())
   }, [dispatch])
 
   useEffect(() => {
@@ -117,13 +118,21 @@ const Forum = () => {
       replies: mapReplies(thread.replies)
   }))
 
-  const tags = ['#Mindset', '#Feedback', '#Paid Ads', '#SEO', '#Client Acquisition', '#Operations']
+  const dynamicTags = (forumTags.length > 0 ? forumTags : threads.flatMap((thread) => thread.tags || []))
+    .map((tag) => String(tag).startsWith('#') ? String(tag) : `#${tag}`)
+    .filter((tag, index, allTags) => allTags.indexOf(tag) === index)
+    .slice(0, 10)
+  const activeUsers = new Set(threads.map((thread) => thread.createdBy?._id || thread.createdBy).filter(Boolean)).size
+  const weeklyTopics = threads.filter((thread) => (
+    thread.createdAt && Date.now() - new Date(thread.createdAt).getTime() <= 7 * 24 * 60 * 60 * 1000
+  )).length
   const stats = [
     { label: 'TOTAL TOPICS', value: total || '0' },
-    { label: 'ACTIVE USERS', value: '1423' },
-    { label: 'THIS WEEK', value: '47' }
+    { label: 'ACTIVE USERS', value: activeUsers },
+    { label: 'THIS WEEK', value: weeklyTopics }
   ]
-  const discourseTags = ['#TYPOGRAPHY', '#EDITORIAL', '#GRIDSYSTEMS', '#UXDESIGN', '#ASYMMETRY']
+  const tags = dynamicTags
+  const discourseTags = dynamicTags
 
 const QuestionCard = ({ question }) => {
     const { t } = useLanguage()
@@ -162,18 +171,16 @@ const QuestionCard = ({ question }) => {
       }
     }, [isOpen])
 
-    const handleSentiment = (type) => {
-      if (sentiment === type) {
-        setSentiment(null)
-        if (type === 'like') setLikesCount(p => p - 1)
-        else setDislikesCount(p => p - 1)
-      } else {
-        if (sentiment === 'like') setLikesCount(p => p - 1)
-        if (sentiment === 'dislike') setDislikesCount(p => p - 1)
-        
-        setSentiment(type)
-        if (type === 'like') setLikesCount(p => p + 1)
-        else setDislikesCount(p => p + 1)
+    const handleSentiment = async (type) => {
+      if (type !== 'like' || !question.id) return
+      try {
+        const result = await dispatch(likeThread(question.id)).unwrap()
+        const updatedThread = result?.data || result
+        const updatedLikes = updatedThread?.likeCount
+        if (typeof updatedLikes === 'number') setLikesCount(updatedLikes)
+        setSentiment(updatedThread?.likes?.includes(user?._id) ? 'like' : null)
+      } catch {
+        // Keep the server-backed state unchanged when the request fails.
       }
     }
 
@@ -185,40 +192,30 @@ const QuestionCard = ({ question }) => {
       }, 500)
     }
 
-    const handlePublish = () => {
+    const handlePublish = async () => {
         if (!replyText.trim()) return
-
-        const newReply = {
-            id: Date.now(),
-            author: 'YOU',
-            role: 'JD',
-            time: 'JUST NOW',
-            content: replyingTo ? `@${replyingTo.name} ${replyText}` : replyText,
-            replies: []
+        try {
+          const result = await dispatch(postReply({
+            threadId: question.id,
+            content: replyText,
+            parentReplyId: replyingTo?.parentId || null
+          })).unwrap()
+          const reply = result?.data
+          const newReply = reply ? mapReplies([reply])[0] : null
+          if (!newReply) return
+          if (replyingTo?.parentId) {
+              setRepliesList(prev => prev.map(comment => comment.id === replyingTo.parentId
+                ? { ...comment, replies: [...(comment.replies || []), newReply] }
+                : comment))
+          } else {
+              setRepliesList(prev => [...prev, newReply])
+          }
+          setRepliesCount(prev => prev + 1)
+          setReplyText('')
+          setReplyingTo(null)
+        } catch {
+          // The API error is kept in Redux; do not show an unpersisted reply.
         }
-
-        if (replyingTo?.parentId) {
-            setRepliesList(prev => prev.map(comment => {
-                if (comment.id === replyingTo.parentId) {
-                    return { ...comment, replies: [...(comment.replies || []), newReply] }
-                }
-                return comment
-            }))
-        } else {
-            setRepliesList(prev => [...prev, newReply])
-        }
-
-        setRepliesCount(prev => prev + 1)
-        setReplyText('')
-        setReplyingTo(null)
-
-        // Re-trigger reveal animation for newly added item
-        setTimeout(() => {
-            gsap.fromTo(gsap.utils.toArray('.discussion-reveal').slice(-1), 
-                { y: 20, opacity: 0, filter: 'blur(10px)' },
-                { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out' }
-            )
-        }, 100)
     }
 
     const formatCount = (count) => {

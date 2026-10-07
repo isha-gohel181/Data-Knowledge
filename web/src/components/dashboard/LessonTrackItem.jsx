@@ -59,7 +59,7 @@ const LessonTrackItem = ({ title, progress, isActive, onPlay, unlocked = true, t
     };
 
     return (
-        <div className={`group flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8 border transition-all duration-500 hover:border-accent/30 bg-white/[0.01] 
+        <div className={`group flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8 border rounded-xl transition-all duration-500 hover:border-accent/30 bg-white/[0.01]
             ${isActive ? 'border-accent/40 bg-accent/[0.02]' : 'border-white/5 hover:bg-white/[0.02]'}`}>
             
             <div className="flex items-start md:items-center gap-6 flex-1 min-w-0">
@@ -98,7 +98,7 @@ const LessonTrackItem = ({ title, progress, isActive, onPlay, unlocked = true, t
                 {unlocked ? (
                     <button 
                         onClick={onPlay}
-                        className="relative bg-accent text-dark px-10 py-3.5 font-montserrat text-[14px] font-black uppercase tracking-[0.4em] hover:scale-[1.05] active:scale-95 transition-all shadow-[0_0_20px_rgba(139, 92, 246,0.1)] group/btn overflow-hidden"
+                        className="relative bg-accent text-dark px-10 py-3.5 rounded-xl font-montserrat text-[14px] font-black uppercase tracking-[0.4em] hover:scale-[1.05] active:scale-95 transition-all shadow-[0_0_20px_rgba(139, 92, 246,0.1)] group/btn overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-in-out skew-x-12" />
                         {getButtonText()}
@@ -106,7 +106,7 @@ const LessonTrackItem = ({ title, progress, isActive, onPlay, unlocked = true, t
                 ) : (
                     <button
                         onClick={onPlay}
-                        className="relative bg-white/5 text-description px-8 py-3.5 font-montserrat text-[13px] font-black uppercase tracking-[0.4em] opacity-80 cursor-not-allowed border border-white/10"
+                        className="relative bg-white/5 text-description px-8 py-3.5 rounded-xl font-montserrat text-[13px] font-black uppercase tracking-[0.4em] opacity-80 cursor-not-allowed border border-white/10"
                     >
                         <div className="inline-flex items-center gap-2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>

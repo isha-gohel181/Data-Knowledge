@@ -105,12 +105,12 @@ courseRouter.get(
 
 
 
-// Get a course by ID (public with optional auth for enrollment check)
-courseRouter.get('/:id', accessTokenAutoRefresh, optionalAuthenticate, getCourseById);
-
-courseRouter.get('/slug/:slug', getCourseBySlug);
-
+// Specific public routes must be registered before the parameterized ID route.
+courseRouter.get('/slug/:slug', optionalAuthenticate, getCourseBySlug);
 courseRouter.get('/category/:categoryId', getCoursesByCategory);
+
+// Get a course by ID (public with optional auth for enrollment check)
+courseRouter.get('/:id', optionalAuthenticate, getCourseById);
 
 
 

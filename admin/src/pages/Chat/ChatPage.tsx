@@ -299,9 +299,10 @@ const ChatPage: React.FC = () => {
 
       const handleIncomingMessage = (msg: any) => {
         const roomId = msg.chatRoomId || msg.groupChatRoomId || msg.courseChatRoomId;
-        const isCurrentChat = (roomId === selectedChat?.id);
         const currentUserId = currentUser?.id || (currentUser as any)?._id;
         const senderId = msg.sender?._id || msg.sender;
+        const isCurrentChat = roomId === selectedChat?.id ||
+          selectedChat?.participantId === senderId;
         const isMe = senderId === currentUserId;
 
         if (isCurrentChat) {
@@ -344,8 +345,9 @@ const ChatPage: React.FC = () => {
 
   const updateLastMessage = (msg: any, isCurrentChat: boolean, isMe: boolean) => {
     const roomId = msg.chatRoomId || msg.groupChatRoomId || msg.courseChatRoomId;
+    const senderId = msg.sender?._id || msg.sender;
     setChats(prev => prev.map(chat => {
-      if (chat.id === roomId) {
+      if (chat.id === roomId || chat.participantId === senderId) {
         return {
           ...chat,
           lastMessage: msg.message || "File",

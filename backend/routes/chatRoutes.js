@@ -2,6 +2,7 @@ import express from "express";
 import {
   createOrGetChatRoom,
   getAllChatRooms,
+  getSupportChatRoom,
   getMessages,
   sendMessage,
   markMessagesAsRead,
@@ -58,6 +59,7 @@ router.use(passport.authenticate("jwt", { session: false }));
 // Chat API endpoints
 router.post("/room", createOrGetChatRoom); // POST /chat/room
 router.get("/rooms", getAllChatRooms); // GET /chat/rooms
+router.get("/support-room", getSupportChatRoom); // GET /chat/support-room
 router.get("/messages/:roomId", getMessages); // GET /chat/messages/:roomId
 router.post("/message", upload.array("files", 8), sendMessage); // POST /chat/message (supports files via field 'files')
 router.patch("/message/read", markMessagesAsRead); // PATCH /chat/message/read

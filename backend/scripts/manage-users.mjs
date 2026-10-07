@@ -29,6 +29,7 @@ const ADMIN_NAME = getArg("admin-name", "Data Knowledge Admin");
 const USER_EMAIL = getArg("user-email", "student@dataknowledge.in");
 const USER_PASSWORD = getArg("user-password", "Student@123");
 const USER_NAME = getArg("user-name", "Demo Student");
+const ONLY_ACCOUNT = getArg("only", "");
 
 const accounts = [
   {
@@ -79,7 +80,15 @@ async function main() {
 
   const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-  for (const acc of accounts) {
+  const accountsToUpdate = ONLY_ACCOUNT
+    ? accounts.filter((acc) => acc.description.toLowerCase().startsWith(ONLY_ACCOUNT.toLowerCase()))
+    : accounts;
+
+  if (accountsToUpdate.length === 0) {
+    throw new Error(`Unknown account selector "${ONLY_ACCOUNT}". Use "admin" or "regular student".`);
+  }
+
+  for (const acc of accountsToUpdate) {
     const salt = 10;
     const hashedPassword = await bcrypt.hash(acc.password, salt);
 
@@ -120,7 +129,7 @@ async function main() {
   console.log("\n=======================================================");
   console.log("🔐 USER CREDENTIALS READY FOR LOGIN:");
   console.log("=======================================================");
-  accounts.forEach((acc) => {
+  accountsToUpdate.forEach((acc) => {
     console.log(`📌 ${acc.description}`);
     console.log(`   📧 Email    : ${acc.email}`);
     console.log(`   🔑 Password : ${acc.password}`);

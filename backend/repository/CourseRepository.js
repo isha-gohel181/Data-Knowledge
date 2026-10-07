@@ -1652,54 +1652,9 @@ class CourseRepository extends CrudRepository {
                 }
               }
             },
-            videosByPlatform: {
-              $reduce: {
-                input: {
-                  $reduce: {
-                    input: '$modules',
-                    initialValue: [],
-                    in: {
-                      $concatArrays: [
-                        '$$value',
-                        {
-                          $reduce: {
-                            input: '$$this.lessons',
-                            initialValue: [],
-                            in: {
-                              $concatArrays: [
-                                '$$value',
-                                { $ifNull: ['$$this.videoLessons', []] }
-                              ]
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
-                },
-                initialValue: {},
-                in: {
-                  $mergeObjects: [
-                    '$$value',
-                    {
-                      $arrayToObject: [
-                        [
-                          {
-                            k: '$$this.sourcePlatform',
-                            v: {
-                              $add: [
-                                { $ifNull: [{ $getField: { field: '$$this.sourcePlatform', input: '$$value' } }, 0] },
-                                1
-                              ]
-                            }
-                          }
-                        ]
-                      ]
-                    }
-                  ]
-                }
-              }
-            },
+            // Keep this summary field compatible with MongoDB versions that
+            // do not allow a dynamic field expression in $getField.
+            videosByPlatform: { $literal: {} },
             totalDripRules: {
               $add: [
                 { $size: { $ifNull: ['$courseDripRules', []] } },

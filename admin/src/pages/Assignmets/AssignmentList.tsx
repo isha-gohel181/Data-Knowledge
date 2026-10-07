@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch } from "../../hooks/redux";
-import { fetchAssignmentSubmissions } from "../../store/slices/assignment";
+import {
+  deleteAssignment,
+  fetchAssignments,
+} from "../../store/slices/assignment";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import toast from "react-hot-toast";
@@ -27,39 +30,18 @@ interface Lesson {
 }
 
 interface Assignment {
-  submittedBy: any;
   _id: string;
   courseId?: Course | null;
-  assignmentId?: {
-    _id: string;
-    title: string;
-  };
   lessonId?: Lesson | null;
-  sectionId?: string;
   title: string;
-  description: string;
+  description?: string;
   subject?: string;
   language: string;
   score: number;
   maxScore: number;
   duration: number;
-  grade?: number;
-  passGrade?: number;
-  deadline?: string;
-  dueDate?: string;
-  attempts?: number;
-  attachments?: string[];
   attachmentFile?: string;
   documentFile?: string;
-  active?: boolean;
-  status?: "submitted" | "graded" | "pending";
-  remarks?: string;
-  dropContent?: boolean;
-  forceStudentToPassPreviousParts?: boolean;
-  accessDayLimit?: {
-    enabled: boolean;
-    days: number;
-  };
   createdAt: string;
   updatedAt?: string;
   __v?: number;
@@ -111,7 +93,7 @@ const DeleteModal: React.FC<{
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Are you sure you want to delete the assignment{" "}
               <strong className="text-gray-900 dark:text-white">
-                "{assignment.assignmentId?.title || assignment.title}"
+                "{assignment.title}"
               </strong>
               {courseName !== "No Course" && (
                 <>
@@ -217,7 +199,7 @@ const AssignmentList = () => {
       );
 
       const response = await dispatch(
-        fetchAssignmentSubmissions({
+        fetchAssignments({
           page: pagination.page,
           limit: pagination.limit,
           search: debouncedSearch.trim(),
@@ -226,19 +208,15 @@ const AssignmentList = () => {
 
       console.log("📥 Fetched assignments:", response);
 
-      // Assuming the API returns data in this format
       if (response && response.data) {
-        setAssignments(response.data.submissions || []);
-        setPagination(
-          response.data.pagination || {
-            total: 0,
-            page: 1,
-            limit: 10,
-            totalPages: 0,
-          }
-        );
+        setAssignments(response.data);
+        setPagination({
+          total: response.total || 0,
+          page: response.page || 1,
+          limit: response.limit || 10,
+          totalPages: response.totalPages || 0,
+        });
       } else {
-        // Fallback if response structure is different
         setAssignments(Array.isArray(response) ? response : []);
       }
     } catch (error: any) {
@@ -287,8 +265,7 @@ const AssignmentList = () => {
       setIsDeleting(true);
       try {
         console.log("🗑️ Deleting assignment");
-        // TODO: Implement deleteAssignment action
-        // await dispatch(deleteAssignment(assignmentToDelete._id)).unwrap();
+        await dispatch(deleteAssignment(assignmentToDelete._id)).unwrap();
         toast.success("Assignment deleted successfully");
         fetchData(); // Refresh data after deletion
         closeDeleteModal();
@@ -326,19 +303,13 @@ const AssignmentList = () => {
 
   const handleEditClick = (assignmentId: string) => {
     console.log("✏️ Edit click:", assignmentId);
-    navigate(`/assignments/submissions/${assignmentId}`);
+    navigate(`/assignments/${assignmentId}`);
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "submitted":
-        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400";
-      case "graded":
-        return "text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400";
-      case "pending":
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400";
       default:
-        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400";
+        return "text-indigo-600 bg-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-400";
     }
   };
 
@@ -353,11 +324,19 @@ const AssignmentList = () => {
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white/90">
-            Assignment Submissions
+            Assignments
           </h1>
-          <span className="text-gray-500 text-sm dark:text-gray-400">
-            Total: {pagination.total}
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-gray-500 text-sm dark:text-gray-400">
+              Total: {pagination.total}
+            </span>
+            <button
+              onClick={() => navigate("/courses/all/courses")}
+              className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+            >
+              Add from course
+            </button>
+          </div>
         </div>
 
         {/* Search and Filters */}
@@ -421,10 +400,10 @@ const AssignmentList = () => {
                   Course
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
-                  Submitted By
+                  Lesson
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
-                  Status
+                  Score
                 </th>
 
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
@@ -442,27 +421,27 @@ const AssignmentList = () => {
                     {(pagination.page - 1) * pagination.limit + idx + 1}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                    <div className="max-w-xs truncate" title={assignment.assignmentId?.title || assignment.title}>
-                      {assignment.assignmentId?.title || assignment.title || "N/A"}
+                    <div className="max-w-xs truncate" title={assignment.title}>
+                      {assignment.title || "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                    <div className="max-w-xs truncate" title={assignment.courseId?.title}>
+                    <div className="max-w-xs truncate"                     title={assignment.courseId?.title || "No Course"}>
                       {assignment.courseId?.title || "No Course"}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                    <div className="max-w-xs truncate" title={assignment.submittedBy?.fullName || "User"}>
-                      {assignment.submittedBy?.fullName || "User"}
+                    <div className="max-w-xs truncate" title={assignment.lessonId?.title || "No Lesson"}>
+                      {assignment.lessonId?.title || "No Lesson"}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                        assignment.status || "pending"
+                        "active"
                       )}`}
                     >
-                      {assignment.status || "pending"}
+                      {assignment.maxScore || 0} pts
                     </span>
                   </td>
                 
@@ -470,7 +449,7 @@ const AssignmentList = () => {
                     <button
                       onClick={() => handleEditClick(assignment._id)}
                       className="text-blue-500 hover:text-blue-700 transition-colors"
-                      title="View Submission"
+                      title="View Assignment"
                     >
                       <Pencil className="h-5 w-5" />
                     </button>
@@ -492,8 +471,8 @@ const AssignmentList = () => {
             <div className="text-center py-8">
               <p className="text-gray-500 dark:text-gray-400">
                 {debouncedSearch
-                  ? "No assignment submissions found matching your search."
-                  : "No assignment submissions available."}
+                    ? "No assignments found matching your search."
+                    : "No assignments available. Create one from a course lesson."}
               </p>
             </div>
           )}

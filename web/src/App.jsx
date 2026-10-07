@@ -40,6 +40,7 @@ import AboutUs from './pages/AboutUs'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Terms from './pages/Terms'
 import RefundPolicy from './pages/RefundPolicy'
+import Testimonials from './pages/Testimonials'
 import { TrackerProvider } from './components/ActivityTracker'
 
 import GlobalChatButton from './components/dashboard/GlobalChatButton'
@@ -282,6 +283,7 @@ const AppContent = () => {
             <Route path="/terms" element={<Terms />} />
             <Route path="/terms-of-service" element={<Terms />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/testimonials" element={<Testimonials />} />
 
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />

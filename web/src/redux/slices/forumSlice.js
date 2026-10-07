@@ -71,6 +71,22 @@ export const fetchThreads = createAsyncThunk(
   }
 );
 
+export const fetchForumTags = createAsyncThunk(
+  'forum/fetchForumTags',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token || localStorage.getItem('edrilla_token');
+      const response = await fetch(`${BASE_URL}/forum/tags`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      if (!response.ok) throw new Error('Failed to fetch forum tags');
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const likeThread = createAsyncThunk(
   'forum/likeThread',
   async (threadId, { getState, rejectWithValue }) => {
@@ -174,7 +190,7 @@ export const createThread = createAsyncThunk(
         attachments.forEach(file => formData.append('attachments', file));
       }
 
-      const response = await fetch(`https://api.edrilla.com/forum/create`, {
+      const response = await fetch(`${BASE_URL}/forum/create`, {
         method: 'POST',
         headers,
         body: formData
@@ -204,6 +220,7 @@ const forumSlice = createSlice({
     loading: false,
     myLoading: false,
     error: null,
+    tags: [],
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -282,6 +299,9 @@ const forumSlice = createSlice({
       .addCase(createThread.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchForumTags.fulfilled, (state, action) => {
+        state.tags = action.payload?.data || action.payload?.tags || [];
       });
   },
 });

@@ -8,11 +8,6 @@ import RollingText from '../components/RollingText'
 import LogoMarquee from '../components/LogoMarquee'
 import CourseHeroDetail from '../components/CourseHeroDetail'
 import ComparisonSection from '../components/ComparisonSection'
-import EasyMoneySection from '../components/EasyMoneySection'
-import BonusSection from '../components/BonusSection'
-import TestimonialsScroll from '../components/TestimonialsScroll'
-import GuaranteeSection from '../components/GuaranteeSection'
-import FAQSection from '../components/FAQSection'
 import CertificatePricingSection from '../components/CertificatePricingSection'
 import BenefitsSection from '../components/BenefitsSection'
 import FrameworkSection from '../components/FrameworkSection'
@@ -177,7 +172,7 @@ const CourseDetail = () => {
     <div ref={containerRef} className="min-h-screen bg-dark pt-36 xl:pb-24 px-4 md:px-12 lg:px-20 overflow-x-clip cursor-default">
 
       {/* Dynamic Sections from API */}
-      {course.landingPageSections?.length > 0 && course.landingPageSections.filter(s => s.data?.show !== false).map((section, idx) => {
+      {course.landingPageSections?.filter(s => s.data?.show === true).map((section, idx) => {
           switch (section.type) {
             case 'overview':
               return <CourseHeroDetail key={section._id || idx} course={course} section={section.data} />
@@ -189,22 +184,12 @@ const CourseDetail = () => {
               return <FrameworkSection key={section._id || idx} course={course} section={section.data} />
             case 'solution':
               return <SolutionSection key={section._id || idx} course={course} section={section.data} />
-            case 'guarantee':
-              return null // Moved below testimonials
             default:
               return null
           }
       })}
 
-      {!course.landingPageSections?.length && (
-        <>
-          <CourseHeroDetail course={course} />
-          <ComparisonSection course={course} />
-          <EasyMoneySection course={course} />
-        </>
-      )}
-
-      {/* Always show Curriculum (The Blueprint) if modules exist */}
+      {/* Show curriculum only when the course has modules in the database. */}
       {dynamicCurriculum.length > 0 && (
         <section id="curriculum-section" className="section-reveal max-w-7xl mx-auto py-16 scroll-mt-32">
           <div className="flex flex-col gap-6">
@@ -282,7 +267,7 @@ const CourseDetail = () => {
                                   {lesson.title}
                                 </h4>
                                 <p className="font-montserrat text-description/70 text-sm md:text-base lg:text-lg leading-relaxed max-w-3xl break-words">
-                                  {lesson.description || "In-depth training session focused on mastering this core concept through practical application."}
+                                  {lesson.description}
                                 </p>
                               </div>
                               
@@ -308,14 +293,11 @@ const CourseDetail = () => {
         </section>
       )}
 
-      {/* Global Static/Common Sections */}
-      <BonusSection course={course} />
-      <TestimonialsScroll reviews={course.reviews} />
-      <GuaranteeSection />
-      <FAQSection course={course} />
-      <div id="pricing-section" className="scroll-mt-32">
-        <CertificatePricingSection course={course} />
-      </div>
+      {course.price != null || course.salePrice != null ? (
+        <div id="pricing-section" className="scroll-mt-32">
+          <CertificatePricingSection course={course} />
+        </div>
+      ) : null}
 
     </div>
   )

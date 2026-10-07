@@ -5,6 +5,7 @@ import ChatMessage from '../components/dashboard/ChatMessage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLanguage } from '../context/LanguageContext';
 import { connectSocket, fetchChatRooms, fetchMessages, sendMessageSocket, setActiveRoom, pinMessage, fetchCourseRooms, fetchMoreMessages, removeCourseParticipant, clearNotification } from '../redux/slices/chat';
+import authorizedFetch from '../utils/apiClient';
 
 const DashboardMessages = () => {
     const [activeTab, setActiveTab] = useState('chats');
@@ -260,17 +261,38 @@ const DashboardMessages = () => {
                 /support/i.test(r.name || '') ||
                 (r.participants && r.participants.some(p => p._id === '68e38debe4d3380f23ae42a3'))
             );
+            if (!resolvedRoom) {
+                try {
+                    const response = await authorizedFetch(`${import.meta.env.VITE_BASE_URL || 'https://api.edrilla.com'}/chat/support-room`);
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Support team is unavailable');
+                    resolvedRoom = data.room;
+                } catch (error) {
+                    console.error('[CHAT_DEBUG] Support room resolution failed:', error);
+                    return;
+                }
+            }
         } else {
             resolvedRoom = allRooms.find(r => r._id === selectedChat);
         }
 
         if (resolvedRoom) {
             payload.roomId = resolvedRoom._id;
+            if (selectedChat === 'support') {
+                setSelectedChat(resolvedRoom._id);
+                dispatch(setActiveRoom(resolvedRoom._id));
+                dispatch(fetchMessages(resolvedRoom._id));
+            }
             const myId = authUser?._id;
-            const other = (resolvedRoom.participants || []).find(p => p._id !== myId);
+            const other = (resolvedRoom.participants || []).find(p => String(p._id) !== String(myId));
             if (other?._id) {
                 payload.receiverId = other._id;
             }
+        }
+
+        if (!payload.roomId || !payload.receiverId) {
+            console.error('[CHAT_DEBUG] Cannot send message without a real room and receiver');
+            return;
         }
 
         dispatch(sendMessageSocket(payload));

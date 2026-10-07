@@ -18,8 +18,8 @@ const router = express.Router();
 
 const testimonialUpload = upload.fields([
   { name: 'image', maxCount: 1 },
-  { name: 'screenshot', maxCount: 10 },
-  { name: 'reviewImages', maxCount: 10 },
+  { name: 'screenshot', maxCount: 1 },
+  { name: 'reviewImages', maxCount: 1 },
   { name: 'video', maxCount: 1 }
 ]);
 

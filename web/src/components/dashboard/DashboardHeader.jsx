@@ -26,6 +26,11 @@ const DashboardHeader = () => {
   const { items: notifications } = useSelector(state => state.notifications)
 
   useEffect(() => {
+    document.documentElement.classList.add('dashboard-normal-font')
+    return () => document.documentElement.classList.remove('dashboard-normal-font')
+  }, [])
+
+  useEffect(() => {
     if (user) {
       dispatch(fetchNotifications({ page: 1, limit: 5 }))
     }
@@ -50,12 +55,13 @@ const DashboardHeader = () => {
         { key: 'mySubmissions', name: (t('mySubmissions') || 'MY SUBMISSIONS').toUpperCase(), path: '/dashboard/my-submissions' },
       ]
     },
+    { key: 'mySubmissions', name: (t('mySubmissions') || 'MY SUBMISSIONS').toUpperCase(), path: '/dashboard/my-submissions' },
     { key: 'myPurchases', name: (t('myPurchases') || 'MY PURCHASES').toUpperCase(), path: '/dashboard/purchases' },
     { key: 'myCourses', name: (t('myCourses') || 'MY COURSES').toUpperCase(), path: '/dashboard/my-courses' },
     { key: 'allCourses', name: (t('allCourses') || 'ALL COURSES').toUpperCase(), path: '/dashboard/courses' },
-    { key: 'forum', name: (t('forum') || 'FORUM').toUpperCase(), path: '/dashboard/forum' },
-    { key: 'news', name: (t('news') || 'NEWS').toUpperCase(), path: '/dashboard/news' },
-    { key: 'jobPostings', name: (t('jobPostings') || 'JOB POSTINGS').toUpperCase(), path: '/dashboard/job-posts' },
+    // { key: 'forum', name: (t('forum') || 'FORUM').toUpperCase(), path: '/dashboard/forum' },
+    // { key: 'news', name: (t('news') || 'NEWS').toUpperCase(), path: '/dashboard/news' },
+    // { key: 'jobPostings', name: (t('jobPostings') || 'JOB POSTINGS').toUpperCase(), path: '/dashboard/job-posts' },
   ]
 
   const menuRef = useRef(null)

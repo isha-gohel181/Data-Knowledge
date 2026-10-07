@@ -3,7 +3,7 @@ import EmojiPicker from 'emoji-picker-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchThreads, likeThread, postReply, createThread } from '../redux/slices/forumSlice'
+import { fetchThreads, fetchForumTags, likeThread, postReply, createThread } from '../redux/slices/forumSlice'
 import DashboardHeader from '../components/dashboard/DashboardHeader'
 import CreateTopicModal from '../components/dashboard/CreateTopicModal'
 import ForumFilterModal from '../components/dashboard/ForumFilterModal'
@@ -19,12 +19,13 @@ const DashboardForum = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const dispatch = useDispatch()
   const { t } = useLanguage()
-  const { threads, loading, total, currentPage, totalPages } = useSelector((state) => state.forum)
+  const { threads, loading, total, currentPage, totalPages, tags: forumTags } = useSelector((state) => state.forum)
   const user = useSelector((state) => state.auth.user)
   const loaderRef = useRef(null)
 
   useEffect(() => {
     dispatch(fetchThreads({ page: 1, limit: 10 }))
+    dispatch(fetchForumTags())
   }, [dispatch])
 
   useEffect(() => {
@@ -90,13 +91,20 @@ const DashboardForum = () => {
     replies: mapReplies(thread.replies)
   }))
 
-  const tags = ['#Mindset', '#Feedback', '#Paid Ads', '#SEO', '#Client Acquisition', '#Operations']
+  const tags = (forumTags.length > 0 ? forumTags : threads.flatMap((thread) => thread.tags || []))
+    .map((tag) => String(tag).startsWith('#') ? String(tag) : `#${tag}`)
+    .filter((tag, index, allTags) => allTags.indexOf(tag) === index)
+    .slice(0, 10)
+  const activeUsers = new Set(threads.map((thread) => thread.createdBy?._id || thread.createdBy).filter(Boolean)).size
+  const weeklyTopics = threads.filter((thread) => (
+    thread.createdAt && Date.now() - new Date(thread.createdAt).getTime() <= 7 * 24 * 60 * 60 * 1000
+  )).length
   const stats = [
     { label: 'TOTAL TOPICS', value: total || '0' },
-    { label: 'ACTIVE USERS', value: '1,254' },
-    { label: 'THIS WEEK', value: '47' }
+    { label: 'ACTIVE USERS', value: activeUsers },
+    { label: 'THIS WEEK', value: weeklyTopics }
   ]
-  const discourseTags = ['#TYPOGRAPHY', '#EDITORIAL', '#GRIDSYSTEMS', '#UXDESIGN', '#ASYMMETRY']
+  const discourseTags = tags
 
   useEffect(() => {
     window.scrollTo(0, 0)

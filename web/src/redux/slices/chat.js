@@ -22,7 +22,9 @@ export const connectSocket = createAsyncThunk('chat/connectSocket', async (_, { 
       }
       dispatch(addMessage(normalized));
     });
-    socketService.on('messageSent', (msg) => dispatch(updateMessageStatus({ roomId: msg.roomId || msg.chatRoomId, messageId: msg._id, status: 'sent' })));
+    // The acknowledgement contains the real message id, while the optimistic
+    // message has a temporary id. Matching by message content replaces it.
+    socketService.on('messageSent', (msg) => dispatch(addMessage(msg)));
     socketService.on('user_typing', (data) => dispatch(addTypingUser(data)));
     socketService.on('user_stopped_typing', (data) => dispatch(removeTypingUser(data)));
     socketService.on('user_online', (data) => dispatch(addOnlineUser(data.userId)));

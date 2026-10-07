@@ -130,15 +130,7 @@ const CourseSlider = () => {
   const dispatch = useDispatch()
   const { courses: apiCourses } = useSelector((state) => state.courses)
 
-  // Use API courses or fallback data
-  const baseCourses = apiCourses && apiCourses.length > 0 ? apiCourses : [
-    { id: 1, title: 'The Digital Curator', tag: 'CURATION' },
-    { id: 2, title: 'Network Strategy', tag: 'STRATEGY' },
-    { id: 3, title: 'Architectural Design', tag: 'DESIGN' },
-    { id: 4, title: 'Motion Mastery', tag: 'ANIMATION' },
-    { id: 5, title: 'Brand Identity', tag: 'BRANDING' },
-    { id: 6, title: 'Network Strategy', tag: 'STRATEGY' },
-  ]
+  const baseCourses = Array.isArray(apiCourses) ? apiCourses : []
 
   useEffect(() => {
     dispatch(fetchCourses())
@@ -152,7 +144,7 @@ const CourseSlider = () => {
     return acc
   }, {})
 
-  // Duplicate for smooth demo scroll if < 6 items
+  // Repeat backend records only to preserve the existing carousel interaction.
   Object.keys(categoriesMap).forEach(key => {
     if (categoriesMap[key].length < 6) {
       categoriesMap[key] = [...categoriesMap[key], ...categoriesMap[key], ...categoriesMap[key]]

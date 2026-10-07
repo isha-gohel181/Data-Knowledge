@@ -1,8 +1,47 @@
 
 import AssignmentSubmissionService from "../service/assignmentSubmissionService.js";
 import { initRedis } from "../config/redisClient.js";
+import Assignment from "../models/Assignment.js";
+import CourseEnrollment from "../models/CourseEnrollment.js";
 
 const service = new AssignmentSubmissionService();
+
+export const getMyAssignmentArchive = async (req, res) => {
+  try {
+    const enrollments = await CourseEnrollment.find({
+      userId: req.user._id,
+      status: "active",
+      isWithdrawn: false,
+    }).select("courseId");
+    const courseIds = enrollments.map(({ courseId }) => courseId);
+    const [assignments, submissions] = await Promise.all([
+      Assignment.find({ courseId: { $in: courseIds } })
+        .populate("courseId", "title")
+        .populate("lessonId", "title")
+        .sort({ createdAt: -1 }),
+      service.getMySubmissions(req.user._id),
+    ]);
+    const submittedByAssignment = new Map(
+      submissions.map((submission) => [submission.assignmentId?._id?.toString(), submission])
+    );
+    const archive = assignments.map((assignment) => {
+      const submission = submittedByAssignment.get(assignment._id.toString());
+      return submission || {
+        _id: `pending-${assignment._id}`,
+        assignmentId: assignment,
+        courseId: assignment.courseId,
+        lessonId: assignment.lessonId,
+        status: "pending",
+        scoreGiven: null,
+        submittedAt: null,
+      };
+    });
+
+    res.status(200).json({ success: true, data: archive });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 export const submitAssignment = async (req, res) => {
   try {

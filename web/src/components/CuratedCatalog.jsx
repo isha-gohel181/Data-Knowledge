@@ -9,57 +9,6 @@ import CourseCard from './CourseCard'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const catalogItems = [
-  {
-    id: 1,
-    category: 'EDITORIAL DESIGN',
-    title: 'The Architecture of the Page',
-    description: 'Mastering grid systems and visual tension in high-end publishing.',
-    price: '$249.00',
-    image: '/courses/architecture.png',
-  },
-  {
-    id: 2,
-    category: 'TYPOGRAPHY',
-    title: 'The Romantic Serif',
-    description: 'History and application of intricate display typefaces in digital systems.',
-    price: '$189.00',
-    image: '/courses/typography.png',
-  },
-  {
-    id: 3,
-    category: 'CURATION',
-    title: 'The Digital Curator',
-    description: 'Transitioning from content manager to high-end content architect.',
-    price: '$322.00',
-    image: '/courses/curator.png',
-  },
-  {
-    id: 4,
-    category: 'ART DIRECTION',
-    title: 'Visual Narrative & Identity',
-    description: 'Building cohesive brand worlds through cinematic storytelling.',
-    price: '$599.00',
-    image: '/courses/narrative.png',
-  },
-  {
-    id: 5,
-    category: 'DIGITAL ART',
-    title: 'Motion & Tonal Stacking',
-    description: 'Creating depth and atmosphere without traditional drop shadows.',
-    price: '$420.00',
-    image: '/courses/motion.png',
-  },
-  {
-    id: 6,
-    category: 'PROFESSIONAL PRACTICE',
-    title: 'Pricing the Premium',
-    description: 'The economics of high-end design services and luxury positioning.',
-    price: '$144.00',
-    image: '/courses/pricing.png',
-  }
-]
-
 const CuratedCatalog = () => {
   const dispatch = useDispatch()
   const { courses, loading, error } = useSelector((state) => state.courses)
@@ -68,6 +17,17 @@ const CuratedCatalog = () => {
   const dropdownRef = useRef(null)
   const [activeFilter, setActiveFilter] = useState('ALL DISCIPLINES')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const disciplineOptions = ['ALL DISCIPLINES', ...new Set(
+    (courses || [])
+      .map((course) => course.category?.name || course.category)
+      .filter(Boolean)
+      .map((category) => String(category).toUpperCase())
+  )]
+  const visibleCourses = activeFilter === 'ALL DISCIPLINES'
+    ? courses
+    : (courses || []).filter((course) => (
+      String(course.category?.name || course.category || '').toUpperCase() === activeFilter
+    ))
 
   useEffect(() => {
     dispatch(fetchCourses())
@@ -107,7 +67,7 @@ const CuratedCatalog = () => {
       {/* Filter Row - Desktop Layout (Visible md+) */}
       <div className="max-w-7xl mx-auto mb-24 hidden md:block">
         <div className="flex items-center gap-3">
-          {['ALL DISCIPLINES', 'EDITORIAL DESIGN', 'CINEMATIC ARTS', 'TYPOGRAPHY', 'STRATEGY'].map((filter) => (
+          {disciplineOptions.map((filter) => (
             <div key={filter} className="rolling-target">
               <button 
                 onClick={() => setActiveFilter(filter)}
@@ -165,7 +125,7 @@ const CuratedCatalog = () => {
             }`}
           >
             <div className="flex flex-col">
-              {['ALL DISCIPLINES', 'EDITORIAL DESIGN', 'CINEMATIC ARTS', 'TYPOGRAPHY', 'STRATEGY'].map((filter) => (
+              {disciplineOptions.map((filter) => (
                 <button 
                   key={filter}
                   onClick={() => {
@@ -200,8 +160,8 @@ const CuratedCatalog = () => {
           <div className="col-span-full h-40" />
         ) : error ? (
           <div className="col-span-full text-center py-20 text-red-500/40 font-jetbrains uppercase text-[10px] tracking-widest">Archive Offline</div>
-        ) : courses && courses.length > 0 ? (
-          courses.slice(0, 6).map((item) => (
+        ) : visibleCourses && visibleCourses.length > 0 ? (
+          visibleCourses.slice(0, 6).map((item) => (
             <CourseCard 
               key={item._id || item.id} 
               item={{

@@ -95,6 +95,11 @@ input, textarea, [contenteditable="true"] {
   }
 }
 
+.dashboard-normal-font,
+.dashboard-normal-font * {
+  font-family: var(--font-inter) !important;
+}
+
 /* Explicit weight classes as requested */
 .newsreader-extralight {
   font-family: var(--font-inter);

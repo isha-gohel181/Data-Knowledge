@@ -44,11 +44,7 @@ const CourseHeroDetail = ({ course, section }) => {
     return () => ctx.revert()
   }, [])
 
-  const highlights = course.highlights?.length > 0 ? course.highlights : [
-    "Actionable Advice",
-    "In Depth Feedback",
-    "Proven Process"
-  ]
+  const highlights = Array.isArray(course.highlights) ? course.highlights.filter(Boolean) : []
 
   return (
     <section ref={heroRef} className="max-w-7xl mx-auto mb-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center min-h-[70vh]">
@@ -81,8 +77,9 @@ const CourseHeroDetail = ({ course, section }) => {
         </p>
 
         {/* Checkpoints */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-          {highlights.map((check, i) => (
+        {highlights.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            {highlights.map((check, i) => (
             <div key={i} className="flex items-center gap-3 group">
                <div className="reveal-checkmark w-4 h-4 rounded-full border border-accent/40 flex items-center justify-center shrink-0">
                   <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
@@ -91,8 +88,9 @@ const CourseHeroDetail = ({ course, section }) => {
                   {check}
                </span>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="reveal-text flex flex-wrap gap-6 pt-4">

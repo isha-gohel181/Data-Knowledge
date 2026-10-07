@@ -5,8 +5,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "seed:demo-content": "node scripts/seed-demo-content.mjs",
+    "seed:demo-content:production": "node scripts/seed-demo-content.mjs --production",
     "seed:users": "node scripts/manage-users.mjs",
-    "reset-admin": "node scripts/manage-users.mjs"
+    "reset-admin": "node scripts/manage-users.mjs --only=\"super admin\"",
+    "reset:web-demo": "node scripts/manage-users.mjs --only=regular student"
   },
   "type": "module",
   "keywords": [],

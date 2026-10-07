@@ -109,6 +109,12 @@ const getTestimonials = async (filter = {}, options = {}) => {
   } else {
     query = query.sort({ createdAt: -1 });
   }
+  if (options.skip !== undefined) {
+    query = query.skip(options.skip);
+  }
+  if (options.limit !== undefined) {
+    query = query.limit(options.limit);
+  }
   return await query
     .populate('userId', 'fullName email profilePicture')
     .lean();

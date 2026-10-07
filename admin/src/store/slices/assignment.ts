@@ -76,6 +76,18 @@ export const updateAssignment = createAsyncThunk(
   }
 );
 
+export const deleteAssignment = createAsyncThunk(
+  "assignment/deleteAssignment",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/assignment/${id}`);
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
 export const fetchAssignmentById = createAsyncThunk(
   "assignment/fetchAssignmentById",
   async (id: string, { rejectWithValue }) => {
@@ -178,6 +190,17 @@ const assignmentSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(updateAssignment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteAssignment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAssignment.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteAssignment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

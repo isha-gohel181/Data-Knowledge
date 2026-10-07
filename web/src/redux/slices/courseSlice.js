@@ -24,9 +24,13 @@ export const fetchCourseDetail = createAsyncThunk(
   async (courseId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('edrilla_token');
-      const response = await fetch(`${BASE_URL}/courses/${courseId}`, {
+      const isObjectId = /^[a-f\d]{24}$/i.test(String(courseId));
+      const endpoint = isObjectId
+        ? `${BASE_URL}/courses/${courseId}`
+        : `${BASE_URL}/courses/slug/${encodeURIComponent(courseId)}`;
+      const response = await fetch(endpoint, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
       });
       if (!response.ok) {
@@ -82,6 +86,7 @@ const courseSlice = createSlice({
 
           return {
             ...course,
+            category: course.category || course.categoryId || null,
             salePrice,
             price,
             description,
@@ -138,6 +143,7 @@ const courseSlice = createSlice({
 
           state.currentCourse = {
             ...course,
+            category: course.category || course.categoryId || null,
             salePrice,
             price,
             description,

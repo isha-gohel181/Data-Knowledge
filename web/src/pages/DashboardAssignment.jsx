@@ -89,9 +89,9 @@ const DashboardAssignment = () => {
         try {
             const formData = new FormData();
             formData.append('submissionText', writtenResponse);
-            selectedFiles.forEach((file) => {
-                formData.append('attachments', file);
-            });
+            if (selectedFiles[0]) {
+                formData.append('submissionFile', selectedFiles[0]);
+            }
             formData.append('courseId', courseId);
             formData.append('lessonId', id);
             formData.append('assignmentId', assignment._id);
@@ -194,8 +194,8 @@ const DashboardAssignment = () => {
                                             <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(139, 92, 246,0.5)]" />
                                             <h3 className="font-jetbrains text-[12px] text-accent uppercase tracking-widest font-black">Assignment Instructions</h3>
                                         </div>
-                                        <div className="p-8 bg-white/[0.02] border border-white/5 font-inter text-md md:text-md text-normal/70 leading-relaxed space-y-6 break-all">
-                                            {assignment.description.split('\n').map((para, i) => (
+                                                        <div className="p-8 bg-white/[0.02] border border-white/5 rounded-2xl font-inter text-md md:text-md text-normal/70 leading-relaxed space-y-6 break-words">
+                                                            {(assignment.description || 'Complete this assignment using the instructions provided by your instructor.').split('\n').map((para, i) => (
                                                 <p key={i}>{para}</p>
                                             ))}
                                         </div>
@@ -210,7 +210,7 @@ const DashboardAssignment = () => {
                                             </div>
                                             <div className="space-y-4">
                                                 {assignment.documentFile && (
-                                                    <div className="p-6 bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.04] transition-all">
+                                                    <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between group hover:bg-white/[0.04] transition-all">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-10 h-10 bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -231,14 +231,14 @@ const DashboardAssignment = () => {
                                                             })()} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer"
-                                                            className="px-6 py-3 bg-accent text-dark font-jetbrains text-[10px] uppercase tracking-widest font-black hover:scale-105 transition-all"
+                                                            className="px-6 py-3 bg-accent text-dark rounded-xl font-jetbrains text-[10px] uppercase tracking-widest font-black hover:scale-105 transition-all"
                                                         >
                                                             View PDF
                                                         </a>
                                                     </div>
                                                 )}
                                                 {assignment.attachmentFile && (
-                                                    <div className="p-6 bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.04] transition-all">
+                                                    <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between group hover:bg-white/[0.04] transition-all">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-10 h-10 bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -259,7 +259,7 @@ const DashboardAssignment = () => {
                                                             })()} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer"
-                                                            className="px-6 py-3 bg-accent text-dark font-jetbrains text-[10px] uppercase tracking-widest font-black hover:scale-105 transition-all"
+                                                            className="px-6 py-3 bg-accent text-dark rounded-xl font-jetbrains text-[10px] uppercase  tracking-widest font-black hover:scale-105 transition-all"
                                                         >
                                                             View
                                                         </a>
@@ -285,7 +285,7 @@ const DashboardAssignment = () => {
                                                     value={writtenResponse}
                                                     onChange={(e) => setWrittenResponse(e.target.value)}
                                                     placeholder="Type your response here..."
-                                                    className="w-full h-64 bg-white/[0.02] border border-white/5 p-6 font-inter text-lg text-normal/80 focus:border-accent/40 focus:bg-white/[0.04] transition-all outline-none resize-none"
+                                                    className="w-full h-64 bg-white/[0.02] border border-white/5 rounded-2xl p-6 font-inter text-lg text-normal/80 focus:border-accent/40 focus:bg-white/[0.04] transition-all outline-none resize-none"
                                                 />
                                             </div>
 
@@ -317,7 +317,7 @@ const DashboardAssignment = () => {
                                                 {selectedFiles.length > 0 && (
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
                                                         {selectedFiles.map((file, i) => (
-                                                            <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10">
+                                                            <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
                                                                 <div className="flex items-center gap-3 overflow-hidden">
                                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent/60"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                                                     <span className="font-jetbrains text-[9px] uppercase tracking-widest truncate">{file.name}</span>
@@ -405,7 +405,7 @@ const DashboardAssignment = () => {
 
                         {/* Right Column: Mission Parameters */}
                         <div className="lg:col-span-4 lg:sticky lg:top-20 h-fit space-y-8">
-                            <div className="bg-white/[0.02] border border-white/5 p-8 space-y-8">
+                            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 space-y-8">
                                 <h3 className="font-jetbrains text-[12px] text-white uppercase tracking-widest font-black">Mission Parameters</h3>
                                 
                                 <div className="space-y-6">
@@ -425,7 +425,7 @@ const DashboardAssignment = () => {
 
                                 <button 
                                     onClick={() => setActiveTab('submission')}
-                                    className="w-full py-5 bg-accent text-dark font-jetbrains font-black uppercase tracking-[0.2em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(139, 92, 246,0.15)]"
+                                    className="w-full py-5 bg-accent text-dark rounded-xl font-jetbrains font-black uppercase tracking-[0.2em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(139, 92, 246,0.15)]"
                                 >
                                     Initiate Submission
                                 </button>

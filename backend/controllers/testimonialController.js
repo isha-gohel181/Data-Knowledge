@@ -14,7 +14,7 @@ export const addTestimonialAdmin = async (req, res) => {
       ...(req.files?.reviewImages || []),
       ...(req.files?.screenshot || [])
     ];
-    const reviewImages = reviewImageFiles.map(f => f.path.replace(/\\/g, '/'));
+    const reviewImages = reviewImageFiles.slice(0, 1).map(f => f.path.replace(/\\/g, '/'));
     const screenshot = reviewImages[0] || req.files?.screenshot?.[0]?.path?.replace(/\\/g, '/') || null;
     const video = req.files?.video?.[0]?.path?.replace(/\\/g, '/');
 
@@ -83,7 +83,7 @@ export const updateTestimonialAdmin = async (req, res) => {
     }
 
     if (newFiles.length > 0 || existingReviewImages !== undefined) {
-      const combined = [...keptExisting, ...newFiles];
+      const combined = [...keptExisting, ...newFiles].filter(Boolean).slice(0, 1);
       update.reviewImages = combined;
       update.screenshot = combined[0] || null;
     } else if (req.files?.screenshot?.[0]) {
@@ -241,8 +241,34 @@ export const getApprovedTestimonials = async (req, res) => {
       filter.courseId = courseId;
     }
 
-    const testimonials = await testimonialService.getTestimonials(filter, { sort: '-createdAt' });
-    res.json({ success: true, message: 'Approved testimonials fetched.', data: testimonials });
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    if (!hasPagination) {
+      const testimonials = await testimonialService.getTestimonials(filter, { sort: '-createdAt' });
+      return res.json({ success: true, message: 'Approved testimonials fetched.', data: testimonials });
+    }
+
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 9));
+    const [total, testimonials] = await Promise.all([
+      Testimonial.countDocuments(filter),
+      testimonialService.getTestimonials(filter, {
+        sort: '-createdAt',
+        skip: (page - 1) * limit,
+        limit,
+      }),
+    ]);
+
+    res.json({
+      success: true,
+      message: 'Approved testimonials fetched.',
+      data: testimonials,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -9,81 +9,6 @@ import EventHero from '../components/EventHero'
 import { fetchEvents } from '../redux/slices/eventSlice'
 import { useLanguage } from '../context/LanguageContext'
 
-const defaultCourses = [
-  {
-    id: 1,
-    category: 'DATA ANALYTICS',
-    title: 'Complete Data Analytics Masterclass',
-    description: 'Master SQL, Excel, Power BI, and Python with hands-on projects and real datasets.',
-    price: '₹14,999',
-    image: '/courses/architecture.png',
-    level: ['Beginner', 'Intermediate'],
-    difficulty: 'Beginner',
-    duration: '40 hours',
-    isNew: true,
-  },
-  {
-    id: 2,
-    category: 'POWER BI & TABLEAU',
-    title: 'Power BI & Tableau Dashboard Mastery',
-    description: 'Build executive-ready interactive dashboards, DAX queries, and KPI storytelling.',
-    price: '₹9,999',
-    image: '/courses/typography.png',
-    level: ['Beginner', 'Intermediate', 'Advanced'],
-    difficulty: 'Intermediate',
-    duration: '25 hours',
-    isNew: true,
-  },
-  {
-    id: 3,
-    category: 'SQL & PYTHON',
-    title: 'SQL & Python for Data Analysis',
-    description: 'Learn database query optimization, Pandas, NumPy, and automated data pipelines.',
-    price: '₹11,499',
-    image: '/courses/curator.png',
-    level: ['Beginner', 'Intermediate'],
-    difficulty: 'Beginner',
-    duration: '30 hours',
-    isNew: true,
-  },
-  {
-    id: 4,
-    category: 'DATA SCIENCE & AI',
-    title: 'Applied Data Science & Machine Learning',
-    description: 'End-to-end ML model building, predictive modeling, Scikit-learn, and real business cases.',
-    price: '₹19,999',
-    image: '/courses/narrative.png',
-    level: ['Intermediate', 'Advanced'],
-    difficulty: 'Advanced',
-    duration: '50 hours',
-    isNew: true,
-  },
-  {
-    id: 5,
-    category: 'BUSINESS ANALYSIS',
-    title: 'Business Analysis & Strategy Foundations',
-    description: 'Translate complex data into actionable business requirements, wireframes, and strategic roadmaps.',
-    price: '₹8,999',
-    image: '/courses/motion.png',
-    level: ['Beginner', 'Intermediate'],
-    difficulty: 'Beginner',
-    duration: '20 hours',
-    isNew: false,
-  },
-  {
-    id: 6,
-    category: 'POWER BI & TABLEAU',
-    title: 'Advanced DAX & Business Intelligence',
-    description: 'Advanced data modeling, row-level security, and enterprise BI reporting architectures.',
-    price: '₹12,499',
-    image: '/courses/pricing.png',
-    level: ['Advanced'],
-    difficulty: 'Advanced',
-    duration: '28 hours',
-    isNew: false,
-  }
-]
-
 const Courses = () => {
   const dispatch = useDispatch()
   const { courses, loading, error } = useSelector((state) => state.courses)
@@ -98,40 +23,30 @@ const Courses = () => {
   const advancedRef = useRef(null)
   const [hasFetchedEvents, setHasFetchedEvents] = useState(false)
 
-  // Use API courses if available and non-empty, otherwise fallback to curated Data Knowledge course catalog
-  const displayCourses = useMemo(() => {
-    if (courses && courses.length > 0) return courses
-    return defaultCourses
-  }, [courses])
+  const displayCourses = courses || []
+
+  const categoryOptions = useMemo(() => [
+    'ALL COURSES',
+    ...new Set(displayCourses
+      .map((course) => course.category?.name || course.category)
+      .filter(Boolean)
+      .map((category) => String(category).toUpperCase()))
+  ], [displayCourses])
+
+  useEffect(() => {
+    if (!categoryOptions.includes(activeFilter)) {
+      setActiveFilter('ALL COURSES')
+    }
+  }, [activeFilter, categoryOptions])
 
   const filteredCourses = useMemo(() => {
     return (displayCourses || []).filter(item => {
       // 1. Category Filter
       const matchesCategory = (() => {
         if (activeFilter === 'ALL COURSES') return true
-        const courseCat = (item.category?.name || item.category || '').toUpperCase()
-        const courseTitle = (item.title || '').toUpperCase()
-        const courseTags = Array.isArray(item.tags) ? item.tags.join(' ').toUpperCase() : ''
-        const combined = `${courseCat} ${courseTitle} ${courseTags}`
         const filterCat = activeFilter.toUpperCase()
-
-        if (filterCat === 'DATA ANALYTICS') {
-          return combined.includes('ANALYTICS') || combined.includes('DATA') || combined.includes('ANALYST')
-        }
-        if (filterCat === 'DATA SCIENCE & AI') {
-          return combined.includes('SCIENCE') || combined.includes('AI') || combined.includes('ML') || combined.includes('MACHINE LEARNING')
-        }
-        if (filterCat === 'POWER BI & TABLEAU') {
-          return combined.includes('POWER BI') || combined.includes('TABLEAU') || combined.includes('BI') || combined.includes('VISUALIZATION')
-        }
-        if (filterCat === 'SQL & PYTHON') {
-          return combined.includes('SQL') || combined.includes('PYTHON') || combined.includes('DATABASE') || combined.includes('PROGRAMMING')
-        }
-        if (filterCat === 'BUSINESS ANALYSIS') {
-          return combined.includes('BUSINESS') || combined.includes('ANALYSIS') || combined.includes('STRATEGY')
-        }
-
-        return courseCat === filterCat || courseCat.includes(filterCat) || filterCat.includes(courseCat) || combined.includes(filterCat)
+        const courseCat = String(item.category?.name || item.category || '').toUpperCase()
+        return courseCat === filterCat
       })()
 
       // 2. Difficulty Filter
@@ -214,18 +129,9 @@ const Courses = () => {
   const getImageUrl = (thumb) => {
     if (!thumb) return '/herocard.png'
     if (/^https?:\/\//i.test(thumb)) return thumb
-    const baseUrl = 'https://api.edrilla.com'
+    const baseUrl = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_BASE_URL || ''
     return thumb.startsWith('/') ? `${baseUrl}${thumb}` : `${baseUrl}/${thumb}`
   }
-
-  const categoryOptions = [
-    'ALL COURSES',
-    'DATA ANALYTICS',
-    'DATA SCIENCE & AI',
-    'POWER BI & TABLEAU',
-    'SQL & PYTHON',
-    'BUSINESS ANALYSIS'
-  ]
 
   const hasActiveEvents = eventList && eventList.length > 0
 

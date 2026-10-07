@@ -8,59 +8,6 @@ import CourseCard from '../components/CourseCard'
 import DashboardHeader from '../components/dashboard/DashboardHeader'
 import { useLanguage } from '../context/LanguageContext'
 
-const courseData = [
-  {
-    id: 1,
-    category: 'EDITORIAL DESIGN',
-    title: 'The Architecture of the Page',
-    description: 'Mastering grid systems and visual tension in high-end publishing.',
-    price: '$249.00',
-    image: '/courses/architecture.png',
-    isNew: true,
-  },
-  {
-    id: 2,
-    category: 'TYPOGRAPHY',
-    title: 'The Romantic Serif',
-    description: 'History and application of intricate display typefaces in digital systems.',
-    price: '$189.00',
-    image: '/courses/typography.png',
-  },
-  {
-    id: 3,
-    category: 'CURATION',
-    title: 'The Digital Curator',
-    description: 'Transitioning from content manager to high-end content architect.',
-    price: '$322.00',
-    image: '/courses/curator.png',
-  },
-  {
-    id: 4,
-    category: 'ART DIRECTION',
-    title: 'Visual Narrative & Identity',
-    description: 'Building cohesive brand worlds through cinematic storytelling.',
-    price: '$599.00',
-    image: '/courses/narrative.png',
-  },
-  {
-    id: 5,
-    category: 'DIGITAL ART',
-    title: 'Motion & Tonal Stacking',
-    description: 'Creating depth and atmosphere without traditional drop shadows.',
-    price: '$420.00',
-    image: '/courses/motion.png',
-  },
-  {
-    id: 6,
-    category: 'PROFESSIONAL PRACTICE',
-    title: 'Pricing the Premium',
-    description: 'The economics of high-end design services and luxury positioning.',
-    price: '$144.00',
-    image: '/courses/pricing.png',
-  }
-]
-
-
 const DashboardCourses = () => {
   const dispatch = useDispatch()
   const { t } = useLanguage()
@@ -70,6 +17,28 @@ const DashboardCourses = () => {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [selectedDifficulty, setSelectedDifficulty] = useState('All')
   const [selectedDuration, setSelectedDuration] = useState('All hours')
+  const categoryFilters = ['ALL COURSES', ...new Set(
+    (courses || [])
+      .map((course) => course.category?.name || course.category)
+      .filter(Boolean)
+      .map((category) => String(category).toUpperCase())
+  )]
+  const filteredCourses = (courses || []).filter((course) => {
+    const category = String(course.category?.name || course.category || '').toUpperCase()
+    const level = Array.isArray(course.level) ? course.level : [course.level]
+    const duration = Number(course.durationHours ?? course.duration ?? 0)
+    const durationMatches = selectedDuration === 'All hours'
+      || (selectedDuration === '0-2 hours' && duration <= 2)
+      || (selectedDuration === '2-5 hours' && duration > 2 && duration <= 5)
+      || (selectedDuration === '5-10 hours' && duration > 5 && duration <= 10)
+      || (selectedDuration === '10-20 hours' && duration > 10 && duration <= 20)
+      || (selectedDuration === '20+ hours' && duration > 20)
+    return (activeFilter === 'ALL COURSES' || category === activeFilter)
+      && (selectedDifficulty === 'All' || level.some((value) => String(value).toLowerCase() === selectedDifficulty.toLowerCase()))
+      && durationMatches
+  })
+  const today = new Date().toDateString()
+  const newTodayCount = (courses || []).filter((course) => course.createdAt && new Date(course.createdAt).toDateString() === today).length
 
   useLayoutEffect(() => {
     dispatch(fetchCourses())
@@ -118,11 +87,11 @@ const DashboardCourses = () => {
           <div className="flex gap-12 items-center self-end md:self-auto pb-2">
              <div className="text-right group relative">
                 <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('availableStat')}</p>
-                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">18</p>
+                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">{courses?.length || 0}</p>
              </div>
              <div className="text-right group relative">
                 <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-[0.3em] mb-1 font-bold">{t('newTodayStat')}</p>
-                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">02</p>
+                <p className="font-inter text-4xl text-slate-900 leading-none font-medium tracking-tighter">{newTodayCount}</p>
              </div>
           </div>
         </div>
@@ -130,18 +99,14 @@ const DashboardCourses = () => {
         {/* 2. Tactical Filter Bar */}
         <div className="course-filter-reveal max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center py-4 border-y border-slate-200/80 gap-6 mb-12 opacity-0 invisible">
            <div className="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/80 overflow-x-auto scrollbar-hide">
-              {[
-                { id: 'ALL COURSES', label: t('allCoursesTab') },
-                { id: 'BUSINESS', label: t('businessTab') },
-                { id: 'DIGITAL MARKETING', label: t('digitalMarketingTab') }
-              ].map(({ id, label }) => (
+              {categoryFilters.map((id) => (
                  <button 
                    key={id}
                    onClick={() => setActiveFilter(id)}
                    className={`font-jetbrains text-xs font-black uppercase tracking-[0.2em] transition-all relative px-5 py-2.5 rounded-xl whitespace-nowrap
                      ${activeFilter === id ? 'text-slate-950 bg-accent shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'}`}
                  >
-                    {label}
+                    {id === 'ALL COURSES' ? t('allCoursesTab') : id}
                  </button>
               ))}
            </div>
@@ -237,8 +202,8 @@ const DashboardCourses = () => {
             <div className="col-span-full text-center py-20 text-amber-800 font-montserrat font-bold">LOADING COURSES...</div>
           ) : error ? (
             <div className="col-span-full text-center py-20 text-red-600 font-montserrat font-bold">{t('failedToLoad')}</div>
-          ) : courses && courses.length > 0 ? (
-            courses.map((item) => (
+          ) : filteredCourses.length > 0 ? (
+            filteredCourses.map((item) => (
               <CourseCard 
                 key={item._id || item.id} 
                 item={{

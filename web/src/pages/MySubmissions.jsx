@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { gsap } from 'gsap'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMySubmissions } from '../redux/slices/assignmentSlice'
+import { useNavigate } from 'react-router-dom'
+import { fetchMyAssignmentArchive } from '../redux/slices/assignmentSlice'
 import DashboardHeader from '../components/dashboard/DashboardHeader'
 import DashboardLoading from '../components/dashboard/DashboardLoading'
 import { useLanguage } from '../context/LanguageContext'
@@ -9,16 +10,17 @@ import { useLanguage } from '../context/LanguageContext'
 const MySubmissions = () => {
    const containerRef = useRef(null)
    const dispatch = useDispatch()
+   const navigate = useNavigate()
    const { t } = useLanguage()
-   const { submissions, loading } = useSelector((state) => state.assignments)
+   const { submissions, loading, error } = useSelector((state) => state.assignments)
    const [selectedSub, setSelectedSub] = useState(null)
    const [searchQuery, setSearchQuery] = useState('')
 
    const filteredSubmissions = useMemo(() => {
       return submissions.filter(sub => {
          const title = sub.assignmentId?.title?.toLowerCase() || ''
-         const course = sub.assignmentId?.courseName?.toLowerCase() || ''
-         const lesson = sub.assignmentId?.lessonName?.toLowerCase() || ''
+         const course = sub.courseId?.title?.toLowerCase() || sub.assignmentId?.courseName?.toLowerCase() || ''
+         const lesson = sub.lessonId?.title?.toLowerCase() || sub.assignmentId?.lessonName?.toLowerCase() || ''
          const query = searchQuery.toLowerCase()
          return title.includes(query) || course.includes(query) || lesson.includes(query)
       })
@@ -26,7 +28,7 @@ const MySubmissions = () => {
 
    useEffect(() => {
       window.scrollTo(0, 0)
-      dispatch(fetchMySubmissions())
+      dispatch(fetchMyAssignmentArchive())
    }, [dispatch])
 
    useEffect(() => {
@@ -96,32 +98,39 @@ const MySubmissions = () => {
    };
 
    if (selectedSub) {
+      const courseName = selectedSub.courseId?.title || selectedSub.assignmentId?.courseName || 'Unknown Course';
+      const lessonName = selectedSub.lessonId?.title || selectedSub.assignmentId?.lessonName || 'Assignment';
+      const apiBase = (import.meta.env.VITE_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
+      const submissionFileUrl = selectedSub.submissionFile
+         ? `${apiBase}/${selectedSub.submissionFile.replace(/^\/+/, '')}`
+         : null;
+
       return (
          <div ref={containerRef} className="min-h-screen bg-dark relative selection:bg-accent/30 overflow-x-clip">
             <DashboardHeader />
 
-            <main className="pt-24 pb-20 px-4">
+            <main className="pt-24 pb-20 px-4 lg:px-8 max-w-[1500px] mx-auto">
                {/* Detail Header */}
-               <div className="sub-reveal opacity-0 mb-12">
+               <div className="sub-reveal opacity-0 mb-10 rounded-3xl border border-slate-200/80 bg-white p-6 md:p-10 shadow-sm">
                   <button
                      onClick={() => setSelectedSub(null)}
-                     className="flex items-center gap-2 font-jetbrains text-[10px] text-normal hover:text-accent transition-colors uppercase tracking-widest mb-8"
+                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 font-inter text-xs font-semibold text-slate-600 hover:border-accent hover:text-accent transition-colors mb-8"
                   >
                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
                      Back to Archive
                   </button>
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
-                     <h1 className="font-inter text-4xl text-normal tracking-tight">
+                     <h1 className="font-inter text-3xl md:text-5xl font-bold text-normal tracking-tight">
                         {selectedSub.assignmentId?.title || 'Tactical Assignment'}
                      </h1>
                      <div className="flex items-center gap-3">
                         <span className={`px-4 py-1.5 rounded-full font-jetbrains text-[10px] font-black uppercase tracking-widest ${getStatusColor(selectedSub.status)}`}>
                            {selectedSub.status || 'SUBMITTED'}
                         </span>
-                        <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-full">
                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-description"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><path d="M6 14h12v8H6z" /></svg>
-                           <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">{selectedSub.scoreGiven ? 'Graded' : 'Not graded'}</span>
+                           <span className="font-inter text-xs font-semibold text-description">{selectedSub.scoreGiven !== null ? 'Graded' : 'Not graded'}</span>
                         </div>
                         {/* <button className="w-8 h-8 flex items-center justify-center bg-white/5 border border-white/10 rounded-full text-description hover:text-accent transition-all">
                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -129,22 +138,22 @@ const MySubmissions = () => {
                      </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-6 border-t border-white/5">
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-6 border-t border-slate-100">
                      <div className="flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-description"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
-                        <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">{selectedSub.assignmentId?.courseName || 'Unknown Course'}</span>
+                        <span className="font-inter text-xs font-semibold text-description">{courseName}</span>
                      </div>
                      <div className="flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-description"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>
-                        <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">{selectedSub.assignmentId?.lessonName || 'Assignment'}</span>
+                        <span className="font-inter text-xs font-semibold text-description">{lessonName}</span>
                      </div>
                      <div className="flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-description"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                        <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">{formatDate(selectedSub.submittedAt)}</span>
+                        <span className="font-inter text-xs font-semibold text-description">{formatDate(selectedSub.submittedAt)}</span>
                      </div>
                      <div className="flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-description"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                        <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">{formatTime(selectedSub.submittedAt)}</span>
+                        <span className="font-inter text-xs font-semibold text-description">{formatTime(selectedSub.submittedAt)}</span>
                      </div>
                   </div>
                </div>
@@ -154,50 +163,50 @@ const MySubmissions = () => {
                   {/* Left Column: Submission Details */}
                   <div className="lg:col-span-7 space-y-10">
                      <div className="space-y-4">
-                        <h3 className="font-inter text-xl text-normal">Submission Details</h3>
+                        <h3 className="font-inter text-2xl font-bold text-normal">Submission Details</h3>
                         <div className="space-y-2">
                            <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Submission Text</p>
-                           <div className="w-full bg-white/[0.02] border border-white/5 p-6 min-h-[100px] rounded-sm">
-                              <p className="font-jetbrains text-sm text-normal">
+                           <div className="w-full bg-white border border-slate-200 p-6 min-h-[120px] rounded-2xl shadow-sm">
+                              <p className="font-inter text-base leading-7 text-normal">
                                  {selectedSub.submissionText || 'No text submitted'}
                               </p>
                            </div>
                         </div>
                      </div>
 
-                     <div className="space-y-4">
+                     {selectedSub.submissionFile && <div className="space-y-4">
                         <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Attached File</p>
-                        <div className="w-full bg-white/[0.02] border border-white/5 p-6 rounded-sm flex items-center justify-between">
+                        <div className="w-full bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-center justify-between gap-4">
                            <div className="flex items-center gap-4">
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                               <button
-                                 onClick={() => handleDownload(`https://api.edrilla.com/${selectedSub.submissionFile}`, selectedSub.submissionFile?.split('/').pop())}
-                                 className="font-jetbrains text-sm text-accent hover:underline decoration-accent/30"
+                                 onClick={() => handleDownload(submissionFileUrl, selectedSub.submissionFile?.split('/').pop())}
+                                 className="rounded-full bg-accent/10 px-4 py-2 font-inter text-sm font-semibold text-accent hover:bg-accent/20"
                               >
                                  Download File
                               </button>
                            </div>
                            <button
-                              onClick={() => window.open(`https://api.edrilla.com/${selectedSub.submissionFile}`, '_blank')}
-                              className="flex items-center gap-2 font-jetbrains text-[10px] text-normal uppercase tracking-widest hover:text-accent transition-colors"
+                              onClick={() => window.open(submissionFileUrl, '_blank')}
+                              className="flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 font-inter text-xs font-semibold text-normal hover:border-accent hover:text-accent transition-colors"
                            >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                               View File
                            </button>
                         </div>
-                     </div>
+                     </div>}
 
                      {selectedSub.assignmentId?.documentFile && (
                         <div className="space-y-4">
                            <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Assignment Instructions</p>
-                           <div className="w-full bg-white/[0.02] border border-accent/20 p-6 rounded-sm flex items-center justify-between group/inst">
+                           <div className="w-full bg-white border border-accent/20 p-6 rounded-2xl shadow-sm flex items-center justify-between group/inst">
                               <div className="flex items-center gap-4">
                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-normal opacity-40 group-hover/inst:opacity-100 transition-opacity"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
-                                 <span className="font-jetbrains text-sm text-normal">Reference Document</span>
+                                 <span className="font-inter text-sm font-semibold text-normal">Reference Document</span>
                               </div>
                               <button
                                  onClick={() => window.open(`https://api.edrilla.com/${selectedSub.assignmentId.documentFile}`, '_blank')}
-                                 className="flex items-center gap-2 font-jetbrains text-[10px] text-accent font-bold uppercase tracking-widest hover:brightness-125 transition-all"
+                                 className="flex items-center gap-2 rounded-full border border-accent/20 px-4 py-2 font-inter text-xs font-semibold text-accent hover:bg-accent/10 transition-all"
                               >
                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
                                  Open Brief
@@ -209,25 +218,25 @@ const MySubmissions = () => {
 
                   {/* Right Column: Assignment Information */}
                   <div className="lg:col-span-5">
-                     <div className="bg-white/[0.02] border border-white/10 p-10 rounded-sm space-y-8 h-full">
-                        <h3 className="font-inter text-xl text-normal">Assignment Information</h3>
+                     <div className="bg-white border border-slate-200 p-8 md:p-10 rounded-3xl shadow-sm space-y-8 h-full">
+                        <h3 className="font-inter text-2xl font-bold text-normal">Assignment Information</h3>
 
                         <div className="space-y-6">
                            <div className="flex items-center justify-between">
                               <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Course:</span>
-                              <span className="font-jetbrains text-[10px] text-normal uppercase font-bold tracking-widest">{selectedSub.assignmentId?.courseName || 'Unknown'}</span>
+                              <span className="font-inter text-sm font-semibold text-normal text-right">{courseName}</span>
                            </div>
                            <div className="flex items-center justify-between">
                               <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Lesson:</span>
-                              <span className="font-jetbrains text-[10px] text-normal uppercase font-bold tracking-widest">{selectedSub.assignmentId?.lessonName || 'assignment'}</span>
+                              <span className="font-inter text-sm font-semibold text-normal text-right">{lessonName}</span>
                            </div>
                            <div className="flex items-center justify-between">
                               <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Status:</span>
-                              <span className="font-jetbrains text-[10px] text-accent uppercase font-bold tracking-widest">{selectedSub.status || 'Submitted'}</span>
+                              <span className="font-inter text-sm font-semibold text-accent">{selectedSub.status || 'Submitted'}</span>
                            </div>
                            <div className="flex items-center justify-between">
                               <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Score:</span>
-                              <span className="font-jetbrains text-[10px] text-normal uppercase font-bold tracking-widest">
+                              <span className="font-inter text-sm font-semibold text-normal">
                                  {selectedSub.scoreGiven ? (
                                     <>
                                        {selectedSub.scoreGiven} {selectedSub.assignmentId?.maxScore ? `/ ${selectedSub.assignmentId.maxScore}` : ''}
@@ -237,7 +246,7 @@ const MySubmissions = () => {
                            </div>
                            <div className="flex items-center justify-between pt-6 border-t border-white/5">
                               <span className="font-jetbrains text-[10px] text-description uppercase tracking-widest">Submitted:</span>
-                              <span className="font-jetbrains text-[10px] text-normal uppercase tracking-widest">
+                              <span className="font-inter text-sm font-semibold text-normal text-right">
                                  {formatDate(selectedSub.submittedAt)}, {formatTime(selectedSub.submittedAt)}
                               </span>
                            </div>
@@ -254,12 +263,12 @@ const MySubmissions = () => {
       <div ref={containerRef} className="min-h-screen bg-dark relative selection:bg-accent/30 overflow-x-clip">
          <DashboardHeader />
 
-         <main className="pt-24 pb-20 px-4">
+         <main className="pt-24 pb-20 px-4 lg:px-8 max-w-[1500px] mx-auto">
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 sub-reveal opacity-0">
                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-4">
-                     <h1 className="font-inter text-5xl text-normal tracking-tight">{t('assignmentArchive') || 'Assignment Archive'}</h1>
+                     <h1 className="font-inter text-4xl md:text-5xl font-bold text-normal tracking-tight">{t('assignmentArchive') || 'Assignment Archive'}</h1>
                      <div className="h-[1px] w-20 bg-white/5" />
                   </div>
                   <p className="font-jetbrains text-[10px] text-description uppercase tracking-[0.4em]">{t('submissionsSub') || 'Track your tactical submissions and performance metrics'}</p>
@@ -274,11 +283,21 @@ const MySubmissions = () => {
                      placeholder={t('searchArchive')}
                      value={searchQuery}
                      onChange={(e) => setSearchQuery(e.target.value)}
-                     className="w-full bg-white/[0.02] border border-white/5 focus:border-accent/30 py-3 pl-12 pr-4 font-jetbrains text-[10px] text-normal placeholder:text-normal tracking-widest outline-none transition-all"
+                     className="w-full bg-white border border-slate-200 rounded-full focus:border-accent/50 py-3 pl-12 pr-4 font-inter text-sm text-normal placeholder:text-description outline-none transition-all shadow-sm"
                   />
                   <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-accent group-focus-within:w-full transition-all duration-500" />
                </div>
             </div>
+
+            {error && (
+               <div className="mb-6 rounded-2xl border border-red-300/30 bg-red-500/10 p-5 text-red-200">
+                  <p className="font-jetbrains text-[10px] font-black uppercase tracking-widest">Unable to load submissions</p>
+                  <p className="mt-2 font-inter text-sm">{error}</p>
+                  <p className="mt-3 font-jetbrains text-[10px] uppercase tracking-widest text-red-200/70">
+                     Confirm the frontend and backend are using the same environment, then refresh this page.
+                  </p>
+               </div>
+            )}
 
             {/* Submissions List */}
             <div className="space-y-6">
@@ -289,23 +308,29 @@ const MySubmissions = () => {
                      {filteredSubmissions.map((sub) => (
                         <div
                            key={sub._id}
-                           onClick={() => setSelectedSub(sub)}
-                           className="sub-reveal opacity-0 bg-white/[0.01] border border-white/5 hover:border-accent/30 p-8 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group cursor-pointer"
+                           onClick={() => {
+                              if (sub.status === 'pending' && sub.courseId?._id && sub.lessonId?._id) {
+                                 navigate(`/dashboard/assignment/${sub.courseId._id}/${sub.lessonId._id}`)
+                              } else {
+                                 setSelectedSub(sub)
+                              }
+                           }}
+                           className="sub-reveal opacity-0 bg-white border border-slate-200/80 hover:border-accent/50 rounded-3xl p-6 md:p-8 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group cursor-pointer shadow-sm hover:shadow-md"
                         >
 
                            <div className="flex flex-col gap-4 flex-1">
                               <div className="flex items-center gap-4">
-                                 <span className={`font-jetbrains text-[8px] font-black tracking-[0.3em] px-3 py-1 border border-transparent ${getStatusColor(sub.status)} uppercase rounded-sm`}>
+                                 <span className={`font-inter text-[10px] font-bold tracking-wider px-3 py-1.5 border border-transparent ${getStatusColor(sub.status)} uppercase rounded-full`}>
                                     {sub.status || 'SUBMITTED'}
                                  </span>
-                                 <span className="font-jetbrains text-[8px] text-normal uppercase tracking-widest">{formatDate(sub.submittedAt)}</span>
+                                 <span className="font-inter text-xs text-description">{formatDate(sub.submittedAt)}</span>
                               </div>
 
                               <div className="space-y-2">
                                  <h2 className="font-inter text-2xl text-normal tracking-tight group-hover:text-accent transition-colors">
                                     {sub.assignmentId?.title || 'Unknown Assignment'}
                                  </h2>
-                                 <p className="font-jetbrains text-[10px] text-description uppercase tracking-widest">
+                                 <p className="font-inter text-xs font-semibold text-description uppercase tracking-wider">
                                     {sub.assignmentId?.subject || 'General Assessment'}
                                  </p>
                               </div>
@@ -330,8 +355,8 @@ const MySubmissions = () => {
                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
                                     </div>
                                  )}
-                                 <button className="h-12 px-8 bg-white/5 border border-white/5 font-jetbrains text-[9px] font-black text-normal uppercase tracking-widest group-hover:bg-accent group-hover:text-dark transition-all">
-                                    {t('viewDetails')}
+                                 <button className="h-11 px-6 rounded-full bg-slate-100 border border-slate-200 font-inter text-xs font-bold text-normal uppercase tracking-wider group-hover:bg-accent group-hover:text-dark group-hover:border-accent transition-all">
+                                    {sub.status === 'pending' ? 'Start assignment' : t('viewDetails')}
                                  </button>
                               </div>
                            </div>

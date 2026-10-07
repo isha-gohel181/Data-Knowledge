@@ -6,6 +6,7 @@ import { isAdmin } from "../middlewares/isAdmin.js";
 import {
   submitAssignment,
   getMySubmissions,
+  getMyAssignmentArchive,
   getMySubmissionByAssignment,
   getAllSubmissionsForAssignment,
   gradeSubmission,
@@ -22,6 +23,13 @@ router.post(
   accessTokenAutoRefresh,
   passport.authenticate("jwt", { session: false }),
   submitAssignment
+);
+
+router.get(
+  "/my/archive",
+  accessTokenAutoRefresh,
+  passport.authenticate("jwt", { session: false }),
+  getMyAssignmentArchive
 );
 
 router.get(

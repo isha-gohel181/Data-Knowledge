@@ -218,16 +218,19 @@ const DashboardLiveClasses = () => {
     return (
         <div className="min-h-screen bg-dark text-normal">
             <DashboardHeader />
-            <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
-                <div className="space-y-12">
-                    <div className="space-y-4 live-reveal">
+            <main className="pt-28 pb-20 px-4 sm:px-6 max-w-6xl mx-auto">
+                <div className="space-y-8">
+                    <div className="space-y-3 live-reveal">
                         <div className="flex items-center gap-3">
                             <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
                             <span className="font-jetbrains text-[10px] text-accent tracking-[0.4em] uppercase">{t('liveSignal') || 'LIVE SIGNAL'}</span>
                         </div>
-                        <h1 className="font-inter text-4xl md:text-6xl text-normal tracking-tighter">
+                        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl text-normal tracking-tight">
                             {t('liveClasses') || 'Live Classes'}
                         </h1>
+                        <p className="font-inter text-sm text-description/70 max-w-xl">
+                            Join upcoming sessions, learn with your cohort, and get live guidance from your instructors.
+                        </p>
                     </div>
 
                     {/* ── Meeting Disconnected Banner ── */}
@@ -245,7 +248,7 @@ const DashboardLiveClasses = () => {
                                             <path d="M9.172 14.828L4.343 19.657M14.828 9.172l4.829-4.829M9.172 9.172L4.343 4.343M14.828 14.828l4.829 4.829M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                         </svg>
                                     </div>
-                                    <div className="space-y-1">
+                                    <div className="rounded-2xl border border-white/10 bg-black/5 p-4">
                                         <p className="font-jetbrains text-[10px] text-yellow-400 uppercase tracking-[0.3em] font-bold">
                                             {t('meetingDisconnected') || 'Meeting Disconnected'}
                                         </p>
@@ -284,28 +287,33 @@ const DashboardLiveClasses = () => {
                     )}
 
                     {activeMeeting ? (
-                        <div className="live-reveal p-12 border border-white/10 bg-white/[0.02] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-6 opacity-20">
+                        <div className="live-reveal rounded-3xl p-6 sm:p-8 border border-white/10 bg-white/[0.04] relative overflow-hidden shadow-xl shadow-black/5">
+                            <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-accent/10 blur-2xl" />
+                            <div className="absolute top-6 right-6 opacity-30 hidden sm:block">
                                 <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-accent">
                                     <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                            <div className="space-y-8 relative z-10">
-                                <h2 className="font-inter text-5xl md:text-6xl text-normal max-w-2xl">{activeMeeting.topic}</h2>
-                                <div className="flex gap-10 flex-wrap">
-                                    <div className="space-y-1">
+                            <div className="space-y-6 relative z-10">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <span className="px-3 py-1 rounded-full bg-accent/15 text-accent font-jetbrains text-[9px] font-bold tracking-[0.2em] uppercase">Upcoming session</span>
+                                    <span className="font-jetbrains text-[9px] text-description/60 uppercase tracking-widest">{new Date(activeMeeting.start_time).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                                </div>
+                                <h2 className="font-inter text-3xl sm:text-4xl md:text-5xl leading-tight text-normal max-w-3xl">{activeMeeting.topic}</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
+                                    <div className="rounded-2xl border border-white/10 bg-black/5 p-4">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Protocol</p>
-                                        <p className="font-inter text-2xl text-normal">{t('secureBroadcast') || 'SECURE BROADCAST'}</p>
+                                        <p className="font-inter text-base text-normal mt-1">{t('secureBroadcast') || 'Live session'}</p>
                                     </div>
-                                    <div className="space-y-1">
+                                    <div className="rounded-2xl border border-white/10 bg-black/5 p-4">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Schedule</p>
-                                        <p className="font-inter text-2xl text-normal">
+                                        <p className="font-inter text-base text-normal mt-1">
                                             {new Date(activeMeeting.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">ID / Passcode</p>
-                                        <p className="font-inter text-xl text-normal">
+                                        <p className="font-inter text-sm text-normal mt-1 break-all">
                                             {activeMeeting.id} / <span className="text-accent">{activeMeeting.password || 'N/A'}</span>
                                         </p>
                                     </div>
@@ -313,14 +321,14 @@ const DashboardLiveClasses = () => {
                                 <button
                                     onClick={() => startStreaming(activeMeeting)}
                                     disabled={joining}
-                                    className="px-12 py-5 bg-accent text-dark font-jetbrains text-[10px] font-black tracking-[0.4em] uppercase hover:tracking-[0.6em] transition-all disabled:opacity-40 disabled:cursor-wait"
+                                    className="rounded-xl px-7 py-3.5 bg-accent text-dark font-jetbrains text-[10px] font-black tracking-[0.25em] uppercase hover:brightness-105 transition-all disabled:opacity-40 disabled:cursor-wait"
                                 >
                                     {joining ? 'ESTABLISHING...' : t('joinClass')}
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="live-reveal p-20 border border-white/5 bg-white/[0.01] text-center text-description/40 font-inter text-2xl">
+                        <div className="live-reveal rounded-3xl p-12 border border-white/10 bg-white/[0.03] text-center text-description/60 font-inter text-lg">
                             {t('noClassesActive') || 'No classes currently active.'}
                         </div>
                     )}
@@ -329,17 +337,17 @@ const DashboardLiveClasses = () => {
                     {meetings.filter(m => m.id !== activeMeeting?.id).length > 0 && (
                         <div className="space-y-4">
                             <p className="font-jetbrains text-[9px] text-description/40 uppercase tracking-[0.3em]">{t('allScheduledClasses') || 'All Scheduled Classes'}</p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 {meetings.filter(m => m.id !== activeMeeting?.id).map((m, i) => (
-                                    <div key={m.id || i} className="live-reveal p-8 border border-white/5 bg-white/[0.01] space-y-4">
-                                        <h3 className="font-inter text-2xl text-normal">{m.topic}</h3>
-                                        <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">
-                                            Scheduled: {new Date(m.start_time).toLocaleString()} | Passcode: <span className="text-accent">{m.password || 'N/A'}</span>
+                                    <div key={m.id || i} className="live-reveal rounded-2xl p-5 border border-white/10 bg-white/[0.03] space-y-4">
+                                        <h3 className="font-inter text-xl text-normal leading-snug">{m.topic}</h3>
+                                        <p className="font-jetbrains text-[8px] text-description/50 uppercase tracking-widest leading-relaxed">
+                                            {new Date(m.start_time).toLocaleString()} · Passcode: <span className="text-accent">{m.password || 'N/A'}</span>
                                         </p>
                                         <button
                                             onClick={() => startStreaming(m)}
                                             disabled={joining}
-                                            className="px-8 py-3 border border-white/10 text-normal font-jetbrains text-[9px] tracking-[0.3em] uppercase hover:bg-white/5 transition-all disabled:opacity-40"
+                                            className="rounded-lg px-5 py-2.5 border border-white/15 text-normal font-jetbrains text-[9px] tracking-[0.25em] uppercase hover:bg-white/5 transition-all disabled:opacity-40"
                                         >
                                             {joining ? 'ESTABLISHING...' : 'JOIN'}
                                         </button>

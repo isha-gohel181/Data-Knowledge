@@ -1,74 +1,11 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchTestimonials,
   submitTestimonial,
   resetSubmitStatus,
 } from '../redux/slices/testimonialSlice'
-
-// Default fallback reviews to guarantee rich UI while API loads or if list is short
-const fallbackSeedReviews = [
-  {
-    _id: 'seed-1',
-    name: 'Priya Deshmukh',
-    role: 'Senior Data Analyst @ Capgemini',
-    message:
-      'The Data Knowledge training completely transformed my career trajectory. Real-world SQL scenarios, live Power BI projects, and direct mentorship gave me the exact skills needed to crack top product analytics roles.',
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=688&auto=format&fit=crop',
-  },
-  {
-    _id: 'seed-2',
-    name: 'Karan Verma',
-    role: 'BI Developer @ Deloitte',
-    message:
-      "Hands down the best practical data analytics training in India. Rushikesh's mentorship and direct doubt resolution sessions are phenomenal. Transitioned from non-tech to analytics in 60 days!",
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=688&auto=format&fit=crop',
-  },
-  {
-    _id: 'seed-3',
-    name: 'Deepak Patel',
-    role: 'Data Engineer @ TCS',
-    message:
-      'The curriculum is 100% industry-driven. Real-world ETL pipelines, cloud data warehouses, and portfolio guidance helped me secure a 140% salary hike.',
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=688&auto=format&fit=crop',
-  },
-  {
-    _id: 'seed-4',
-    name: 'Ananya Deshmukh',
-    role: 'Product Analyst @ Swiggy',
-    message:
-      'The end-to-end assignments and mock interviews felt exactly like real hiring assessments. Highly recommend Data Knowledge to anyone serious about transitioning to data!',
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=688&auto=format&fit=crop',
-  },
-  {
-    _id: 'seed-5',
-    name: 'Rohit Joshi',
-    role: 'Junior Data Scientist @ Capgemini',
-    message:
-      'From basic Excel to complex predictive models and dashboards. The structured modules and community support made learning effortless.',
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=688&auto=format&fit=crop',
-  },
-  {
-    _id: 'seed-6',
-    name: 'Snehal Kulkarni',
-    role: 'Data Consultant @ PwC',
-    message:
-      'Exceptional quality. The live projects and mentorship support are unmatched. Got placed within 2 months of course completion!',
-    rating: 5,
-    status: 'approved',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=688&auto=format&fit=crop',
-  },
-]
 
 const StarIcon = ({ filled = true, className = 'w-4 h-4' }) => (
   <svg
@@ -284,7 +221,7 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid =
 
         {/* Attached Review Screenshot Proof */}
         {reviewImages.length > 0 && (
-          <div className="mt-4 pt-3.5 border-t border-slate-100">
+          <div className="mt-4 pt-3.5 border-t border-slate-100 md:flex md:items-start md:gap-4">
             {reviewImages.length === 1 ? (
               <button
                 type="button"
@@ -301,24 +238,24 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid =
                     })
                   }
                 }}
-                className="w-full flex items-center gap-3 p-2 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-slate-50 hover:from-emerald-100/70 hover:to-emerald-50/50 border border-emerald-200/60 hover:border-emerald-400/80 transition-all duration-200 cursor-pointer text-left group/shot"
+                className="w-full md:w-36 md:shrink-0 flex flex-col items-center gap-2 p-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-[#3498db]/50 transition-all duration-200 cursor-pointer text-left group/shot"
               >
-                <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-200/80 shrink-0 shadow-xs relative">
+                <div className="w-full h-52 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-sm relative">
                   <img
                     src={reviewImages[0]}
                     alt="Review Screenshot"
-                    className="w-full h-full object-cover group-hover/shot:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-contain group-hover/shot:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       e.target.style.display = 'none'
                     }}
                   />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 text-center md:text-left">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-extrabold text-slate-800 group-hover/shot:text-emerald-700 transition-colors">
+                    <span className="text-xs font-extrabold text-slate-800 group-hover/shot:text-[#1b6294] transition-colors">
                       Review Screenshot
                     </span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-extrabold tracking-wide uppercase">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-50 text-[#1b6294] font-extrabold tracking-wide uppercase">
                       Proof
                     </span>
                   </div>
@@ -328,7 +265,7 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid =
                 </div>
               </button>
             ) : (
-              <div className="p-2.5 rounded-2xl bg-gradient-to-r from-emerald-50/50 to-slate-50 border border-emerald-200/60">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-r from-emerald-50/50 to-slate-50 border border-emerald-200/60 md:w-36 md:shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs font-extrabold text-slate-800">
@@ -342,7 +279,7 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid =
                     Click to view gallery
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto">
                   {reviewImages.slice(0, 3).map((rSrc, rIdx) => (
                     <div
                       key={rIdx}
@@ -359,12 +296,12 @@ const ReviewCard = ({ item, getImageSrc, onOpenVideo, onOpenScreenshot, isGrid =
                           })
                         }
                       }}
-                      className="relative w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-200/80 shrink-0 cursor-pointer group/thumb hover:border-emerald-400 shadow-xs"
+                      className="relative w-24 h-52 rounded-xl overflow-hidden bg-slate-950 border border-emerald-200/80 shrink-0 cursor-pointer group/thumb hover:border-emerald-400 shadow-xs"
                     >
                       <img
                         src={rSrc}
                         alt={`Proof ${rIdx + 1}`}
-                        className="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-contain group-hover/thumb:scale-105 transition-transform duration-300"
                       />
                       {rIdx === 2 && reviewImages.length > 3 && (
                         <div className="absolute inset-0 bg-slate-950/70 flex items-center justify-center text-white text-[11px] font-extrabold">
@@ -550,20 +487,14 @@ const TestimonialsSection = () => {
     return `${baseUrl}/${cleanVid}`
   }
 
-  // Combine dynamic database testimonials with curated seed reviews to guarantee full content
-  const mergedList = useMemo(() => {
-    const list = Array.isArray(testimonials) && testimonials.length > 0 ? [...testimonials] : []
-    // Add seed reviews that are not already present
-    fallbackSeedReviews.forEach((seed) => {
-      if (!list.some((item) => item.name === seed.name || item._id === seed._id)) {
-        list.push(seed)
-      }
-    })
-    return list
-  }, [testimonials])
+  const mergedList = Array.isArray(testimonials) ? testimonials : []
 
   // Split into 2 rows and duplicate items so the marquee flows seamlessly without jump
   const { track1, track2 } = useMemo(() => {
+    if (mergedList.length === 0) {
+      return { track1: [], track2: [] }
+    }
+
     const mid = Math.ceil(mergedList.length / 2)
     let r1 = mergedList.slice(0, mid)
     let r2 = mergedList.slice(mid)
@@ -631,6 +562,12 @@ const TestimonialsSection = () => {
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
+            <Link
+              to="/testimonials"
+              className="px-4 py-2 rounded-xl border border-[#3498db]/30 text-[#1b6294] text-xs font-bold hover:bg-[#3498db]/10 transition-colors"
+            >
+              See more testimonials
+            </Link>
             {/* View Mode Toggle */}
             <div className="inline-flex items-center bg-white border border-slate-200 rounded-2xl p-1 shadow-xs">
               <button

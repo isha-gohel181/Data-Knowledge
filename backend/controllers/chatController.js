@@ -174,6 +174,39 @@ export const getAllChatRooms = async (req, res) => {
   }
 };
 
+export const getSupportChatRoom = async (req, res) => {
+  try {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: "Authentication failed: User not authenticated" });
+    }
+
+    const supportUser = await User.findOne({
+      role: { $in: ["admin", "super_admin"] },
+      _id: { $ne: req.user._id },
+    }).select("_id fullName email profilePicture role");
+
+    if (!supportUser) {
+      return res.status(404).json({ message: "No support team member is available" });
+    }
+
+    let room = await ChatRoom.findOne({
+      participants: { $all: [req.user._id, supportUser._id], $size: 2 },
+    });
+
+    if (!room) {
+      room = await ChatRoom.create({
+        participants: [req.user._id, supportUser._id],
+      });
+    }
+
+    await room.populate("participants", "fullName email profilePicture role");
+    return res.status(200).json({ room });
+  } catch (err) {
+    console.error("Get Support Chat Room Error:", err);
+    return res.status(500).json({ message: "Failed to retrieve support chat room" });
+  }
+};
+
 export const getMessages = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {

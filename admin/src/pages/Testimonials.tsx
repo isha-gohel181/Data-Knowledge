@@ -265,10 +265,9 @@ const TestimonialsPage: React.FC = () => {
     const handleReviewImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
-            const fileArray = Array.from(files);
-            setReviewImageFiles(prev => [...prev, ...fileArray]);
-            const newPreviews = fileArray.map(f => URL.createObjectURL(f));
-            setReviewImagePreviews(prev => [...prev, ...newPreviews]);
+            const file = files[0];
+            setReviewImageFiles([file]);
+            setReviewImagePreviews([URL.createObjectURL(file)]);
         }
     };
 
@@ -339,7 +338,7 @@ const TestimonialsPage: React.FC = () => {
 
         setImagePreview(testimonial.image ? getMediaUrl(testimonial.image) : null);
         const existingImgs = getTestimonialReviewImages(testimonial);
-        setExistingReviewImages(existingImgs);
+        setExistingReviewImages(existingImgs.slice(0, 1));
         setReviewImageFiles([]);
         setReviewImagePreviews([]);
 
@@ -415,10 +414,7 @@ const TestimonialsPage: React.FC = () => {
         if (imageFile) formDataToSend.append('image', imageFile);
 
         // Append review images
-        reviewImageFiles.forEach(file => {
-            formDataToSend.append('reviewImages', file);
-            formDataToSend.append('screenshot', file);
-        });
+        if (reviewImageFiles[0]) formDataToSend.append('reviewImages', reviewImageFiles[0]);
 
         if (videoFile) formDataToSend.append('video', videoFile);
 
@@ -972,7 +968,7 @@ const TestimonialsPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* User Review Images Section (Multiple) */}
+                            {/* User Review Image Section */}
                             <div className="border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/30 dark:bg-emerald-950/20 rounded-xl p-3 sm:p-4">
                                 <div className="flex items-center justify-between mb-2">
                                     <div>
@@ -980,7 +976,7 @@ const TestimonialsPage: React.FC = () => {
                                             User Review Images (Chat Proofs / Screenshots)
                                         </label>
                                         <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                                            Upload one or multiple review screenshots (WhatsApp feedback, LinkedIn, Google reviews, etc.)
+                                            Upload one review screenshot (WhatsApp feedback, LinkedIn, Google review, etc.)
                                         </p>
                                     </div>
                                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300 font-bold">
@@ -1040,12 +1036,11 @@ const TestimonialsPage: React.FC = () => {
                                         <span className="text-[10px] text-emerald-800 dark:text-emerald-300 font-bold">
                                             + Add Images
                                         </span>
-                                        <span className="text-[9px] text-gray-400">Select multiple</span>
+                                        <span className="text-[9px] text-gray-400">Select one image</span>
                                         <input
                                             type="file"
                                             name="reviewImages"
                                             accept="image/*"
-                                            multiple
                                             onChange={handleReviewImagesChange}
                                             className="hidden"
                                         />
