@@ -131,6 +131,12 @@ io.on('connection', (socket) => {
         replyTo: replyTo || null
       });
 
+      // Update room lastMessage and updatedAt
+      await ChatRoom.findByIdAndUpdate(roomId, {
+        lastMessage: newMessage._id,
+        updatedAt: new Date(),
+      });
+
       // Populate replyTo if it exists
       if (newMessage.replyTo) {
         await newMessage.populate({
@@ -141,14 +147,28 @@ io.on('connection', (socket) => {
       }
 
       // Populate sender and receiver for response
-      await newMessage.populate('sender receiver', 'fullName email');
+      await newMessage.populate('sender receiver', 'fullName email profilePicture role');
 
-      const receiverSocketId = onlineUsers.get(receiverId.toString());
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit('newMessage', newMessage);
-      }
+      // Emit newMessage to receiver
+      io.to(receiverId.toString()).emit('newMessage', newMessage);
 
       socket.emit('messageSent', newMessage);
+
+      // If receiver is admin, broadcast to all admins so Support Team stays in sync
+      try {
+        const receiverUser = await User.findById(receiverId).select('role').lean();
+        if (receiverUser && (receiverUser.role === 'admin' || receiverUser.role === 'super_admin')) {
+          const otherAdmins = await User.find({
+            role: { $in: ['admin', 'super_admin'] },
+            _id: { $nin: [socket.user._id, receiverId] }
+          }).select('_id').lean();
+          for (const admin of otherAdmins) {
+            io.to(admin._id.toString()).emit('newMessage', newMessage);
+          }
+        }
+      } catch (e) {
+        console.error('Error forwarding socket message to admins:', e);
+      }
     } catch (err) {
       socket.emit('error', { message: err.message });
     }

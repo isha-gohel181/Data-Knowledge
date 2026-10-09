@@ -1,5 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
+import mongoose from "mongoose";
 import ZoomMeeting from "../models/ZoomMeeting.js";
 import CourseEnrollment from "../models/CourseEnrollment.js";
 import CourseBundle from "../models/CourseBundle.js";
@@ -39,10 +40,10 @@ const generateZoomToken = async () => {
 const convertToUTC = (dateStr, timezone) => {
     try {
         const date = new Date(dateStr);
-        const dateStrUTC = date.toISOString().replace(/\.\d{3}Z$/, "Z");
-        return dateStrUTC;
+        if (isNaN(date.getTime())) return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+        return date.toISOString().replace(/\.\d{3}Z$/, "Z");
     } catch {
-        return dateStr;
+        return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
     }
 };
 
@@ -62,12 +63,38 @@ export const createMeeting = async (req, res) => {
         const tz = timezone || "Asia/Kolkata";
         let meeting_id, join_url, start_url, effectivePassword;
 
-        if (useExistingLink) {
-            meeting_id = (existingMeetingId || "0").replace(/\s+/g, "");
+        // Auto-detect if a custom/existing link is provided
+        const hasCustomLink = useExistingLink || Boolean(existingJoinUrl);
+
+        if (hasCustomLink) {
             join_url = existingJoinUrl || "";
             start_url = existingJoinUrl || "";
             effectivePassword = existingPassword || password || "";
+
+            let cleanId = (existingMeetingId || "").trim();
+            if (!cleanId && join_url) {
+                try {
+                    const parsed = new URL(join_url);
+                    const parts = parsed.pathname.split("/").filter(Boolean);
+                    cleanId = parts[parts.length - 1] || "";
+                } catch {
+                    cleanId = "";
+                }
+            }
+            meeting_id = cleanId || `live_${Date.now()}`;
         } else {
+            const accountId = process.env.ZOOM_ACCOUNT_ID;
+            const clientId = process.env.ZOOM_CLIENT_ID;
+            const clientSecret = process.env.ZOOM_CLIENT_SECRET;
+            const isPlaceholder = !clientId || clientId.includes("your_zoom") || !clientSecret || clientSecret.includes("your_zoom");
+
+            if (isPlaceholder) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Zoom API credentials are not configured in backend .env. Please toggle 'Use custom or existing meeting link' and paste your Google Meet, Zoom, or Teams URL.",
+                });
+            }
+
             const token = await generateZoomToken();
 
             const meetingData = {
@@ -128,11 +155,11 @@ export const createMeeting = async (req, res) => {
             start_time: start_time,
             duration: duration || 60,
             timezone: tz,
-            password: effectivePassword,
+            password: effectivePassword || "",
             agenda: agenda || "",
-            meeting_id: String(meeting_id).replace(/\D/g, ''),
-            join_url: join_url,
-            start_url: start_url,
+            meeting_id: String(meeting_id).trim() || `live_${Date.now()}`,
+            join_url: join_url || "",
+            start_url: start_url || join_url || "",
             createdBy: req.user?._id,
             courseId: courseId || null,
             isRecurring: !!isRecurring,
@@ -210,18 +237,32 @@ export const getMeetings = async (req, res) => {
                         meetings: { meetings: [] }
                     });
                 }
+                query.courseId = courseId;
             } else {
-                query.courseId = { $in: enrolledCourseIds };
+                const validObjectIds = enrolledCourseIds
+                    .filter(id => id && mongoose.Types.ObjectId.isValid(id.toString()))
+                    .map(id => new mongoose.Types.ObjectId(id.toString()));
+
+                const orConditions = [
+                    { courseId: null },
+                    { courseId: { $exists: false } }
+                ];
+                if (validObjectIds.length > 0) {
+                    orConditions.push({ courseId: { $in: validObjectIds } });
+                }
+
+                query.$or = orConditions;
             }
         }
 
-        let meetings = await ZoomMeeting.find(query).sort({ start_time: -1 });
+        let meetings = await ZoomMeeting.find(query).sort({ start_time: 1 });
 
         const now = new Date();
 
         meetings = meetings.filter(m => {
             const startTime = new Date(m.start_time);
-            const endTime = new Date(startTime.getTime() + (m.duration * 60 * 1000));
+            const durationMinutes = m.duration || 60;
+            const endTime = new Date(startTime.getTime() + (durationMinutes * 60 * 1000));
 
             if (m.isRecurring && m.recurrence) {
                 const tz = m.timezone || "Asia/Kolkata";
@@ -229,43 +270,35 @@ export const getMeetings = async (req, res) => {
                 const nowLocal = new Date(now.toLocaleString("en-US", { timeZone: tz }));
                 const startLocal = new Date(startTime.toLocaleString("en-US", { timeZone: tz }));
 
-                const todayJS = nowLocal.getDay();
-                const jsDay = todayJS === 0 ? 7 : todayJS;
-
-                if (m.recurrence.weekly_days) {
-                    const zoomDays = m.recurrence.weekly_days.split(",").map(Number);
-                    if (!zoomDays.includes(jsDay)) {
-                        return false;
-                    }
-                }
-
                 if (m.recurrence.end_date_time) {
                     const endDate = new Date(m.recurrence.end_date_time);
                     if (now > endDate) {
-                        return false;
+                        return type === 'past';
                     }
                 }
 
                 if (m.recurrence.end_times) {
                     const weeksElapsed = Math.floor((nowLocal - startLocal) / (7 * 24 * 60 * 60 * 1000));
                     if (weeksElapsed >= m.recurrence.end_times) {
-                        return false;
+                        return type === 'past';
                     }
                 }
 
-                const startMinutes = startLocal.getHours() * 60 + startLocal.getMinutes();
-                const nowMinutes = nowLocal.getHours() * 60 + nowLocal.getMinutes();
-                const oneHourBefore = startMinutes - 60;
-                if (nowMinutes < oneHourBefore || nowMinutes > startMinutes + m.duration) {
+                if (type === 'upcoming') {
+                    return true;
+                }
+                if (type === 'past') {
                     return false;
                 }
-
                 return true;
             }
 
             if (type === 'upcoming') {
-                const oneHourBeforeStart = new Date(startTime.getTime() - (60 * 60 * 1000));
-                return now >= oneHourBeforeStart && now < endTime;
+                return endTime >= now;
+            }
+
+            if (type === 'past') {
+                return endTime < now;
             }
 
             return true;

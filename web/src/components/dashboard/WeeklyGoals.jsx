@@ -12,8 +12,8 @@ const WeeklyGoals = () => {
     ? Math.round(activeCourses.reduce((acc, curr) => acc + (curr.progress || 0), 0) / activeCourses.length)
     : 0
 
-  const enrolledCourses = dashData?.profile?.stats?.enrolledCourses || 0
-  const completedCourses = dashData?.profile?.stats?.completedCourses || 0
+  const enrolledCourses = dashData?.profile?.stats?.enrolledCourses ?? dashData?.allCoursesCount ?? 0
+  const completedCourses = dashData?.profile?.stats?.completedCourses ?? 0
 
   const radius = 55
   const circumference = 2 * Math.PI * radius

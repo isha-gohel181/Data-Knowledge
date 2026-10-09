@@ -89,10 +89,11 @@ const DashboardLiveClasses = () => {
                 const now = new Date()
                 const nearest = fetchedMeetings
                     .filter(m => new Date(m.start_time) > new Date(now.getTime() - 60 * 60000))
-                    .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))[0]
-                if (nearest) setActiveMeeting(nearest)
+                    .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))[0] || fetchedMeetings[0]
+                setActiveMeeting(nearest || null)
             } else {
                 setMeetings([])
+                setActiveMeeting(null)
             }
         } catch (err) {
             console.error("Meeting fetch failed:", err)
@@ -104,6 +105,20 @@ const DashboardLiveClasses = () => {
 
     const startStreaming = async (meeting) => {
         if (!meeting || joining) return
+
+        // If meeting is an external link (e.g. Google Meet, Microsoft Teams) or has non-numeric Zoom ID
+        const joinUrl = meeting.join_url || ''
+        const meetingIdStr = String(meeting.id || '').trim()
+        const isExternal = joinUrl.includes('meet.google.com') ||
+            joinUrl.includes('teams.microsoft.com') ||
+            joinUrl.includes('teams.live.com') ||
+            !/^\d+$/.test(meetingIdStr.replace(/\s+/g, ''))
+
+        if (isExternal && joinUrl) {
+            window.open(joinUrl, '_blank', 'noopener,noreferrer')
+            return
+        }
+
         try {
             setJoining(true)
             setError(null)
@@ -114,9 +129,16 @@ const DashboardLiveClasses = () => {
                 method: 'POST',
                 body: JSON.stringify({ meetingNumber: meeting.id, role: 0 })
             })
-            const { signature, sdkKey } = await sigRes.json()
-            if (!signature) throw new Error('No signature returned from server.')
-            if (!sdkKey) throw new Error('No sdkKey returned from server. Check ZOOM_SDK_KEY env var on backend.')
+            const sigData = await sigRes.json()
+            const { signature, sdkKey } = sigData || {}
+            if (!signature || !sdkKey) {
+                if (joinUrl) {
+                    window.open(joinUrl, '_blank', 'noopener,noreferrer')
+                    setJoining(false)
+                    return
+                }
+                throw new Error('No signature or sdkKey returned from server.')
+            }
 
             // Step 2: Load Zoom Web SDK from CDN (self-contained, no React conflict)
             loadCdnStyle(`https://source.zoom.us/${ZOOM_VERSION}/css/bootstrap.css`)
@@ -303,7 +325,13 @@ const DashboardLiveClasses = () => {
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
                                     <div className="rounded-2xl border border-white/10 bg-black/5 p-4">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Protocol</p>
-                                        <p className="font-inter text-base text-normal mt-1">{t('secureBroadcast') || 'Live session'}</p>
+                                        <p className="font-inter text-base text-normal mt-1">
+                                            {activeMeeting.join_url?.includes('meet.google.com')
+                                                ? 'Google Meet'
+                                                : activeMeeting.join_url?.includes('teams')
+                                                ? 'MS Teams'
+                                                : (t('secureBroadcast') || 'Zoom Live Session')}
+                                        </p>
                                     </div>
                                     <div className="rounded-2xl border border-white/10 bg-black/5 p-4">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">Schedule</p>
@@ -314,7 +342,7 @@ const DashboardLiveClasses = () => {
                                     <div className="space-y-1">
                                         <p className="font-jetbrains text-[8px] text-description/40 uppercase tracking-widest">ID / Passcode</p>
                                         <p className="font-inter text-sm text-normal mt-1 break-all">
-                                            {activeMeeting.id} / <span className="text-accent">{activeMeeting.password || 'N/A'}</span>
+                                            {activeMeeting.id || 'Live'} {activeMeeting.password ? `/ ${activeMeeting.password}` : ''}
                                         </p>
                                     </div>
                                 </div>
@@ -334,15 +362,15 @@ const DashboardLiveClasses = () => {
                     )}
 
                     {/* Always show ALL remaining meetings below the hero card */}
-                    {meetings.filter(m => m.id !== activeMeeting?.id).length > 0 && (
+                    {meetings.filter(m => (m._id || m.id) !== (activeMeeting?._id || activeMeeting?.id)).length > 0 && (
                         <div className="space-y-4">
                             <p className="font-jetbrains text-[9px] text-description/40 uppercase tracking-[0.3em]">{t('allScheduledClasses') || 'All Scheduled Classes'}</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {meetings.filter(m => m.id !== activeMeeting?.id).map((m, i) => (
-                                    <div key={m.id || i} className="live-reveal rounded-2xl p-5 border border-white/10 bg-white/[0.03] space-y-4">
+                                {meetings.filter(m => (m._id || m.id) !== (activeMeeting?._id || activeMeeting?.id)).map((m, i) => (
+                                    <div key={m._id || m.id || i} className="live-reveal rounded-2xl p-5 border border-white/10 bg-white/[0.03] space-y-4">
                                         <h3 className="font-inter text-xl text-normal leading-snug">{m.topic}</h3>
                                         <p className="font-jetbrains text-[8px] text-description/50 uppercase tracking-widest leading-relaxed">
-                                            {new Date(m.start_time).toLocaleString()} · Passcode: <span className="text-accent">{m.password || 'N/A'}</span>
+                                            {new Date(m.start_time).toLocaleString()} {m.password ? `· Passcode: ${m.password}` : ''}
                                         </p>
                                         <button
                                             onClick={() => startStreaming(m)}

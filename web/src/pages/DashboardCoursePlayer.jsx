@@ -31,7 +31,8 @@ const courseCurriculum = [
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourseDetail } from '../redux/slices/courseSlice';
-import { fetchLessonsStatus } from '../redux/slices/dripSlice';
+import { fetchLessonsStatus, setLessonStatus } from '../redux/slices/dripSlice';
+import socketService from '../services/socketService';
 
 const DashboardCoursePlayer = () => {
     const { id } = useParams();
@@ -51,6 +52,199 @@ const DashboardCoursePlayer = () => {
     const [securityWarning, setSecurityWarning] = useState('');
     const containerRef = useRef(null);
     const { trackEvent } = useTracker();
+
+    // Video Progress & Socket.IO State
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(300);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [socketConnected, setSocketConnected] = useState(false);
+    const [currentLessonProgress, setCurrentLessonProgress] = useState(0);
+    const [isSyncing, setIsSyncing] = useState(false);
+    const videoRef = useRef(null);
+    const lastEmitTimeRef = useRef(0);
+
+    const formatTime = (seconds) => {
+        const s = Math.max(0, Math.floor(seconds || 0));
+        const mins = Math.floor(s / 60);
+        const remSecs = s % 60;
+        return `${mins < 10 ? '0' : ''}${mins}:${remSecs < 10 ? '0' : ''}${remSecs}`;
+    };
+
+    // Emit video progress via Socket.io
+    const emitProgress = (targetTime, targetDuration) => {
+        if (!selectedLesson) return;
+        const videoId = selectedLesson.videoLessons?.[0]?._id || 
+                        selectedLesson.videoLessons?.[0]?.videoId || 
+                        selectedLesson.videoLessonId || 
+                        selectedLesson.videoId || 
+                        selectedLesson._id;
+        const lessonId = selectedLesson._id || selectedLesson.id;
+        const courseId = currentCourse?._id || id;
+        const userId = user?._id || user?.id;
+
+        const curTime = Math.round(targetTime);
+        const dur = Math.max(1, Math.round(targetDuration || duration));
+
+        setIsSyncing(true);
+        socketService.emit('video-progress', {
+            videoId,
+            lessonId,
+            courseId,
+            userId,
+            currentTime: curTime,
+            duration: dur
+        });
+    };
+
+    // Mark as complete via Socket.io
+    const handleMarkComplete = () => {
+        if (!selectedLesson) return;
+        const videoId = selectedLesson.videoLessons?.[0]?._id || 
+                        selectedLesson.videoLessons?.[0]?.videoId || 
+                        selectedLesson.videoLessonId || 
+                        selectedLesson.videoId || 
+                        selectedLesson._id;
+        const lessonId = selectedLesson._id || selectedLesson.id;
+        const courseId = currentCourse?._id || id;
+        const userId = user?._id || user?.id;
+
+        setIsSyncing(true);
+        socketService.emit('video-complete', {
+            videoId,
+            lessonId,
+            courseId,
+            userId,
+            duration
+        });
+
+        // Optimistic UI update
+        setCurrentLessonProgress(100);
+        setCurrentTime(duration);
+        dispatch(setLessonStatus({
+            lessonId,
+            status: {
+                progress: 100,
+                unlocked: true,
+                completed: true
+            }
+        }));
+    };
+
+    // Connect to Socket.IO and listen for progress updates
+    useEffect(() => {
+        const token = localStorage.getItem('edrilla_token') || localStorage.getItem('token');
+        socketService.connect(token).then(() => {
+            setSocketConnected(true);
+        }).catch((err) => {
+            console.warn('Socket connection error in course player:', err);
+        });
+
+        const handleProgressUpdated = (data) => {
+            setIsSyncing(false);
+            if (data?.lessonId) {
+                const prog = Math.round(data.progressPercentage || 0);
+                dispatch(setLessonStatus({
+                    lessonId: data.lessonId,
+                    status: {
+                        progress: prog,
+                        unlocked: true,
+                        completed: data.completed || prog >= 80,
+                    }
+                }));
+                const currentLid = selectedLesson?._id || selectedLesson?.id;
+                if (currentLid === data.lessonId) {
+                    setCurrentLessonProgress(prog);
+                }
+            }
+        };
+
+        const handleVideoCompleted = (data) => {
+            setIsSyncing(false);
+            if (data?.lessonId) {
+                dispatch(setLessonStatus({
+                    lessonId: data.lessonId,
+                    status: {
+                        progress: 100,
+                        unlocked: true,
+                        completed: true,
+                    }
+                }));
+                const currentLid = selectedLesson?._id || selectedLesson?.id;
+                if (currentLid === data.lessonId) {
+                    setCurrentLessonProgress(100);
+                }
+            }
+        };
+
+        socketService.on('progress-updated', handleProgressUpdated);
+        socketService.on('video-completed', handleVideoCompleted);
+
+        return () => {
+            socketService.off('progress-updated', handleProgressUpdated);
+            socketService.off('video-completed', handleVideoCompleted);
+        };
+    }, [dispatch, selectedLesson]);
+
+    // Update progress state when selectedLesson changes
+    useEffect(() => {
+        if (!selectedLesson) return;
+        const lid = selectedLesson._id || selectedLesson.id;
+        const initialProgress = dripStatuses[lid]?.progress ?? selectedLesson.progress ?? 0;
+        setCurrentLessonProgress(initialProgress);
+
+        let d = 300;
+        const vDuration = selectedLesson.videoLessons?.[0]?.duration;
+        if (vDuration && typeof vDuration === 'number') {
+            d = vDuration > 30 ? vDuration : vDuration * 60;
+        } else if (selectedLesson.duration && typeof selectedLesson.duration === 'number') {
+            d = selectedLesson.duration > 30 ? selectedLesson.duration : selectedLesson.duration * 60;
+        }
+        setDuration(d);
+        const startingTime = (initialProgress / 100) * d;
+        setCurrentTime(startingTime);
+        setIsPlaying(true);
+    }, [selectedLesson]);
+
+    // Periodic ticker while video is playing
+    useEffect(() => {
+        if (!selectedLesson || !isPlaying) return;
+
+        const interval = setInterval(() => {
+            setCurrentTime((prev) => {
+                const next = Math.min(duration, prev + 1);
+                const nextProg = duration > 0 ? Math.min(100, Math.round((next / duration) * 100)) : 0;
+                setCurrentLessonProgress(nextProg);
+
+                // Emit progress every 3 seconds to socket.io
+                const now = Date.now();
+                if (now - lastEmitTimeRef.current >= 3000) {
+                    lastEmitTimeRef.current = now;
+                    emitProgress(next, duration);
+                }
+
+                if (next >= duration) {
+                    setIsPlaying(false);
+                    handleMarkComplete();
+                }
+
+                return next;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [selectedLesson, isPlaying, duration]);
+
+    // Handle manual seek from the progress scrubber
+    const handleSeek = (percentage) => {
+        const clamped = Math.max(0, Math.min(100, percentage));
+        const newTime = (clamped / 100) * duration;
+        setCurrentTime(newTime);
+        setCurrentLessonProgress(Math.round(clamped));
+        if (videoRef.current) {
+            videoRef.current.currentTime = newTime;
+        }
+        emitProgress(newTime, duration);
+    };
 
     console.log('Current Course Data:', currentCourse);
     console.log('Selected Lesson:', selectedLesson);
@@ -386,62 +580,186 @@ const DashboardCoursePlayer = () => {
 
                     {/* Dashboard Video Area */}
                     {selectedLesson && (
-                        <div 
-                            className="animate-in fade-in duration-700 w-full aspect-video bg-[#0d0d0d] border border-white/5 relative overflow-hidden flex items-center justify-center group shadow-2xl mb-8"
-                            onContextMenu={(e) => e.preventDefault()}
-                        >
-                            <div className="w-full h-full bg-black relative flex items-center justify-center overflow-hidden">
-                                {selectedLesson.type === 'video' || (selectedLesson.videoLessons?.length > 0) ? (
-                                    videoSrc ? (
-                                        <iframe 
-                                            src={videoSrc} 
-                                            className={`w-full h-full border-0 absolute inset-0 z-0 transition-all duration-300 ${isObscured ? 'opacity-0 pointer-events-none filter blur-xl' : 'opacity-100'}`}
-                                            allowFullScreen
-                                            allow="autoplay; encrypted-media"
-                                            title={selectedLesson.title}
-                                            onError={() => {
-                                                if (reportIncidentRef.current) {
-                                                    reportIncidentRef.current('VDOCIPHER_PLAYER_ERROR', { error: 'Failed to initialize VdoPlayer' });
-                                                }
-                                            }}
-                                        />
+                        <div className="space-y-4 mb-8">
+                            <div 
+                                className="animate-in fade-in duration-700 w-full aspect-video bg-[#0d0d0d] border border-white/5 relative overflow-hidden flex items-center justify-center group shadow-2xl rounded-2xl"
+                                onContextMenu={(e) => e.preventDefault()}
+                            >
+                                <div className="w-full h-full bg-black relative flex items-center justify-center overflow-hidden">
+                                    {selectedLesson.type === 'video' || (selectedLesson.videoLessons?.length > 0) ? (
+                                        videoSrc ? (
+                                            videoSrc.endsWith('.mp4') || videoSrc.endsWith('.webm') || videoSrc.includes('/uploads/') ? (
+                                                <video 
+                                                    ref={videoRef}
+                                                    src={videoSrc}
+                                                    controls
+                                                    className={`w-full h-full object-contain absolute inset-0 z-0 transition-all duration-300 ${isObscured ? 'opacity-0 pointer-events-none filter blur-xl' : 'opacity-100'}`}
+                                                    onPlay={() => setIsPlaying(true)}
+                                                    onPause={() => setIsPlaying(false)}
+                                                    onTimeUpdate={(e) => {
+                                                        const cur = e.target.currentTime;
+                                                        const dur = e.target.duration || duration;
+                                                        setCurrentTime(cur);
+                                                        if (dur) setDuration(dur);
+                                                        const p = Math.min(100, Math.round((cur / dur) * 100));
+                                                        setCurrentLessonProgress(p);
+                                                    }}
+                                                    onEnded={() => {
+                                                        setIsPlaying(false);
+                                                        handleMarkComplete();
+                                                    }}
+                                                />
+                                            ) : (
+                                                <iframe 
+                                                    src={videoSrc} 
+                                                    className={`w-full h-full border-0 absolute inset-0 z-0 transition-all duration-300 ${isObscured ? 'opacity-0 pointer-events-none filter blur-xl' : 'opacity-100'}`}
+                                                    allowFullScreen
+                                                    allow="autoplay; encrypted-media"
+                                                    title={selectedLesson.title}
+                                                    onError={() => {
+                                                        if (reportIncidentRef.current) {
+                                                            reportIncidentRef.current('VDOCIPHER_PLAYER_ERROR', { error: 'Failed to initialize VdoPlayer' });
+                                                        }
+                                                    }}
+                                                />
+                                            )
+                                        ) : (
+                                            <div className="text-center space-y-4 z-10 relative">
+                                                <div className="w-16 h-16 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                                </div>
+                                                <p className="font-jetbrains text-[10px] text-red-500/80 uppercase tracking-widest">Media Source Not Found</p>
+                                            </div>
+                                        )
                                     ) : (
                                         <div className="text-center space-y-4 z-10 relative">
-                                            <div className="w-16 h-16 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                            <div className="w-16 h-16 bg-accent/10 text-accent border border-accent/20 rounded-full flex items-center justify-center mx-auto">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM12 6v6l4 2"/></svg>
                                             </div>
-                                            <p className="font-jetbrains text-[10px] text-red-500/80 uppercase tracking-widest">Media Source Not Found</p>
+                                            <p className="font-jetbrains text-[10px] text-accent/80 uppercase tracking-widest">Protocol Type Unrecognized</p>
                                         </div>
-                                    )
-                                ) : (
-                                    <div className="text-center space-y-4 z-10 relative">
-                                        <div className="w-16 h-16 bg-accent/10 text-accent border border-accent/20 rounded-full flex items-center justify-center mx-auto">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM12 6v6l4 2"/></svg>
+                                    )}
+                                    
+                                    {/* Obscured Overlay for Screen Sharing Prevention */}
+                                    {isObscured && (
+                                        <div className="absolute inset-0 bg-black z-[100] flex flex-col items-center justify-center pointer-events-none">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-white/20 mb-4">
+                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 11h8"/><path d="M12 15V7"/>
+                                            </svg>
+                                            <p className="font-jetbrains text-[10px] text-white/50 uppercase tracking-[0.4em]">Content Protected</p>
                                         </div>
-                                        <p className="font-jetbrains text-[10px] text-accent/80 uppercase tracking-widest">Protocol Type Unrecognized</p>
-                                    </div>
-                                )}
-                                
-                                {/* Obscured Overlay for Screen Sharing Prevention */}
-                                {isObscured && (
-                                    <div className="absolute inset-0 bg-black z-[100] flex flex-col items-center justify-center pointer-events-none">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-white/20 mb-4">
-                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 11h8"/><path d="M12 15V7"/>
-                                        </svg>
-                                        <p className="font-jetbrains text-[10px] text-white/50 uppercase tracking-[0.4em]">Content Protected</p>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* Security Watermark */}
-                                {user?.email && (
-                                    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-50">
-                                        <div className="absolute animate-float-slow opacity-[0.03] md:opacity-[0.05] whitespace-nowrap">
-                                            <p className="font-jetbrains text-[10px] md:text-[14px] text-white tracking-[0.2em] font-black uppercase">
-                                                {user.email} • {user.email} • {user.email}
-                                            </p>
+                                    {/* Security Watermark */}
+                                    {user?.email && (
+                                        <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-50">
+                                            <div className="absolute animate-float-slow opacity-[0.03] md:opacity-[0.05] whitespace-nowrap">
+                                                <p className="font-jetbrains text-[10px] md:text-[14px] text-white tracking-[0.2em] font-black uppercase">
+                                                    {user.email} • {user.email} • {user.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Socket.io Live Video Progress HUD */}
+                            <div className="bg-[#111625] border border-slate-700/60 p-5 rounded-2xl shadow-xl space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M5 3l14 9-14 9V3z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 className="font-jetbrains text-sm font-bold text-white tracking-wide truncate max-w-md">
+                                                {selectedLesson.title}
+                                            </h3>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="flex items-center gap-1.5 text-[11px] font-mono font-medium text-emerald-400">
+                                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                                    Socket.IO Live Sync Active
+                                                </span>
+                                                {isSyncing && (
+                                                    <span className="text-[10px] text-blue-300 font-mono animate-pulse">
+                                                        (Updating DB...)
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                )}
+
+                                    {/* Progress & Controls */}
+                                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsPlaying((p) => !p)}
+                                            className={`px-4 py-2 rounded-xl text-xs font-jetbrains font-bold uppercase tracking-wider transition-all flex items-center gap-2 border ${
+                                                isPlaying 
+                                                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30' 
+                                                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30'
+                                            }`}
+                                        >
+                                            {isPlaying ? (
+                                                <>
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                                    Pause Progress
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+                                                    Resume Progress
+                                                </>
+                                            )}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleMarkComplete}
+                                            className="px-5 py-2 rounded-xl text-xs font-jetbrains font-bold uppercase tracking-wider bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg hover:shadow-blue-500/20 transition-all flex items-center gap-2"
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                                <polyline points="20 6 9 17 4 12" />
+                                            </svg>
+                                            Mark as Complete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Interactive Progress Bar */}
+                                <div className="space-y-2 pt-2">
+                                    <div className="flex justify-between items-center text-xs font-mono">
+                                        <span className="text-slate-400">
+                                            {formatTime(currentTime)} / {formatTime(duration)}
+                                        </span>
+                                        <span className="text-blue-400 font-bold text-sm tracking-wider">
+                                            {Math.round(currentLessonProgress)}% COMPLETED
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Scrubber track */}
+                                    <div 
+                                        onClick={(e) => {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            const clickX = e.clientX - rect.left;
+                                            const perc = (clickX / rect.width) * 100;
+                                            handleSeek(perc);
+                                        }}
+                                        className="h-3 bg-slate-800 rounded-full relative overflow-hidden cursor-pointer group/bar border border-slate-700 hover:border-blue-400 transition-colors"
+                                        title="Click to seek / update progress"
+                                    >
+                                        <div 
+                                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-indigo-400 to-emerald-400 transition-all duration-300 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.6)]"
+                                            style={{ width: `${Math.min(100, Math.max(0, currentLessonProgress))}%` }}
+                                        />
+                                        {/* Hover indicator */}
+                                        <div className="absolute inset-0 bg-white/5 opacity-0 group-hover/bar:opacity-100 transition-opacity pointer-events-none" />
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 font-mono text-right">
+                                        Progress syncs live via Socket.IO to your course dashboard
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     )}

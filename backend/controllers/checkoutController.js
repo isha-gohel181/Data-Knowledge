@@ -1225,9 +1225,10 @@ export const getMyEnrollments = async (req, res) => {
       for (const module of c.modules) {
         if (!module || !module.lessons) continue;
         for (const lesson of module.lessons) {
-          if (lesson.type === 'video-lesson') totalItems++;
-          if (lesson.type === 'quiz') totalItems++;
-          if (lesson.type === 'assignment') totalItems++;
+          if (lesson.type === 'video-lesson' || lesson.type === 'video') totalItems++;
+          else if (lesson.type === 'quiz') totalItems++;
+          else if (lesson.type === 'assignment') totalItems++;
+          else if (lesson.type === 'text') totalItems++;
         }
       }
       totalsMap.set(c._id.toString(), totalItems);
@@ -1303,13 +1304,16 @@ export const getMyEnrollments = async (req, res) => {
             }
           }
 
+          const effectiveProgress = Math.max(Number(enrollment.progressPercentage) || 0, progress);
+
           const course = {
             ...courseDoc,
-            overallProgress: progress,
+            overallProgress: effectiveProgress,
           };
 
           populatedEnrollments.push({
             ...enrollment,
+            progressPercentage: effectiveProgress,
             iscompleted,
             course,
             certificate,
@@ -1373,13 +1377,16 @@ export const getMyEnrollments = async (req, res) => {
               }
             }
 
+            const effectiveProgress = Math.max(Number(enrollment.progressPercentage) || 0, progress);
+
             course = {
               ...courseDoc,
-              overallProgress: progress,
+              overallProgress: effectiveProgress,
             };
           }
           populatedEnrollments.push({
             ...enrollment,
+            progressPercentage: course ? course.overallProgress : (Number(enrollment.progressPercentage) || 0),
             iscompleted,
             course,
             coursePlan: plan,

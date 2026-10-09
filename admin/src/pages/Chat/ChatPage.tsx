@@ -164,9 +164,37 @@ const ChatPage: React.FC = () => {
       console.log("Mapped all rooms:", allRooms);
 
       setChats(prev => {
-        const existingIds = new Set(allRooms.map((r: any) => r.id));
-        const filteredPrev = prev.filter(p => !existingIds.has(p.id));
-        return [...allRooms, ...filteredPrev];
+        const roomIds = new Set(allRooms.map((r: any) => r.id));
+        const directParticipantIds = new Set(
+          allRooms
+            .filter((r: any) => r.type === 'direct' && r.participantId)
+            .map((r: any) => String(r.participantId))
+        );
+
+        // Keep prev chats ONLY if not already in roomIds and direct participant is not already in allRooms
+        const filteredPrev = prev.filter(p => {
+          if (roomIds.has(p.id)) return false;
+          if (p.type === 'direct' && p.participantId && directParticipantIds.has(String(p.participantId))) {
+            return false;
+          }
+          return true;
+        });
+
+        // Deduplicate direct chats by participantId
+        const seenParticipants = new Set<string>();
+        const merged = [...allRooms, ...filteredPrev];
+        const uniqueChats: any[] = [];
+
+        for (const chat of merged) {
+          if (chat.type === 'direct' && chat.participantId) {
+            const pId = String(chat.participantId);
+            if (seenParticipants.has(pId)) continue;
+            seenParticipants.add(pId);
+          }
+          uniqueChats.push(chat);
+        }
+
+        return uniqueChats;
       });
     } catch (err) {
       console.error("Failed to fetch chat rooms", err);
@@ -218,19 +246,30 @@ const ChatPage: React.FC = () => {
 
   useEffect(() => {
     if (students && students.length > 0) {
-      const studentChats: Chat[] = students.map((s: any) => ({
-        id: s._id,
-        type: 'direct',
-        name: s.fullName || s.name,
-        image: s.profilePicture ? `${import.meta.env.VITE_IMAGE_URL}/${s.profilePicture}` : undefined,
-        unreadCount: 0,
-        participantId: s._id,
-        updatedAt: new Date(0).toISOString()
-      }));
-
       setChats(prev => {
-        const existingParticipantIds = new Set(prev.map(p => p.participantId));
-        const newStudents = studentChats.filter(s => !existingParticipantIds.has(s.id));
+        const existingParticipantIds = new Set(
+          prev
+            .filter(p => p.type === 'direct')
+            .map(p => String(p.participantId || p.id))
+        );
+
+        const newStudents: Chat[] = [];
+        for (const s of students) {
+          const sId = String(s._id || s.id);
+          if (!existingParticipantIds.has(sId)) {
+            existingParticipantIds.add(sId);
+            newStudents.push({
+              id: sId,
+              type: 'direct',
+              name: s.fullName || s.name,
+              image: s.profilePicture ? `${import.meta.env.VITE_IMAGE_URL}/${s.profilePicture}` : undefined,
+              unreadCount: 0,
+              participantId: sId,
+              updatedAt: new Date(0).toISOString()
+            });
+          }
+        }
+
         return [...prev, ...newStudents];
       });
     }
@@ -306,16 +345,19 @@ const ChatPage: React.FC = () => {
         const isMe = senderId === currentUserId;
 
         if (isCurrentChat) {
-          setMessages(prev => [...prev, {
-            _id: msg._id,
-            sender: senderId,
-            content: msg.message,
-            file: msg.fileUrl,
-            fileType: msg.fileType || 'text',
-            createdAt: msg.createdAt,
-            senderInfo: msg.sender, // Store sender info for multi-user chats (courses)
-            replyTo: msg.replyTo
-          }]);
+          setMessages(prev => {
+            if (msg._id && prev.some(m => m._id === msg._id)) return prev;
+            return [...prev, {
+              _id: msg._id,
+              sender: senderId,
+              content: msg.message,
+              file: msg.fileUrl,
+              fileType: msg.fileType || 'text',
+              createdAt: msg.createdAt,
+              senderInfo: msg.sender, // Store sender info for multi-user chats (courses)
+              replyTo: msg.replyTo
+            }];
+          });
 
           // Mark as read immediately if it's the current chat
           let readEndpoint = "/chat/message/read";
@@ -346,17 +388,23 @@ const ChatPage: React.FC = () => {
   const updateLastMessage = (msg: any, isCurrentChat: boolean, isMe: boolean) => {
     const roomId = msg.chatRoomId || msg.groupChatRoomId || msg.courseChatRoomId;
     const senderId = msg.sender?._id || msg.sender;
-    setChats(prev => prev.map(chat => {
-      if (chat.id === roomId || chat.participantId === senderId) {
-        return {
-          ...chat,
-          lastMessage: msg.message || "File",
-          updatedAt: msg.createdAt || new Date().toISOString(),
-          unreadCount: isCurrentChat ? 0 : (isMe ? chat.unreadCount : chat.unreadCount + 1)
-        };
-      }
-      return chat;
-    }));
+    setChats(prev => {
+      let matchUpdated = false;
+      return prev.map(chat => {
+        const isMatch = chat.id === roomId || (chat.type === 'direct' && String(chat.participantId) === String(senderId));
+        if (isMatch && !matchUpdated) {
+          matchUpdated = true;
+          return {
+            ...chat,
+            id: roomId || chat.id,
+            lastMessage: msg.message || "File",
+            updatedAt: msg.createdAt || new Date().toISOString(),
+            unreadCount: isCurrentChat ? 0 : (isMe ? chat.unreadCount : chat.unreadCount + 1)
+          };
+        }
+        return chat;
+      });
+    });
   };
 
   const startRecording = async () => {
@@ -532,9 +580,20 @@ const ChatPage: React.FC = () => {
                 console.log("First 5 chats sample:", chats.slice(0, 5));
               }
               const filtered = chats.filter(c => c.type === activeTab && (c.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
-              console.log(`Filtered count for ${activeTab}: ${filtered.length}`);
 
-              const sorted = [...filtered].sort((a, b) => {
+              // Ensure uniqueness by participantId/id for direct chats
+              const uniqueFiltered: typeof filtered = [];
+              const seenDirect = new Set<string>();
+              for (const c of filtered) {
+                if (c.type === 'direct') {
+                  const key = String(c.participantId || c.id);
+                  if (seenDirect.has(key)) continue;
+                  seenDirect.add(key);
+                }
+                uniqueFiltered.push(c);
+              }
+
+              const sorted = [...uniqueFiltered].sort((a, b) => {
                 if (subFilter === 'unread') {
                   if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
                   if (b.unreadCount > 0 && a.unreadCount === 0) return 1;

@@ -92,6 +92,8 @@ class SocketService {
         this.socket.on('user_stopped_typing', (data) => this._emitLocal('user_stopped_typing', data));
         this.socket.on('user_online', (data) => this._emitLocal('user_online', data));
         this.socket.on('user_offline', (data) => this._emitLocal('user_offline', data));
+        this.socket.on('progress-updated', (data) => this._emitLocal('progress-updated', data));
+        this.socket.on('video-completed', (data) => this._emitLocal('video-completed', data));
 
       } catch (error) {
         this.cleanup();
@@ -104,6 +106,14 @@ class SocketService {
     if (this.socket && this.socket.connected) {
       this.socket.emit('authenticate', token);
     }
+  }
+
+  emit(event, payload) {
+    if (this.socket && this.connected) {
+      this.socket.emit(event, payload);
+      return true;
+    }
+    return false;
   }
 
   disconnect() {

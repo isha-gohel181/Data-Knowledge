@@ -1,17 +1,17 @@
 import express from 'express';
 import passport from 'passport';
 import accessTokenAutoRefresh from '../middlewares/accessTokenAutoRefresh.js';
-import { isAdmin } from '../middlewares/isAdmin.js';
+import isUserBanned from '../middlewares/isUserBanned.js';
 import DashboardController from '../controllers/dashboardController.js';
 
 const router = express.Router();
 
-// GET /api/v1/dashboard/ - admin dashboard overview (admin only)
+// GET /dashboard/ - learner dashboard overview
 router.get(
   '/',
   accessTokenAutoRefresh,
   passport.authenticate('jwt', { session: false }),
-  isAdmin,
+  isUserBanned,
   DashboardController.getDashboard
 );
 

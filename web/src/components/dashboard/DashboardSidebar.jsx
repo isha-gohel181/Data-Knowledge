@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 
 const TopLearners = ({ learners = [] }) => {
@@ -14,7 +15,12 @@ const TopLearners = ({ learners = [] }) => {
       </div>
 
       <div className="space-y-2.5">
-         {learners.slice(0, 5).map((learner, index) => {
+         {learners.length === 0 ? (
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl text-center">
+              <p className="font-jetbrains text-xs text-slate-500 uppercase tracking-widest font-medium">{t('noData') || 'No leaderboard entries recorded yet'}</p>
+            </div>
+         ) : (
+            learners.slice(0, 5).map((learner, index) => {
             const learnerData = learner.userId || {}
             const isMe = learnerData._id === user?._id || learnerData._id === user?.id
             return (
@@ -44,7 +50,7 @@ const TopLearners = ({ learners = [] }) => {
                   </span>
                </div>
             )
-         })}
+         }))}
       </div>
     </div>
   )
@@ -88,10 +94,73 @@ const UpcomingDeadlines = ({ assignments = [] }) => {
   )
 }
 
+const UpcomingLiveSessions = ({ sessions = [] }) => {
+  const { t } = useLanguage()
+  const navigate = useNavigate()
+
+  if (!sessions || sessions.length === 0) return null
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+         <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+            <h4 className="font-inter text-2xl text-slate-900 font-bold tracking-tight">{t('liveClasses') || 'Live Classes'}</h4>
+         </div>
+         <button 
+           onClick={() => navigate('/dashboard/live-classes')}
+           className="font-jetbrains text-xs text-amber-600 hover:text-amber-700 font-bold uppercase tracking-wider transition-colors"
+         >
+           View All →
+         </button>
+      </div>
+
+      <div className="space-y-3">
+        {sessions.slice(0, 3).map((session) => (
+           <div 
+             key={session._id || session.id} 
+             className="p-5 border border-slate-200/80 bg-white rounded-2xl space-y-3 relative overflow-hidden group hover:border-amber-400 transition-all shadow-sm"
+           >
+              <div className="flex items-center justify-between">
+                 <span className="font-jetbrains text-[10px] text-red-900 font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-red-200 bg-red-50">
+                    {session.join_url?.includes('meet.google.com') ? 'Google Meet' : session.join_url?.includes('teams') ? 'MS Teams' : 'Live Class'}
+                 </span>
+                 <span className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider">
+                    {new Date(session.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                 </span>
+              </div>
+              <h5 className="font-inter text-lg text-slate-900 font-bold group-hover:text-amber-600 transition-colors">
+                {session.topic}
+              </h5>
+              <div className="flex items-center justify-between pt-1">
+                 <span className="font-jetbrains text-[10px] text-slate-400 uppercase tracking-widest">
+                   {new Date(session.start_time).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}
+                 </span>
+                 <button
+                   onClick={() => {
+                     if (session.join_url) {
+                       window.open(session.join_url, '_blank', 'noopener,noreferrer')
+                     } else {
+                       navigate('/dashboard/live-classes')
+                     }
+                   }}
+                   className="px-4 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-jetbrains text-[10px] font-black uppercase tracking-wider rounded-lg transition-colors shadow-sm"
+                 >
+                   Join Now
+                 </button>
+              </div>
+           </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const DashboardSidebar = () => {
   const { data: dashData } = useSelector(state => state.dashboard)
   const { t } = useLanguage()
   const stats = dashData?.profile?.stats || {}
+  const liveSessions = dashData?.upcomingLiveClasses || []
 
   return (
     <div className="space-y-8 w-full">
@@ -104,7 +173,7 @@ const DashboardSidebar = () => {
                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" strokeWidth="2" />
             </svg>
             <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
-              {stats.enrolledCourses || '0'}
+              {dashData?.activeCoursesCount ?? stats.enrolledCourses ?? '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('activeCoursesCount')}</p>
          </div>
@@ -115,7 +184,7 @@ const DashboardSidebar = () => {
                <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12" stroke="currentColor" strokeWidth="2" />
             </svg>
             <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
-               {stats.certificatesEarned || '0'}
+               {stats.certificatesEarned ?? dashData?.certificatesCount ?? '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('certificatesEarned')}</p>
          </div>
@@ -136,14 +205,15 @@ const DashboardSidebar = () => {
                <path d="M22 4L12 14.01l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <p className="font-inter text-3xl md:text-4xl text-slate-900 font-bold leading-none">
-               {stats.completedCourses || '0'}
+               {stats.completedModules ?? stats.completedCourses ?? '0'}
             </p>
             <p className="font-jetbrains text-[10px] text-slate-500 uppercase tracking-wider font-bold">{t('completedModules')}</p>
          </div>
       </div>
 
-      {/* Top Learners & Upcoming Deadlines Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Live Classes, Top Learners & Upcoming Deadlines Grid */}
+      <div className={`grid grid-cols-1 ${liveSessions.length > 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-8`}>
+         {liveSessions.length > 0 && <UpcomingLiveSessions sessions={liveSessions} />}
          <TopLearners learners={dashData?.topLearners || []} />
          <UpcomingDeadlines assignments={dashData?.upcomingAssignments || []} />
       </div>

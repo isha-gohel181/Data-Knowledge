@@ -15,7 +15,7 @@ const DashboardHero = () => {
     : 0
 
   const currentXP = dashData?.profile?.stats?.xp || 0
-  const currentLevel = dashData?.profile?.stats?.level || 'Expert'
+  const currentLevel = dashData?.profile?.stats?.level || 'Beginner'
   
   const circumference = 2 * Math.PI * 45; // radius 45
   const strokeDashoffset = circumference - (completionRate / 100) * circumference;

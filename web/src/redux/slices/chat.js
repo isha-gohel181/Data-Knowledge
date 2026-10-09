@@ -86,7 +86,7 @@ export const fetchMessages = createAsyncThunk('chat/fetchMessages', async (roomI
     const rooms = state.chat?.rooms || [];
     if (rooms && rooms.length) {
       if (roomId === 'support') {
-        const supportRoom = rooms.find(r => r.isSupport || /support/i.test(r.name || ''));
+        const supportRoom = rooms.find(r => r.isSupport || /support/i.test(r.name || '') || (r.participants && r.participants.some(p => p.role === 'admin' || p.role === 'super_admin')));
         if (supportRoom) roomId = supportRoom._id;
       }
 
@@ -97,11 +97,20 @@ export const fetchMessages = createAsyncThunk('chat/fetchMessages', async (roomI
       }
     }
 
-    // Final check: if roomId is still 'support' (not resolved) or not an objectId, 
-    // decide if we should even proceed.
+    // If still 'support', resolve dynamically from backend
+    if (roomId === 'support') {
+      try {
+        const supportRes = await authorizedFetch('/chat/support-room');
+        const supportData = await supportRes.json();
+        if (supportData?.room?._id) {
+          roomId = supportData.room._id;
+        }
+      } catch (e) { }
+    }
+
     const isObjectId = typeof roomId === 'string' && /^[0-9a-fA-F]{24}$/.test(roomId);
-    if (roomId === 'support' && !isObjectId) {
-      return rejectWithValue('No support room found in backend');
+    if (!isObjectId) {
+      return { roomId: roomIdentifier, messages: [] };
     }
 
     console.debug(`[FETCH_DEBUG] Fetching history for room: ${roomId}`);
@@ -137,9 +146,28 @@ export const fetchMessages = createAsyncThunk('chat/fetchMessages', async (roomI
   }
 });
 
-export const sendMessageSocket = createAsyncThunk('chat/sendMessageSocket', async ({ roomId, receiverId, message, files, replyTo }, { rejectWithValue, getState }) => {
-  const { auth } = getState();
+export const sendMessageSocket = createAsyncThunk('chat/sendMessageSocket', async ({ roomId: initialRoomId, receiverId: initialReceiverId, message, files, replyTo }, { rejectWithValue, getState }) => {
+  const { auth, chat } = getState();
   const user = auth.user || JSON.parse(localStorage.getItem('edrilla_user') || '{}');
+
+  let roomId = initialRoomId;
+  let receiverId = initialReceiverId;
+
+  // If roomId is 'support' or missing receiverId, dynamically resolve from support room endpoint
+  if ((roomId === 'support' || !roomId) || !receiverId) {
+    try {
+      const supportRes = await authorizedFetch('/chat/support-room');
+      const supportData = await supportRes.json();
+      if (supportData?.room?._id) {
+        roomId = supportData.room._id;
+        const myId = user?._id || user?.id;
+        const other = (supportData.room.participants || []).find(p => String(p._id || p.id) !== String(myId));
+        if (other?._id || other?.id) receiverId = other._id || other.id;
+      }
+    } catch (err) {
+      console.error('[CHAT_DEBUG] Dynamic support room resolution failed:', err);
+    }
+  }
 
   const optimisticMsg = {
     _id: `temp-${Date.now()}`,
@@ -169,8 +197,6 @@ export const sendMessageSocket = createAsyncThunk('chat/sendMessageSocket', asyn
     const hasFiles = files && files.length > 0;
 
     // Determine if this is a course group chat
-    // We check if the room exists in courseRooms state
-    const { chat } = getState();
     const isCourseGroup = (chat.courseRooms || []).some(r => r._id === roomId);
 
     const REST_URL = isCourseGroup ? `${API_BASE}/chat/course/message` : `${API_BASE}/chat/message`;
@@ -351,36 +377,46 @@ const chatSlice = createSlice({
     },
     addMessage(state, action) {
       const message = action.payload;
-      const roomId = message.roomId || message.chatRoomId || message.courseChatRoomId;
+      const roomId = String(message.roomId || message.chatRoomId || message.courseChatRoomId || '');
       if (!roomId) return;
       if (!state.messages[roomId]) state.messages[roomId] = [];
 
-      // DEDUPLICATION: Skip if this exact backend ID is already in the store
-      if (message._id && state.messages[roomId].some(m => m._id === message._id)) {
-        console.debug(`[REDUCER_DEBUG] Skipping duplicate message ID: ${message._id}`);
-        return;
-      }
-
-      // MATCHING: Replace temp optimistic message with real server message if content matches
       const serverText = (message.message || message.text || message.body || message.content || '').trim();
 
-      const tempIdx = state.messages[roomId].findIndex(m => {
-        const isTemp = m._id?.startsWith?.('temp-') || m.id?.startsWith?.('temp-');
-        if (!isTemp) return false;
+      // Check if message._id is already in store
+      const existingIdx = message._id ? state.messages[roomId].findIndex(m => m._id === message._id) : -1;
 
+      // Find any optimistic temp message matching this text
+      const tempIdx = state.messages[roomId].findIndex(m => {
+        const isTemp = String(m._id || m.id || '').startsWith('temp-');
+        if (!isTemp) return false;
         const localText = (m.message || m.text || m.body || m.content || '').trim();
-        const contentMatch = localText === serverText;
-        return contentMatch;
+        return localText === serverText;
       });
 
-      if (tempIdx !== -1) {
-        console.debug(`[REDUCER_DEBUG] Matched and replacing temp message.`);
-        state.messages[roomId].splice(tempIdx, 1, { ...message, isSent: true, status: 'sent' });
+      if (existingIdx !== -1) {
+        // Real message already in store; prune any matching temp message
+        if (tempIdx !== -1) {
+          state.messages[roomId].splice(tempIdx, 1);
+        }
+      } else if (tempIdx !== -1) {
+        // Replace temp optimistic message with real server message
+        state.messages[roomId][tempIdx] = { ...message, isSent: true, status: 'sent' };
       } else {
-        if (serverText) {
+        // New incoming message
+        if (serverText || message.fileUrl || (message.files && message.files.length > 0)) {
           state.messages[roomId].push({ ...message, status: 'sent' });
         }
       }
+
+      // Ensure no duplicate IDs in store
+      const seen = new Set();
+      state.messages[roomId] = state.messages[roomId].filter(m => {
+        const id = m._id || m.id;
+        if (id && seen.has(id)) return false;
+        if (id) seen.add(id);
+        return true;
+      });
 
       // update room last message
       const roomIndex = state.rooms.findIndex((r) => r._id === roomId);
@@ -514,9 +550,15 @@ const chatSlice = createSlice({
         if (!roomId) return;
         if (!state.messages[roomId]) state.messages[roomId] = [];
 
-        // If this is the optimistic return, just add if not present
-        if (message._id && message._id.startsWith('temp-')) {
-          if (!state.messages[roomId].some(m => m._id === message._id)) {
+        // If this is the optimistic return, don't add if already present or already confirmed by real message
+        if (message._id && String(message._id).startsWith('temp-')) {
+          const tempText = (message.message || message.text || message.body || '').trim();
+          const alreadyHasRealMessage = state.messages[roomId].some(m => {
+            const isTemp = String(m._id || m.id || '').startsWith('temp-');
+            if (isTemp) return false;
+            return (m.message || m.text || m.body || '').trim() === tempText;
+          });
+          if (!alreadyHasRealMessage && !state.messages[roomId].some(m => m._id === message._id)) {
             state.messages[roomId].push(message);
           }
           return;

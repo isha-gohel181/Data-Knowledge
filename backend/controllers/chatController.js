@@ -100,7 +100,7 @@ export const getAllChatRooms = async (req, res) => {
 
     // Fetch all chat rooms for the user
     const rooms = await ChatRoom.find({ participants: userId })
-      .populate("participants", "fullName profilePicture")
+      .populate("participants", "fullName profilePicture role email")
       .lean();
 
     // Added: Calculate unread message count and last message for each room
@@ -200,7 +200,7 @@ export const getSupportChatRoom = async (req, res) => {
     }
 
     await room.populate("participants", "fullName email profilePicture role");
-    return res.status(200).json({ room });
+    return res.status(200).json({ room, supportUser });
   } catch (err) {
     console.error("Get Support Chat Room Error:", err);
     return res.status(500).json({ message: "Failed to retrieve support chat room" });
@@ -456,6 +456,11 @@ export const sendMessage = async (req, res) => {
     const newMessage = await Message.create(payload);
     console.log("✅ Message created successfully:", newMessage._id);
 
+    await ChatRoom.findByIdAndUpdate(roomId, {
+      lastMessage: newMessage._id,
+      updatedAt: new Date(),
+    });
+
     const populatedMessage = await Message.findById(newMessage._id)
       .populate("sender receiver", "fullName profilePicture")
       .populate({
@@ -523,7 +528,6 @@ export const sendMessage = async (req, res) => {
           const io = req?.app?.locals?.io;
           if (io) {
             io.to(adminUser._id.toString()).emit("newMessage", populatedForwardMessage);
-            io.to(senderId.toString()).emit("newMessage", populatedForwardMessage);
           }
 
           try {

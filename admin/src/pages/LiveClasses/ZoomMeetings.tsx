@@ -54,10 +54,21 @@ const ZoomMeetings: React.FC = () => {
     const [dateFrom, setDateFrom] = useState(sevenDaysAgo);
     const [dateTo, setDateTo] = useState(today);
 
+    const getInitialStartTime = () => {
+        const d = new Date();
+        d.setMinutes(d.getMinutes() + 15);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        const hours = String(d.getHours()).padStart(2, "0");
+        const minutes = String(d.getMinutes()).padStart(2, "0");
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
     const [formData, setFormData] = useState({
         topic: "",
-        start_time: "",
-        duration: 220,
+        start_time: getInitialStartTime(),
+        duration: 60,
         agenda: "",
         timezone: "Asia/Kolkata",
         courseId: "",
@@ -127,38 +138,48 @@ const ZoomMeetings: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const parsedStart = formData.start_time ? new Date(formData.start_time) : new Date();
+        const validStartTime = !isNaN(parsedStart.getTime()) ? parsedStart.toISOString() : new Date().toISOString();
+
         const payload: any = {
-            topic: formData.topic,
-            start_time: new Date(formData.start_time).toISOString(),
-            duration: formData.duration,
-            agenda: formData.agenda,
-            timezone: formData.timezone,
-            courseId: formData.courseId,
+            topic: formData.topic || "Live Class",
+            start_time: validStartTime,
+            duration: Number(formData.duration) || 60,
+            agenda: formData.agenda || "",
+            timezone: formData.timezone || "Asia/Kolkata",
+            courseId: formData.courseId || undefined,
         };
-        if (formData.useExistingLink) {
+        if (formData.useExistingLink || formData.existingJoinUrl) {
             payload.useExistingLink = true;
-            payload.existingMeetingId = formData.existingMeetingId;
+            payload.existingMeetingId = formData.existingMeetingId || "";
             payload.existingJoinUrl = formData.existingJoinUrl;
             payload.existingPassword = formData.existingPassword;
         }
         if (formData.isRecurring) {
             payload.isRecurring = true;
+            let endIso: string | undefined = undefined;
+            if (formData.recurrence.end_date_time) {
+                const parsedEnd = new Date(formData.recurrence.end_date_time);
+                if (!isNaN(parsedEnd.getTime())) {
+                    endIso = parsedEnd.toISOString();
+                }
+            }
             payload.recurrence = {
                 type: formData.recurrence.type,
                 repeat_interval: formData.recurrence.repeat_interval,
                 weekly_days: formData.recurrence.weekly_days,
-                end_date_time: formData.recurrence.end_date_time
-                    ? new Date(formData.recurrence.end_date_time).toISOString()
-                    : undefined,
+                end_date_time: endIso,
             };
         }
         const result = await dispatch(createMeeting(payload));
         if (createMeeting.fulfilled.match(result)) {
             setIsModalOpen(false);
+            dispatch(fetchMeetings());
             setFormData({
                 topic: "",
-                start_time: "",
-                duration: 220,
+                start_time: getInitialStartTime(),
+                duration: 60,
                 agenda: "",
                 timezone: "Asia/Kolkata",
                 courseId: "",
@@ -636,25 +657,24 @@ const ZoomMeetings: React.FC = () => {
                                     <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
                                 </label>
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Use existing Zoom link (skip auto-create)
+                                    Use custom or existing meeting link (Google Meet / Zoom / Teams)
                                 </span>
                             </div>
                             {formData.useExistingLink && (
                                 <div className="space-y-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Meeting ID</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Meeting ID (Optional)</label>
                                             <input
-                                                required
                                                 type="text"
-                                                placeholder="e.g. 818 6251 7185"
+                                                placeholder="e.g. faw-nwhq-ppi or 818 6251 7185"
                                                 className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500/20 text-gray-900 dark:text-white outline-none"
                                                 value={formData.existingMeetingId}
-                                                onChange={(e) => setFormData({ ...formData, existingMeetingId: e.target.value.replace(/\D+/g, "") })}
+                                                onChange={(e) => setFormData({ ...formData, existingMeetingId: e.target.value })}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Passcode</label>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Passcode (Optional)</label>
                                             <input
                                                 type="text"
                                                 placeholder="e.g. 456754"
@@ -669,7 +689,7 @@ const ZoomMeetings: React.FC = () => {
                                         <input
                                             required
                                             type="url"
-                                            placeholder="https://us06web.zoom.us/j/81862517185"
+                                            placeholder="https://meet.google.com/... or https://zoom.us/j/..."
                                             className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500/20 text-gray-900 dark:text-white outline-none"
                                             value={formData.existingJoinUrl}
                                             onChange={(e) => setFormData({ ...formData, existingJoinUrl: e.target.value })}

@@ -7,6 +7,7 @@ import { fetchMyEnrollments } from '../redux/slices/enrollmentSlice'
 import { useLanguage } from '../context/LanguageContext'
 
 import DashboardLoading from '../components/dashboard/DashboardLoading'
+import socketService from '../services/socketService'
 
 const MyCourses = () => {
   const dispatch = useDispatch()
@@ -17,15 +18,31 @@ const MyCourses = () => {
 
   useEffect(() => {
     dispatch(fetchMyEnrollments())
+
+    const token = localStorage.getItem('edrilla_token') || localStorage.getItem('token')
+    socketService.connect(token).catch(() => {})
+
+    const handleProgressUpdate = () => {
+      dispatch(fetchMyEnrollments())
+    }
+
+    socketService.on('progress-updated', handleProgressUpdate)
+    socketService.on('video-completed', handleProgressUpdate)
+
+    return () => {
+      socketService.off('progress-updated', handleProgressUpdate)
+      socketService.off('video-completed', handleProgressUpdate)
+    }
   }, [dispatch])
 
   // Filter Logic
   const filteredEnrollments = useMemo(() => {
     return enrollments.filter(item => {
       if (!item.course) return false // Hide legacy/deleted courses from curriculum view
+      const itemProgress = item.progressPercentage ?? item.course?.overallProgress ?? 0
       if (activeFilter === 'ALL COURSES') return true
-      if (activeFilter === 'IN PROGRESS') return item.progressPercentage < 100
-      if (activeFilter === 'COMPLETED') return item.iscompleted || item.progressPercentage === 100
+      if (activeFilter === 'IN PROGRESS') return itemProgress < 100 && !item.iscompleted
+      if (activeFilter === 'COMPLETED') return item.iscompleted || itemProgress >= 100
       return true
     })
   }, [enrollments, activeFilter])
@@ -34,7 +51,7 @@ const MyCourses = () => {
   const activeCount = useMemo(() => enrollments.filter(item => item.status === 'active' && item.course).length, [enrollments])
   const avgProgress = useMemo(() => {
     return enrollments.length > 0 
-      ? Math.round(enrollments.reduce((acc, item) => acc + (item.progressPercentage || 0), 0) / enrollments.length) 
+      ? Math.round(enrollments.reduce((acc, item) => acc + (item.progressPercentage ?? item.course?.overallProgress ?? 0), 0) / enrollments.length) 
       : 0
   }, [enrollments])
 
@@ -205,12 +222,12 @@ const MyCourses = () => {
                       <div className="space-y-2 pt-2 mt-auto">
                          <div className="flex justify-between items-center font-jetbrains text-xs font-bold tracking-widest uppercase">
                             <span className="text-slate-500">Progress</span>
-                            <span className="text-slate-900 font-black">{Math.round(item.progressPercentage || 0)}%</span>
+                            <span className="text-slate-900 font-black">{Math.round(item.progressPercentage ?? item.course?.overallProgress ?? 0)}%</span>
                          </div>
                          <div className="h-2 bg-slate-100 rounded-full relative overflow-hidden">
                             <div 
                                className="absolute top-0 left-0 h-full bg-amber-500 transition-all duration-1000 ease-out rounded-full" 
-                               style={{ width: `${item.progressPercentage || 0}%` }} 
+                               style={{ width: `${Math.min(100, Math.max(0, item.progressPercentage ?? item.course?.overallProgress ?? 0))}%` }} 
                             />
                          </div>
                       </div>

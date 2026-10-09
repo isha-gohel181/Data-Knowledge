@@ -27,21 +27,10 @@ class ProgressRepository {
     }
   }
 
-  async updateProgress(userId, lessonId,courseId, updateData) {
+  async updateProgress(userId, lessonId, courseId, updateData) {
     try {
-
-      //set last video played for set continuity for course learning
-     const courseupdate =  await CourseEnrollment.findOneAndUpdate(
-        { userId, courseId },
-        { lastVideoPlayed: lessonId },
-        { new: true }
-      );
-
-      //console.log(`last play video updated for user ${userId}, course ${courseId}`, courseupdate); 
-
-      //console.log(`Updating progress for user ${userId}, lesson ${lessonId}`, updateData);
       const progress = await LessonProgress.findOneAndUpdate(
-        { userId, lessonId ,courseId },
+        { userId, lessonId, courseId },
         { 
           ...updateData,
           lastUpdatedAt: new Date()
@@ -52,7 +41,78 @@ class ProgressRepository {
           runValidators: true
         }
       );
-      //console.log(`Progress updated for user ${userId}, lesson ${lessonId}`, progress);
+
+      // Update CourseEnrollment with lastVideoPlayed and recalculate overall course progress
+      if (courseId) {
+        try {
+          const Course = (await import('../models/Course.js')).default;
+          const courseDoc = await Course.findById(courseId).select('modules').populate({
+            path: 'modules',
+            select: 'lessons',
+            populate: { path: 'lessons', select: '_id type' }
+          }).lean();
+
+          if (courseDoc && courseDoc.modules) {
+            let allLessonIds = [];
+            for (const m of courseDoc.modules) {
+              if (m.lessons) {
+                for (const l of m.lessons) {
+                  allLessonIds.push(l._id.toString());
+                }
+              }
+            }
+
+            const totalLessons = allLessonIds.length;
+            if (totalLessons > 0) {
+              const allProgressDocs = await LessonProgress.find({
+                userId,
+                courseId
+              }).select('lessonId progressPercentage completed').lean();
+
+              const progressMap = new Map();
+              allProgressDocs.forEach(p => {
+                if (p.lessonId) progressMap.set(p.lessonId.toString(), p);
+              });
+
+              let sumProgress = 0;
+              let completedLessonIds = [];
+              for (const lid of allLessonIds) {
+                const lp = progressMap.get(lid);
+                if (lp) {
+                  sumProgress += (lp.progressPercentage || 0);
+                  if (lp.completed || lp.progressPercentage >= 80) {
+                    completedLessonIds.push(new mongoose.Types.ObjectId(lid));
+                  }
+                }
+              }
+
+              const courseOverallProgress = Math.min(100, Math.round(sumProgress / totalLessons));
+              const isCompleted = courseOverallProgress >= 100 || (completedLessonIds.length >= totalLessons && totalLessons > 0);
+
+              await CourseEnrollment.findOneAndUpdate(
+                { userId, courseId },
+                {
+                  $set: {
+                    lastVideoPlayed: lessonId,
+                    progressPercentage: courseOverallProgress,
+                    iscompleted: isCompleted,
+                    ...(isCompleted && { completedAt: new Date(), status: 'completed' })
+                  },
+                  ...(completedLessonIds.length > 0 && {
+                    $addToSet: {
+                      completedLessons: { $each: completedLessonIds }
+                    }
+                  })
+                },
+                { new: true }
+              );
+            }
+          }
+        } catch (enrollErr) {
+          console.error('Error updating course enrollment progress:', enrollErr.message);
+        }
+      }
+
       return progress;
     } catch (error) {
       throw new Error(`Failed to update progress: ${error.message}`);

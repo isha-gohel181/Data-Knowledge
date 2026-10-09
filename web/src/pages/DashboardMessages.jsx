@@ -19,13 +19,9 @@ const DashboardMessages = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [recordingTime, setRecordingTime] = useState(0);
     const [volumes, setVolumes] = useState(new Array(30).fill(2));
-    const [messages, setMessages] = useState({
-        support: [
-            { id: 1, text: "👋 Welcome to Edrilla! How can we help you today?", sender: "Support Agent", time: "10:30 AM", isSent: false },
-            { id: 2, text: "I'm having some trouble with the course module.", sender: "You", time: "10:32 AM", isSent: true },
-            { id: 3, text: "Sure, could you send a screenshot of the issue?", sender: "Support Agent", time: "10:35 AM", isSent: false }
-        ]
-    });
+    const [messages, setMessages] = useState({});
+    const [supportRoom, setSupportRoom] = useState(null);
+    const [supportAdmin, setSupportAdmin] = useState(null);
 
     const fileInputRef = useRef(null);
     const scrollRef = useRef(null);
@@ -50,13 +46,11 @@ const DashboardMessages = () => {
     const selectedRoom = [...rooms, ...courseRooms].find(r => r._id === selectedChat);
     const isCourseGroup = courseRooms.some(r => r._id === selectedChat);
 
-    const chats = [
-        { id: 'prasad-1', initials: 'PH', name: 'Prasad Hol', lastMsg: 'You: hi', status: 'online' },
-        { id: 'sahil-1', initials: 'SK', name: 'Sahil Khanna', lastMsg: 'No messages yet', status: 'offline' },
-        { id: 'prasad-2', initials: 'PH', name: 'Prasad Hol', lastMsg: 'You: @Prasad Hol hii', status: 'online', unread: 3 },
-        { id: 'jondon', initials: 'JD', name: 'Jon Don', lastMsg: 'Jon Don: Socket chal rha hai', status: 'online' },
-        { id: 'support', initials: '🛠️', name: 'Support Team', lastMsg: '👋 Welcome! How can we help you?', status: 'online', unread: 1, isSupport: true, desc: '24/7 Available • Instant Response' }
-    ];
+    const getParticipantId = (p) => {
+        if (!p) return null;
+        if (typeof p === 'string') return p;
+        return p._id || p.id || null;
+    };
 
     const getRoomTime = (room) => {
         if (!room) return 0;
@@ -66,19 +60,36 @@ const DashboardMessages = () => {
         return 0;
     };
 
+    // Preload support room on mount so student side is immediately ready
+    useEffect(() => {
+        authorizedFetch('/chat/support-room')
+            .then(res => res.json())
+            .then(data => {
+                if (data?.room) {
+                    setSupportRoom(data.room);
+                    if (data.supportUser) setSupportAdmin(data.supportUser);
+                }
+            })
+            .catch(err => console.error('[CHAT_DEBUG] Preload support room failed:', err));
+    }, []);
+
     let sidebarChats = [];
     const activeRooms = activeTab === 'groups' ? (chatState.courseRooms || []) : (chatState.rooms || []);
 
     if (activeRooms && activeRooms.length > 0) {
         const mapped = activeRooms.map(r => {
             const participants = r.participants || [];
-            const other = participants.find(p => p._id !== authUser?._id)
-                || participants.find(p => p.email !== authUser?.email)
-                || participants[0]
-                || { fullName: 'Conversation' };
+            const other = participants.find(p => {
+                const pid = getParticipantId(p);
+                return pid && String(pid) !== String(authUser?._id || authUser?.id);
+            }) || participants[0] || { fullName: 'Conversation' };
 
-            const isSupportParticipant = other._id === '68e38debe4d3380f23ae42a3' || other.email === 'sahil@lapaas.com';
-            const isSupportRoom = !!r.isSupport || /support/i.test(r.name || '') || isSupportParticipant;
+            const otherRole = typeof other === 'object' ? other.role : '';
+            const otherEmail = typeof other === 'object' ? other.email : '';
+            const otherId = getParticipantId(other);
+
+            const isSupportParticipant = otherRole === 'admin' || otherRole === 'super_admin' || otherId === '6abb692e25772f64168dbc34' || otherId === '68e38debe4d3380f23ae42a3' || otherEmail === 'admin@dataknowledge.in' || otherEmail === 'sahil@lapaas.com';
+            const isSupportRoom = !!r.isSupport || /support/i.test(r.name || '') || isSupportParticipant || (supportRoom?._id && r._id === supportRoom._id);
 
             let displayName = r.courseId?.title || r.name || other.fullName || other.email || 'Conversation';
             if (isSupportRoom && !r.name) displayName = 'Support Team';
@@ -110,28 +121,17 @@ const DashboardMessages = () => {
         });
 
         if (filterTab === 'unread') {
-            sorted.sort((a, b) => {
-                const aUnread = a.unread > 0 ? 1 : 0;
-                const bUnread = b.unread > 0 ? 1 : 0;
-                if (aUnread !== bUnread) {
-                    return bUnread - aUnread;
-                }
-                const timeA = getRoomTime(a.rawRoom);
-                const timeB = getRoomTime(b.rawRoom);
-                return timeB - timeA;
-            });
+            sorted = sorted.filter(a => a.unread > 0);
         }
 
         if (activeTab === 'chats') {
-            const supportRoom = sorted.find(m => m.isSupport);
-            const supportRoomId = supportRoom?.id;
-
-            if (supportRoomId) {
-                const withoutSupport = sorted.filter(m => m.id !== supportRoomId);
-                sidebarChats = [supportRoom, ...withoutSupport];
+            const existingSupport = sorted.find(m => m.isSupport || (supportRoom?._id && m.id === supportRoom._id));
+            if (existingSupport) {
+                const withoutSupport = sorted.filter(m => m.id !== existingSupport.id);
+                sidebarChats = [existingSupport, ...withoutSupport];
             } else {
                 const syntheticSupport = {
-                    id: 'support',
+                    id: supportRoom?._id || 'support',
                     initials: '🛠️',
                     name: 'Support Team',
                     lastMsg: '👋 Welcome! How can we help you?',
@@ -144,16 +144,17 @@ const DashboardMessages = () => {
         } else {
             sidebarChats = sorted;
         }
-    } else if (!chatState.hasFetched && activeTab === 'chats') {
-        let sortedChats = [...chats];
-        if (filterTab === 'unread') {
-            sortedChats.sort((a, b) => {
-                const aUnread = (a.unread || 0) > 0 ? 1 : 0;
-                const bUnread = (b.unread || 0) > 0 ? 1 : 0;
-                return bUnread - aUnread;
-            });
-        }
-        sidebarChats = sortedChats;
+    } else if (activeTab === 'chats') {
+        const syntheticSupport = {
+            id: supportRoom?._id || 'support',
+            initials: '🛠️',
+            name: 'Support Team',
+            lastMsg: '👋 Welcome! How can we help you?',
+            status: 'online',
+            unread: 0,
+            isSupport: true
+        };
+        sidebarChats = [syntheticSupport];
     } else {
         sidebarChats = [];
     }
@@ -166,7 +167,36 @@ const DashboardMessages = () => {
 
     const messagesFromStore = chatState.messages || {};
     const rawMessages = messagesFromStore[selectedChat] || messages[selectedChat] || [];
-    const messagesForSelected = [...rawMessages].sort((a, b) => {
+
+    // Deduplicate:
+    // 1. Drop duplicate message IDs
+    // 2. Drop optimistic temp messages if a confirmed message with the same content exists
+    const seenIds = new Set();
+    const confirmedTexts = new Set();
+
+    rawMessages.forEach(m => {
+        const id = m._id || m.id;
+        const isTemp = String(id || '').startsWith('temp-');
+        if (!isTemp) {
+            const txt = (m.message || m.text || m.body || m.content || '').trim();
+            if (txt) confirmedTexts.add(txt);
+        }
+    });
+
+    const deduplicated = rawMessages.filter(m => {
+        const id = m._id || m.id;
+        if (id && seenIds.has(id)) return false;
+        if (id) seenIds.add(id);
+
+        const isTemp = String(id || '').startsWith('temp-');
+        if (isTemp) {
+            const txt = (m.message || m.text || m.body || m.content || '').trim();
+            if (txt && confirmedTexts.has(txt)) return false;
+        }
+        return true;
+    });
+
+    const messagesForSelected = [...deduplicated].sort((a, b) => {
         const ta = a.createdAt ? new Date(a.createdAt).getTime() : (a.id || 0);
         const tb = b.createdAt ? new Date(b.createdAt).getTime() : (b.id || 0);
         return ta - tb;
@@ -206,22 +236,26 @@ const DashboardMessages = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const isStaticSelection = !selectedChat || !/^[0-9a-fA-F]{24}$/.test(selectedChat);
-        const hasBackendRooms = sidebarChats && sidebarChats.some(c => /^[0-9a-fA-F]{24}$/.test(c.id));
-
-        if (isStaticSelection && hasBackendRooms) {
-            const firstReal = sidebarChats.find(c => /^[0-9a-fA-F]{24}$/.test(c.id));
-            if (firstReal) {
-                setSelectedChat(firstReal.id);
-                dispatch(setActiveRoom(firstReal.id));
-                dispatch(fetchMessages(firstReal.id));
-            }
-        } else if (!selectedChat && sidebarChats && sidebarChats.length > 0) {
+        if (!selectedChat && sidebarChats && sidebarChats.length > 0) {
             const target = sidebarChats[0];
             setSelectedChat(target.id);
             dispatch(setActiveRoom(target.id));
+            if (/^[0-9a-fA-F]{24}$/.test(target.id)) {
+                dispatch(fetchMessages(target.id));
+            }
+        } else if (selectedChat === 'support' && supportRoom?._id) {
+            setSelectedChat(supportRoom._id);
+            dispatch(setActiveRoom(supportRoom._id));
+            dispatch(fetchMessages(supportRoom._id));
         }
-    }, [sidebarChats]);
+    }, [sidebarChats, selectedChat, supportRoom, dispatch]);
+
+    useEffect(() => {
+        if (selectedChat && /^[0-9a-fA-F]{24}$/.test(selectedChat)) {
+            dispatch(setActiveRoom(selectedChat));
+            dispatch(fetchMessages(selectedChat));
+        }
+    }, [selectedChat, dispatch]);
 
     useEffect(() => {
         let interval;
@@ -243,59 +277,66 @@ const DashboardMessages = () => {
     const performSendMessage = async (text = '', files = []) => {
         if (!text.trim() && files.length === 0) return;
 
+        let roomId = selectedChat;
+        let receiverId = null;
+
+        // If support chat or missing room ID, resolve support room
+        if (!roomId || roomId === 'support' || (supportRoom?._id && roomId === supportRoom._id)) {
+            let activeSupport = supportRoom;
+            if (!activeSupport) {
+                try {
+                    const response = await authorizedFetch('/chat/support-room');
+                    const data = await response.json();
+                    if (data?.room?._id) {
+                        activeSupport = data.room;
+                        setSupportRoom(data.room);
+                        if (data.supportUser) setSupportAdmin(data.supportUser);
+                    }
+                } catch (error) {
+                    console.error('[CHAT_DEBUG] Support room resolution failed:', error);
+                }
+            }
+
+            if (activeSupport) {
+                roomId = activeSupport._id;
+                setSelectedChat(roomId);
+                dispatch(setActiveRoom(roomId));
+
+                const myId = authUser?._id || authUser?.id;
+                const other = (activeSupport.participants || []).find(p => {
+                    const pid = getParticipantId(p);
+                    return pid && String(pid) !== String(myId);
+                });
+                receiverId = getParticipantId(other) || getParticipantId(supportAdmin) || '6abb692e25772f64168dbc34';
+            }
+        } else {
+            const allRooms = [...(chatState.rooms || []), ...(chatState.courseRooms || [])];
+            const found = allRooms.find(r => r._id === roomId);
+            if (found) {
+                const myId = authUser?._id || authUser?.id;
+                const other = (found.participants || []).find(p => {
+                    const pid = getParticipantId(p);
+                    return pid && String(pid) !== String(myId);
+                });
+                receiverId = getParticipantId(other);
+            }
+        }
+
+        if (!roomId) {
+            console.error('[CHAT_DEBUG] Cannot send without a room ID');
+            return;
+        }
+
         const payload = {
-            roomId: selectedChat,
+            roomId,
+            receiverId,
             message: text,
             files: files,
             replyTo: replyingTo?._id
         };
 
-        const roomsFromStore = chatState.rooms || [];
-        const courseRoomsFromStore = chatState.courseRooms || [];
-        const allRooms = [...roomsFromStore, ...courseRoomsFromStore];
-        let resolvedRoom = null;
-
-        if (selectedChat === 'support') {
-            resolvedRoom = roomsFromStore.find(r =>
-                r.isSupport ||
-                /support/i.test(r.name || '') ||
-                (r.participants && r.participants.some(p => p._id === '68e38debe4d3380f23ae42a3'))
-            );
-            if (!resolvedRoom) {
-                try {
-                    const response = await authorizedFetch(`${import.meta.env.VITE_BASE_URL || 'https://api.edrilla.com'}/chat/support-room`);
-                    const data = await response.json();
-                    if (!response.ok) throw new Error(data.message || 'Support team is unavailable');
-                    resolvedRoom = data.room;
-                } catch (error) {
-                    console.error('[CHAT_DEBUG] Support room resolution failed:', error);
-                    return;
-                }
-            }
-        } else {
-            resolvedRoom = allRooms.find(r => r._id === selectedChat);
-        }
-
-        if (resolvedRoom) {
-            payload.roomId = resolvedRoom._id;
-            if (selectedChat === 'support') {
-                setSelectedChat(resolvedRoom._id);
-                dispatch(setActiveRoom(resolvedRoom._id));
-                dispatch(fetchMessages(resolvedRoom._id));
-            }
-            const myId = authUser?._id;
-            const other = (resolvedRoom.participants || []).find(p => String(p._id) !== String(myId));
-            if (other?._id) {
-                payload.receiverId = other._id;
-            }
-        }
-
-        if (!payload.roomId || !payload.receiverId) {
-            console.error('[CHAT_DEBUG] Cannot send message without a real room and receiver');
-            return;
-        }
-
         dispatch(sendMessageSocket(payload));
+        dispatch(fetchChatRooms());
 
         setMessageInput('');
         setAttachments([]);
@@ -433,33 +474,29 @@ const DashboardMessages = () => {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const selectChat = (id) => {
-        setSelectedChat(id);
-        setIsMobileChatOpen(true);
-        const roomsFromStore = chatState.rooms || [];
-        const courseRoomsFromStore = chatState.courseRooms || [];
-        const allRooms = [...roomsFromStore, ...courseRoomsFromStore];
+    const selectChat = async (id) => {
         let realRoomId = id;
-        let foundRoom = null;
-
-        if (allRooms && allRooms.length) {
-            foundRoom = allRooms.find(r => r._id === id || r.slug === id || r.name === id || (r.participants && r.participants.some(p => p._id === id)));
-            if (foundRoom) {
-                realRoomId = foundRoom._id;
-            } else if (id === 'support') {
-                const supportRoom = roomsFromStore.find(r => r.isSupport || /support/i.test(r.name || ''));
-                if (supportRoom) {
-                    foundRoom = supportRoom;
-                    realRoomId = supportRoom._id;
+        if (id === 'support' || (supportRoom?._id && id === supportRoom._id)) {
+            if (supportRoom?._id) {
+                realRoomId = supportRoom._id;
+            } else {
+                try {
+                    const res = await authorizedFetch('/chat/support-room');
+                    const data = await res.json();
+                    if (data?.room?._id) {
+                        realRoomId = data.room._id;
+                        setSupportRoom(data.room);
+                        if (data.supportUser) setSupportAdmin(data.supportUser);
+                    }
+                } catch (e) {
+                    console.error('[CHAT_DEBUG] Error resolving support room in selectChat:', e);
                 }
             }
         }
-
+        setSelectedChat(realRoomId);
+        setIsMobileChatOpen(true);
         dispatch(setActiveRoom(realRoomId));
-
-        const looksLikeObjectId = typeof realRoomId === 'string' && /^[0-9a-fA-F]{24}$/.test(realRoomId);
-
-        if (foundRoom || looksLikeObjectId) {
+        if (/^[0-9a-fA-F]{24}$/.test(realRoomId)) {
             dispatch(fetchMessages(realRoomId));
         }
     };
@@ -874,7 +911,9 @@ const DashboardMessages = () => {
                                 <div className="w-16 h-16 bg-white/5 rounded-none flex items-center justify-center mb-4 border border-white/5">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
                                 </div>
-                                <p className="font-montserrat text-sm text-normal">Select a conversation to start messaging</p>
+                                <p className="font-montserrat text-sm text-normal">
+                                    {selectedChat ? "No messages yet. Send a message to start the conversation!" : "Select a conversation to start messaging"}
+                                </p>
                                 <p className="font-montserrat text-[11px] text-white/50 mt-1.5">Your messages are secure</p>
                             </div>
                         )}
@@ -1013,7 +1052,16 @@ const DashboardMessages = () => {
                                         type="text"
                                         value={messageInput}
                                         onChange={handleInputChange}
-                                        onKeyPress={(e) => e.key === 'Enter' && (handleSendMessage(), (() => { clearTimeout(typingTimeoutRef.current); import('../services/socketService').then(m => { try { m.default.socket && m.default.socket.emit('typing_stop', { roomId: selectedChat }) } catch (e) { } }).catch(() => { }); })())}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                handleSendMessage();
+                                                clearTimeout(typingTimeoutRef.current);
+                                                import('../services/socketService').then(m => {
+                                                    try { m.default.socket && m.default.socket.emit('typing_stop', { roomId: selectedChat }); } catch (err) { }
+                                                }).catch(() => { });
+                                            }
+                                        }}
                                         placeholder={t('typeMessage') || 'Type a message...'}
                                         className="flex-1 bg-transparent py-2 outline-none font-jetbrains text-xs text-slate-900 placeholder:text-slate-400"
                                     />
