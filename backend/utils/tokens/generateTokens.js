@@ -127,15 +127,15 @@ const generateTokens = async (user, platform = "web", deviceId = null) => {
     }
 
     // Generate tokens
-    const accessToken = jwt.sign(payload, accessSecret, { expiresIn: '10y' });
-    const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: '10y' });
+    const accessToken = jwt.sign(payload, accessSecret, { expiresIn: '1h' });
+    const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: '30d' });
 
     // Calculate expiration times
     const decodedAccess = jwt.decode(accessToken);
     const decodedRefresh = jwt.decode(refreshToken);
 
-    const accessTokenExp = decodedAccess?.exp ? decodedAccess.exp * 1000 : Date.now() + 1000 * 60 * 60 * 24 * 365 * 10;
-    const refreshTokenExp = decodedRefresh?.exp ? decodedRefresh.exp * 1000 : Date.now() + 1000 * 60 * 60 * 24 * 365 * 10;
+    const accessTokenExp = decodedAccess?.exp ? decodedAccess.exp * 1000 : Date.now() + 1000 * 60 * 60; // 1 hour
+    const refreshTokenExp = decodedRefresh?.exp ? decodedRefresh.exp * 1000 : Date.now() + 1000 * 60 * 60 * 24 * 30; // 30 days
 
     // Invalidate previous refresh tokens for the SAME platform only
     // This allows web + app to coexist, but only 1 device per platform

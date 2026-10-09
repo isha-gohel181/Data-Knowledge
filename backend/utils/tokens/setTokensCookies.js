@@ -1,4 +1,4 @@
-const setTokensCookies = (res, accessToken, refreshToken) => {
+const setTokensCookies = (res, accessToken, refreshToken, accessTokenMaxAge, refreshTokenMaxAge) => {
   // Determine if connection is HTTPS (direct, via reverse proxy like Render, or in production)
   const isSecure =
     res.req?.secure ||
@@ -9,22 +9,32 @@ const setTokensCookies = (res, accessToken, refreshToken) => {
   // For cross-origin requests (e.g. Vercel frontend -> Render backend), SameSite must be 'none' when Secure is true.
   const sameSiteOption = isSecure ? "none" : "lax";
 
+  // Default expirations for production
+  const oneHour = 60 * 60 * 1000;
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+  const accessAge = accessTokenMaxAge || oneHour;
+  const refreshAge = refreshTokenMaxAge || thirtyDays;
+
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: isSecure,
     sameSite: sameSiteOption,
+    maxAge: accessAge,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: isSecure,
     sameSite: sameSiteOption,
+    maxAge: refreshAge,
   });
 
   res.cookie("is_auth", true, {
     httpOnly: false,
     secure: isSecure,
     sameSite: sameSiteOption,
+    maxAge: refreshAge, // is_auth represents the overall session duration (refresh token)
   });
 };
 

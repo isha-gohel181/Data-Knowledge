@@ -163,7 +163,7 @@ const Purchases = () => {
                            ) : (
                               <button className="font-jetbrains text-xs font-bold text-amber-800 hover:text-slate-950 uppercase tracking-wider transition-colors px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200">{t('receipt') || 'Receipt'}</button>
                            )}
-                           <button className="font-jetbrains text-xs font-bold text-slate-400 hover:text-red-600 uppercase tracking-wider transition-colors">{t('refund') || 'Refund'}</button>
+                           {/* <button className="font-jetbrains text-xs font-bold text-slate-400 hover:text-red-600 uppercase tracking-wider transition-colors">{t('refund') || 'Refund'}</button> */}
                         </div>
                      </div>
                   ))}
