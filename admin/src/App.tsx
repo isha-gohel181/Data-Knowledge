@@ -81,6 +81,9 @@ import PlacementStoriesPage from "./pages/PlacementStories/PlacementStories";
 import ProvenResultsPage from "./pages/ProvenResults/ProvenResults";
 import ProgramsOfferPage from "./pages/ProgramsOffer/ProgramsOffer";
 import HeroSectionPage from "./pages/HeroSection/HeroSection";
+import WhyChooseUsPage from "./pages/WhyChooseUs/WhyChooseUs";
+import AboutSnapshotPage from "./pages/AboutSnapshot/AboutSnapshot";
+import MentorsPage from "./pages/Mentors";
 
 // Lazy load pages
 const SignIn = lazy(() => import("./pages/AuthPages/SignIn"));
@@ -288,6 +291,7 @@ export default function App() {
                 <Route path="/device-approvals" element={<DeviceApprovals />} />
                 {/* Testimonials */}
                 <Route path="/testimonials" element={<TestimonialsPage />} />
+                <Route path="/mentors" element={<MentorsPage />} />
                 <Route path="/chat" element={<ChatPage />} />
                 <Route path="/ai-tool" element={<AITool />} />
                 {/* Charts */}
@@ -304,6 +308,8 @@ export default function App() {
                 <Route path="/proven-results" element={<ProvenResultsPage />} />
                 <Route path="/programs-offer" element={<ProgramsOfferPage />} />
                 <Route path="/hero-section" element={<HeroSectionPage />} />
+                <Route path="/why-choose-us" element={<WhyChooseUsPage />} />
+                <Route path="/about-snapshot" element={<AboutSnapshotPage />} />
               </Route>
             </Route>
 

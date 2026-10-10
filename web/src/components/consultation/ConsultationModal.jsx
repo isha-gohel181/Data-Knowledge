@@ -159,6 +159,10 @@ const ConsultationModal = ({ isOpen, onClose }) => {
       .filter(Boolean)
   );
 
+  // Filter slots to only show those that match the selected date in the user's local timezone
+  const displayedSlots = (slots || []).filter((s) => getLocalDateString(s.startTime) === selectedDate);
+
+
   const handleSelectDay = (day) => {
     const formattedMonth = String(month + 1).padStart(2, '0');
     const formattedDay = String(day).padStart(2, '0');
@@ -646,7 +650,7 @@ I have booked a session:
                     </div>
 
                     <span className="font-inter text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-200/80 text-slate-700">
-                      {slots.filter((s) => !s.isBooked && new Date(s.startTime) >= new Date()).length} open
+                      {displayedSlots.filter((s) => !s.isBooked && new Date(s.startTime) >= new Date()).length} open
                     </span>
                   </div>
 
@@ -661,7 +665,7 @@ I have booked a session:
                       <div className="w-5 h-5 border-2 border-[#3498db] border-t-transparent rounded-full animate-spin" />
                       <span>Checking slot availability...</span>
                     </div>
-                  ) : slots.length === 0 ? (
+                  ) : displayedSlots.length === 0 ? (
                     <div className="py-12 px-4 text-center space-y-2">
                       <p className="font-inter font-bold text-slate-800 text-sm">
                         No open slots on this date.
@@ -672,7 +676,7 @@ I have booked a session:
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                      {slots.map((slot) => {
+                      {displayedSlots.map((slot) => {
                         const isBooked = slot.isBooked;
                         const isPast = new Date(slot.startTime) < new Date();
                         const isDisabled = isBooked || isPast;

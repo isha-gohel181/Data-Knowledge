@@ -41,6 +41,9 @@ import provenResultReducer from "./slices/provenResult";
 import testimonialReducer from "./slices/testimonial";
 import programOfferReducer from "./slices/programOffer";
 import heroSectionReducer from "./slices/heroSection";
+import whyChooseUsReducer from "./slices/whyChooseUs";
+import aboutSnapshotReducer from "./slices/aboutSnapshot";
+import mentorReducer from "./slices/mentor";
 
 export const store = configureStore({
   reducer: {
@@ -85,6 +88,9 @@ export const store = configureStore({
     provenResult: provenResultReducer,
     programOffer: programOfferReducer,
     heroSection: heroSectionReducer,
+    whyChooseUs: whyChooseUsReducer,
+    aboutSnapshot: aboutSnapshotReducer,
+    mentor: mentorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

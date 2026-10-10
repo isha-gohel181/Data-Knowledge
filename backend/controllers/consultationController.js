@@ -106,22 +106,9 @@ export const getAvailableSlots = async (req, res) => {
 
         const slots = await ConsultationSlot.find(query).sort({ startTime: 1 });
 
-        let filteredSlots = slots;
-        if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-            filteredSlots = slots.filter((slot) => {
-                const dt = new Date(slot.startTime);
-                const isoDate = dt.toISOString().split('T')[0];
-                const y = dt.getFullYear();
-                const m = String(dt.getMonth() + 1).padStart(2, '0');
-                const dayStr = String(dt.getDate()).padStart(2, '0');
-                const localDate = `${y}-${m}-${dayStr}`;
-                return isoDate === date || localDate === date;
-            });
-        }
-
         return res.status(200).json({
             success: true,
-            data: filteredSlots
+            data: slots
         });
     } catch (error) {
         console.error('Error fetching available slots:', error);

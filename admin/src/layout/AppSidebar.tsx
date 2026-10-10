@@ -16,7 +16,7 @@ import {
   UserCircleIcon,
   VideoIcon,
 } from "../icons";
-import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy, Layers, Sparkles, Search, X } from "lucide-react";
+import { Tag, UserCircle2Icon, Bell, MessageCircle, Bot, Instagram, Trophy, Layers, Sparkles, Search, X, CheckSquare } from "lucide-react";
 
 type NavSubItem = {
   name: string;
@@ -54,30 +54,30 @@ const navItems: NavItem[] = [
     path: "/categories",
     keywords: ["tracks", "subjects"],
   },
-  {
-    icon: <PageIcon />,
-    name: "Banner",
-    path: "/banner",
-    keywords: ["announcement", "promo", "alert"],
-  },
+  // {
+  //   icon: <PageIcon />,
+  //   name: "Banner",
+  //   path: "/banner",
+  //   keywords: ["announcement", "promo", "alert"],
+  // },
   {
     icon: <CalenderIcon />,
     name: "Events",
     path: "/events",
     keywords: ["webinar", "webinars", "workshop", "masterclass"],
   },
-  {
-    icon: <UserCircleIcon />,
-    name: "Jobs",
-    path: "/jobs",
-    keywords: ["hiring", "careers", "vacancies", "referral"],
-  },
-  {
-    icon: <PageIcon />,
-    name: "News",
-    path: "/news",
-    keywords: ["articles", "press", "blog"],
-  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "Jobs",
+  //   path: "/jobs",
+  //   keywords: ["hiring", "careers", "vacancies", "referral"],
+  // },
+  // {
+  //   icon: <PageIcon />,
+  //   name: "News",
+  //   path: "/news",
+  //   keywords: ["articles", "press", "blog"],
+  // },
   {
     icon: <PageIcon />,
     name: "Forums",
@@ -90,12 +90,12 @@ const navItems: NavItem[] = [
     path: "/students/all",
     keywords: ["users", "learners", "enrolled"],
   },
-  {
-    icon: <UserCircleIcon />,
-    name: "Add Reporter",
-    path: "/reporters/add",
-    keywords: ["reporter", "journalist", "author"],
-  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "Add Reporter",
+  //   path: "/reporters/add",
+  //   keywords: ["reporter", "journalist", "author"],
+  // },
   {
     icon: <TableIcon />,
     name: "Assignment Submissions",
@@ -148,6 +148,12 @@ const navItems: NavItem[] = [
     keywords: ["reviews", "review", "proof", "screenshot", "screenshots", "rating", "feedback"],
   },
   {
+    icon: <UserCircleIcon />,
+    name: "Mentors",
+    path: "/mentors",
+    keywords: ["instructors", "teachers", "mentors", "experts"],
+  },
+  {
     icon: <Instagram />,
     name: "Placement Stories",
     path: "/placement-stories",
@@ -170,6 +176,18 @@ const navItems: NavItem[] = [
     name: "Hero Section",
     path: "/hero-section",
     keywords: ["hero", "headline", "title", "banner", "landing", "home"],
+  },
+  {
+    icon: <CheckSquare className="w-5 h-5" />,
+    name: "Why Choose Us",
+    path: "/why-choose-us",
+    keywords: ["why", "choose", "us", "features", "benefits", "reasons"],
+  },
+  {
+    icon: <GridIcon />,
+    name: "About Data Knowledge",
+    path: "/about-snapshot",
+    keywords: ["about", "us", "snapshot", "data", "knowledge", "company"],
   },
   {
     icon: <PieChartIcon />,

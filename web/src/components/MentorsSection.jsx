@@ -1,95 +1,84 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import axios from 'axios'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const MentorsSection = () => {
   const containerRef = useRef(null)
 
+  const [mentors, setMentors] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const API_URL = import.meta.env.VITE_API_BASE || 'http://localhost:5000'
+
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.mentor-header-reveal',
-        { y: 30, opacity: 0, filter: 'blur(6px)' },
-        {
-          y: 0,
-          opacity: 1,
-          filter: 'blur(0px)',
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 85%'
-          }
+    const fetchMentors = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/mentors?status=active`)
+        if (response.data.success) {
+          setMentors(response.data.data)
         }
-      )
-
-      gsap.fromTo(
-        '.mentor-card-item',
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.mentors-grid-wrapper',
-            start: 'top 85%'
-          }
-        }
-      )
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
-
-  const mentors = [
-    {
-      id: 'rushikesh',
-      name: 'Rushikesh',
-      role: 'Data Science Mentor',
-      exCompanies: ['Ex-Cognizant', 'Ex-PwC'],
-      experienceBadge: '4+ Years Industry Experience',
-      image: '/data_knowlege/mentor/Rushikesh.jpeg',
-      stats: [
-        { label: 'Industry Exp', value: '4+ Yrs' },
-        { label: 'Teaching Exp', value: '2+ Yrs' },
-        { label: 'Mentored', value: '500+' }
-      ],
-      bio: [
-        'Rushikesh brings 4+ years of industry experience from leading global consulting firms like Cognizant and PwC. Along with his industry expertise, he has 2+ years of dedicated teaching experience training aspiring data professionals.',
-        'Known for turning complex data concepts into simple, practical lessons that anyone can master. With an unwavering focus on real-world projects, hands-on practice, and industry-ready tools, he has helped hundreds of learners transition into Data Analytics and Data Science roles.'
-      ],
-      skills: ['Python', 'SQL', 'Data Analytics', 'Machine Learning', 'Business Strategy', 'Power BI'],
-      accentGradient: 'from-blue-500/10 via-[#3498db]/15 to-transparent',
-      glowColor: 'shadow-blue-500/15',
-      borderColor: 'hover:border-[#3498db]'
-    },
-    {
-      id: 'krishna',
-      name: 'Krishna',
-      role: 'Senior Data Science Instructor & Industry Mentor',
-      exCompanies: ['5+ Yrs Industry Veteran', 'Senior Instructor'],
-      experienceBadge: '5+ Years Analytics Experience',
-      image: '/data_knowlege/mentor/krishna.jpeg',
-      stats: [
-        { label: 'Analytics Exp', value: '5+ Yrs' },
-        { label: 'Students Trained', value: '800+' },
-        { label: 'Project Rating', value: '4.9/5' }
-      ],
-      bio: [
-        'Krishna possesses 5+ years of extensive experience across Data Science, Analytics, and Business Analysis. Having mentored hundreds of successful learners, she specializes in transforming theoretical concepts into enterprise-grade data solutions.',
-        'Her teaching approach focuses on practical business projects and the critical skills demanded in today’s data-driven marketplace—delivering clarity, respectful guidance, and tangible career outcomes for every learner.'
-      ],
-      skills: ['Python', 'SQL', 'Power BI', 'Tableau', 'Machine Learning', 'Business Analytics'],
-      accentGradient: 'from-cyan-500/10 via-[#3498db]/15 to-transparent',
-      glowColor: 'shadow-cyan-500/15',
-      borderColor: 'hover:border-cyan-500'
+      } catch (error) {
+        console.error('Error fetching mentors:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+    fetchMentors()
+  }, [API_URL])
+
+  // Re-run animations when mentors are loaded
+  useEffect(() => {
+    if (!loading && mentors.length > 0) {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          '.mentor-header-reveal',
+          { y: 30, opacity: 0, filter: 'blur(6px)' },
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 85%'
+            }
+          }
+        )
+
+        gsap.fromTo(
+          '.mentor-card-item',
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: '.mentors-grid-wrapper',
+              start: 'top 85%'
+            }
+          }
+        )
+      }, containerRef)
+
+      return () => ctx.revert()
+    }
+  }, [loading, mentors])
+
+  const getMediaUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    return `${API_URL}/${normalizedPath}`;
+  };
+
+  if (loading) return null;
 
   return (
     <section ref={containerRef} className="py-20 md:py-28 px-4 sm:px-6 md:px-12 lg:px-20 bg-slate-50 relative overflow-hidden border-t border-slate-200">
@@ -134,7 +123,7 @@ const MentorsSection = () => {
                   <div className="relative shrink-0">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden ring-4 ring-white shadow-md border border-slate-200/80 bg-slate-100">
                       <img
-                        src={mentor.image}
+                        src={getMediaUrl(mentor.image)}
                         alt={mentor.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {
@@ -166,7 +155,7 @@ const MentorsSection = () => {
 
                     {/* Ex-Company Tags */}
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {mentor.exCompanies.map((comp, cIdx) => (
+                      {mentor.exCompanies && mentor.exCompanies.map((comp, cIdx) => (
                         <span
                           key={cIdx}
                           className="text-[10px] font-jetbrains font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200/80 text-slate-700"
@@ -181,7 +170,7 @@ const MentorsSection = () => {
 
                 {/* Stat Counters Ribbon */}
                 <div className="grid grid-cols-3 gap-3 p-3.5 bg-slate-50/80 border border-slate-200/70 rounded-2xl">
-                  {mentor.stats.map((stat, sIdx) => (
+                  {mentor.stats && mentor.stats.map((stat, sIdx) => (
                     <div key={sIdx} className="text-center space-y-0.5">
                       <p className="font-jetbrains text-base sm:text-lg font-black text-slate-900">{stat.value}</p>
                       <p className="font-inter text-[10px] sm:text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
@@ -191,7 +180,7 @@ const MentorsSection = () => {
 
                 {/* Bio Description */}
                 <div className="space-y-3 font-inter text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  {mentor.bio.map((paragraph, pIdx) => (
+                  {mentor.bio && mentor.bio.map((paragraph, pIdx) => (
                     <p key={pIdx}>{paragraph}</p>
                   ))}
                 </div>
@@ -200,7 +189,7 @@ const MentorsSection = () => {
                 <div className="space-y-2.5 pt-2">
                   <p className="text-[10px] font-jetbrains font-bold uppercase tracking-wider text-slate-400">Core Expertise & Tools</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {mentor.skills.map((skill, skIdx) => (
+                    {mentor.skills && mentor.skills.map((skill, skIdx) => (
                       <span
                         key={skIdx}
                         className="text-xs font-semibold font-inter px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200/80 text-slate-800 group-hover:border-[#3498db]/30 group-hover:bg-[#3498db]/5 transition-colors"

@@ -74,6 +74,7 @@ import programOfferRouter from "./programOfferRoutes.js";
 import heroSectionRouter from "./heroSectionRoutes.js";
 import whyChooseUsRouter from "./whyChooseUsRoutes.js";
 import aboutSnapshotRouter from "./aboutSnapshotRoutes.js";
+import mentorRouter from "./mentorRoutes.js";
 import { Route } from "express";
 
 router.get("/", (req, res) => {
@@ -151,6 +152,7 @@ router.use("/programs-offer", programOfferRouter);
 router.use("/hero-section", heroSectionRouter);
 router.use("/why-choose-us", whyChooseUsRouter);
 router.use("/about-snapshot", aboutSnapshotRouter);
+router.use("/", mentorRouter);
 
 // Frontend Activity Logger endpoints
 router.post("/activity-logs", (req, res) => res.status(200).json({ success: true }));
